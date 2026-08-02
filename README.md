@@ -1,12 +1,18 @@
 # Synthetic Patient Persona
 
-A GraphRAG-grounded conversational **patient digital twin** for trial-design and
+A grounded, reproducible **synthetic patient population** for trial-design and
 patient-journey work. Talk to statistically plausible synthetic patients whose
 answers are constrained by a structured profile (*Patient DNA*) and grounded in a
-biomedical knowledge graph.
+small owned knowledge graph. Every number traces to a seed, a prior pack, and an
+assumption ledger entry.
 
 > Design/ideation & stakeholder-simulation tool — **not** medical advice and **not**
 > a regulatory virtual-control-arm twin.
+
+## Documentation
+- [Project description](docs/PROJECT_DESCRIPTION.md)
+- [Architecture](ARCHITECTURE.md)
+- [Repository guide](docs/REPO_GUIDE.md)
 
 ## Quickstart (offline, no services needed)
 ```bash
@@ -50,43 +56,55 @@ Read `criteria_impact[].sole_reason` first — patients who would have qualified
 but for that one line. `at_risk` and `interviews` then cover the people who pass
 on paper but would struggle to take part.
 
-## Going live (real knowledge-graph grounding)
+## Scenario Lab (the UI)
 ```bash
-cp .env.example .env          # add ANTHROPIC_API_KEY, set SPP_LIVE=true
-docker compose up -d          # Neo4j on host ports 7475 (browser) / 7688 (bolt)
-PYTHONPATH=src python -m spp.ingest.kg_loader        # ~47k nodes / 278k edges
-PYTHONPATH=src python -m spp.ingest.kg_loader --stats
-SPP_LIVE=true pytest                                 # includes the live graph tests
+uvicorn spp.api.main:app --port 8000    # API — every number is computed here
+cd ui && npm install && npm run dev     # http://localhost:5173
 ```
+Type a rule and watch attrition move as you type; fork a design and read the
+flips by name; click a citation through to its fact. Those three are the demo,
+and they are the entire E2E suite — see [RELEASE.md](RELEASE.md).
 
-Ports are offset from the Neo4j defaults so this stack coexists with another
-Neo4j; override with `NEO4J_HOST_HTTP` / `NEO4J_HOST_BOLT`.
+## How grounding works
+Knowledge is a **small owned graph** (`data/knowledge/core.json` — nine node
+kinds, ~140 nodes, every fact carrying its own source and confidence) behind a
+frozen retrieval contract that returns fact **ids**, never prose. That is what
+lets citations be verified mechanically and the substrate stay swappable.
 
-`GET /health` tells you whether grounding is real — `graph_live: false` means
-personas are running on the offline stub subgraph.
+Owning the ontology rather than ingesting a large public one is deliberate: a
+small graph you can defend edge-by-edge beats a big one you can't. It also buys
+the participation subgraph no public biomedical KG has —
+`Procedure → Requirement → Barrier → Resource` — whose `Barrier` ids match the
+simulation's derived barrier names, so a persona's *simulated* barrier resolves
+into a *citable* fact.
 
-### How grounding works
-Retrieval is two layers. A **deterministic traversal** anchored on the patient's
-condition always runs (symptoms → treatments → adverse events → pathways). When
-live, an **LLM-generated Cypher query** for the specific question is validated
-and merged on top; if generation, validation or execution fails, layer one still
-stands. Every returned edge carries a citation naming the Hetionet metaedge it
-came from.
+Citations are a **decode constraint, not a prompt instruction**: `fact_ids` is a
+JSON-schema enum of exactly the retrieved ids, so a fabricated citation is
+ungrammatical rather than merely detectable. Verification is ordinary code.
 
-Two honest limits worth knowing:
-- Hetionet carries **137 diseases**. `heart failure` isn't one; it resolves to
-  nothing rather than being silently mapped to a near neighbour, and the persona
-  is told to say it doesn't know.
-- Its symptom edges are **MEDLINE co-occurrence, not clinical curation**, so a
-  few are junk. The grounding block flags this to the model rather than
-  filtering it out of sight.
+A Neo4j/Hetionet backend still ships behind the same contract for larger-graph
+work (`docker compose up -d` on host ports 7475/7688, then
+`python -m spp.ingest.kg_loader`). It is not the default grounding path.
 
-Patient data is still synthetic-from-priors — see
+## What is pinned, and what is not
+Everything that could be pinned by a test, is: determinism, replay purity, exact
+Shapley efficiency, the correlation PSD gate, retention bands under two master
+seeds, the citation gate, memory semantics under permutation.
+
+**One claim is not.** That a 7B model under schema-constrained decoding cites the
+*right* facts is unmeasured — every compliance number so far comes from scripted
+stubs written to test the instrument. Pass bars are pre-registered and a canary
+must prove it can detect degradation before any number is trusted. See
+[RELEASE.md](RELEASE.md) for the two commands that close it.
+
+Population priors are still literature ballparks, not fitted values — see
 [Synthea](https://github.com/synthetichealth/synthea) and
-`src/spp/ingest/synthea_loader.py` for the remaining build-order item.
+`src/spp/ingest/synthea_loader.py`, which is a calibration-target source for the
+prior packs rather than an input to the generator.
 
 ## Data sources
-- **Personas:** Synthea (synthetic EHRs), MIMIC-IV (credentialed), registries.
-- **Knowledge graph:** Hetionet, PrimeKG, Open Targets, SIDER (AEs), Reactome (pathways).
+- **Knowledge:** authored in-repo (`data/knowledge/`). Optional: Hetionet.
+- **Population priors:** authored prior packs (`data/prior_packs/`), to be
+  calibrated from Synthea aggregates.
 
-See `CLAUDE.md` for architecture and the build order.
+See the linked documentation above for the architecture and the file-by-file repository map.
