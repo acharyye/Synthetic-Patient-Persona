@@ -5,11 +5,9 @@ This file is the file-by-file map for the repository. It is meant to make the co
 ## Top-Level Files
 - `README.md` - user-facing overview, quickstart, and demo instructions.
 - `ARCHITECTURE.md` - technical architecture and system boundaries.
-- `CLAUDE.md` - long-form project context for the coding agent.
-- `CLAUDE_HANDOFF.md` - shorter handoff summary of the project state.
-- `PLAN.md` - working product and implementation plan.
-- `RELEASE.md` - version framing and release notes.
-- `spp_vision_and_roadmap.md` - roadmap and longer-term product framing.
+- `RELEASE.md` - version framing, the three-move demo, and the one claim that is
+  not pinned by a test.
+- `LICENSE` - MIT, covering the authored content in `data/` as well as the code.
 - `pyproject.toml` - Python package metadata and test configuration.
 - `requirements.txt` - Python dependencies.
 - `docker-compose.yml` - local Neo4j stack for live graph mode.
