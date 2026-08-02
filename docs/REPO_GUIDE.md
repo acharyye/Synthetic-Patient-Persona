@@ -78,15 +78,22 @@ This file is the file-by-file map for the repository. It is meant to make the co
 - `src/spp/simulation/report.py` - simulation report artifacts.
 - `src/spp/simulation/__init__.py` - simulation exports.
 
-### Knowledge and Graph
-- `src/spp/graph/client.py` - Neo4j client wrapper with offline stub behavior.
-- `src/spp/graph/schema.py` - graph labels, edge types, and schema metadata.
-- `src/spp/graph/__init__.py` - graph exports.
-- `src/spp/knowledge/ontology.py` - owned ontology and concept metadata.
-- `src/spp/knowledge/graph.py` - local knowledge-graph structures.
-- `src/spp/knowledge/retrieval.py` - deterministic retrieval and ranking.
+### Knowledge — default path (`src/spp/knowledge/`)
+The owned graph. Runs unless you configure otherwise; every citation in the
+product resolves against it.
+- `src/spp/knowledge/ontology.py` - owned ontology: node/edge kinds, traversal plan.
+- `src/spp/knowledge/graph.py` - NetworkX-backed store, validated at load.
+- `src/spp/knowledge/retrieval.py` - deterministic retrieval and the frozen
+  `RetrievalResult` contract (returns fact ids, never prose).
 - `src/spp/knowledge/__init__.py` - knowledge exports.
-- `src/spp/graphrag/retriever.py` - GraphRAG retrieval orchestration.
+
+### Knowledge — optional Neo4j/Hetionet backend (`src/spp/graph/`, `src/spp/graphrag/`)
+Same contract, larger graph, **not the default**. Breadth over defensibility;
+needs Docker and a ~14 MB download.
+- `src/spp/graph/client.py` - Neo4j client wrapper with offline stub behavior.
+- `src/spp/graph/schema.py` - Hetionet labels, edge types, and metaedges.
+- `src/spp/graph/__init__.py` - graph exports.
+- `src/spp/graphrag/retriever.py` - two-layer retrieval orchestration.
 - `src/spp/graphrag/grounding.py` - grounding block construction.
 - `src/spp/graphrag/cypher_guard.py` - Cypher safety validation.
 - `src/spp/graphrag/__init__.py` - GraphRAG exports.

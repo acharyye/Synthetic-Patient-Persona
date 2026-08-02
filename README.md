@@ -108,3 +108,11 @@ prior packs rather than an input to the generator.
   calibrated from Synthea aggregates.
 
 See the linked documentation above for the architecture and the file-by-file repository map.
+
+## License
+
+MIT — see [LICENSE](LICENSE).
+
+The authored content in `data/knowledge/` and `data/prior_packs/` is covered by
+the same licence. Hetionet, if you enable the optional backend, is CC0 and is
+downloaded at runtime rather than vendored here.

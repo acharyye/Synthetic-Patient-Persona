@@ -60,11 +60,26 @@ flowchart LR
 - `src/spp/simulation/sensitivity.py` perturbs assumptions and re-runs the paired simulation.
 
 ### 5. Knowledge and Grounding
-- `src/spp/knowledge/ontology.py` and `src/spp/knowledge/graph.py` define the owned knowledge substrate.
-- `src/spp/knowledge/retrieval.py` performs deterministic retrieval and ranking.
-- `src/spp/graph/client.py` wraps Neo4j and degrades to offline stubs when live graph access is unavailable.
-- `src/spp/graph/schema.py` is the single source of truth for graph labels, edge types, and metaedges.
-- `src/spp/graphrag/retriever.py` orchestrates the retrieval pipeline.
+
+**Default path — the owned graph.** This is what runs unless you configure
+otherwise, and it is the substrate every citation in the product resolves against.
+- `src/spp/knowledge/ontology.py` and `src/spp/knowledge/graph.py` define the owned
+  knowledge substrate: nine node kinds, validated at load, every fact carrying its
+  own source and confidence.
+- `src/spp/knowledge/retrieval.py` performs deterministic, query-aware retrieval and
+  returns the frozen `RetrievalResult` contract — fact **ids**, never prose. That
+  contract is what keeps the substrate swappable and lets citations be verified in
+  code.
+
+**Optional backend — Neo4j / Hetionet.** Same contract, larger graph, not the
+default. Useful when you want breadth over defensibility; requires Docker and a
+~14 MB download.
+- `src/spp/graph/client.py` wraps Neo4j and degrades to offline stubs when live
+  graph access is unavailable.
+- `src/spp/graph/schema.py` is the single source of truth for Hetionet labels, edge
+  types, and metaedges.
+- `src/spp/graphrag/retriever.py` orchestrates the two-layer retrieval pipeline
+  (deterministic traversal, plus optional LLM-generated Cypher).
 - `src/spp/graphrag/grounding.py` builds grounding blocks with citations.
 - `src/spp/graphrag/cypher_guard.py` validates LLM-authored Cypher before execution.
 
