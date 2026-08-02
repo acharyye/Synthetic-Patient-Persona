@@ -1,0 +1,188 @@
+{
+  "burden": {
+    "mean_score": 0.419,
+    "n_scored": 58,
+    "top": [
+      {
+        "drivers": [
+          "already struggles to take medication as prescribed",
+          "no reliable transport to the site",
+          "work pattern conflicts with weekday visits",
+          "no one at home to support attendance",
+          "already on several medications",
+          "washout means stopping medication that is currently working"
+        ],
+        "patient_id": "rheumatoid-arthritis-s21-0011",
+        "score": 1.0
+      },
+      {
+        "drivers": [
+          "already struggles to take medication as prescribed",
+          "no reliable transport to the site",
+          "no one at home to support attendance",
+          "already on several medications",
+          "lives rurally, long journey to site",
+          "washout means stopping medication that is currently working"
+        ],
+        "patient_id": "rheumatoid-arthritis-s21-0099",
+        "score": 0.92
+      },
+      {
+        "drivers": [
+          "already struggles to take medication as prescribed",
+          "no reliable transport to the site",
+          "work pattern conflicts with weekday visits",
+          "no one at home to support attendance",
+          "washout means stopping medication that is currently working"
+        ],
+        "patient_id": "rheumatoid-arthritis-s21-0063",
+        "score": 0.9
+      },
+      {
+        "drivers": [
+          "already struggles to take medication as prescribed",
+          "work pattern conflicts with weekday visits",
+          "no one at home to support attendance",
+          "already on several medications",
+          "multiple conditions competing for appointments",
+          "washout means stopping medication that is currently working"
+        ],
+        "patient_id": "rheumatoid-arthritis-s21-0075",
+        "score": 0.9
+      },
+      {
+        "drivers": [
+          "already struggles to take medication as prescribed",
+          "no reliable transport to the site",
+          "work pattern conflicts with weekday visits",
+          "no one at home to support attendance",
+          "washout means stopping medication that is currently working"
+        ],
+        "patient_id": "rheumatoid-arthritis-s21-0078",
+        "score": 0.9
+      }
+    ]
+  },
+  "cohort_summary": {
+    "adherence_below_50pct": 41,
+    "adherence_mean": 0.54,
+    "age_mean": 56.9,
+    "age_range": [
+      20,
+      90
+    ],
+    "barrier_prevalence": {
+      "adherence": 0.61,
+      "competing_care": 0.1,
+      "comprehension": 0.34,
+      "cost": 0.29,
+      "digital_access": 0.27,
+      "distance": 0.19,
+      "mobility": 0.35,
+      "pill_burden": 0.33,
+      "scheduling": 0.19,
+      "transport": 0.11,
+      "transport_fragile": 0.39,
+      "unsupported": 0.38
+    },
+    "comorbidity_prevalence": {
+      "cardiovascular disease": 0.23,
+      "depression": 0.23,
+      "hypertension": 0.29,
+      "interstitial lung disease": 0.07,
+      "osteoporosis": 0.32
+    },
+    "health_literacy": {
+      "high": 12,
+      "low": 34,
+      "medium": 54
+    },
+    "mean_barrier_load": 0.613,
+    "mean_comorbidity_count": 1.14,
+    "n": 100,
+    "sex": {
+      "female": 83,
+      "male": 17
+    },
+    "stage": {
+      "advanced": 26,
+      "early": 28,
+      "moderate": 46
+    }
+  },
+  "condition": "rheumatoid arthritis",
+  "eligible_summary": {
+    "adherence_below_50pct": 8,
+    "adherence_mean": 0.63,
+    "age_mean": 57.1,
+    "age_range": [
+      20,
+      90
+    ],
+    "barrier_prevalence": {
+      "adherence": 0.38,
+      "competing_care": 0.09,
+      "cost": 0.17,
+      "digital_access": 0.16,
+      "distance": 0.1,
+      "mobility": 0.31,
+      "pill_burden": 0.33,
+      "scheduling": 0.17,
+      "transport_fragile": 0.41,
+      "unsupported": 0.33
+    },
+    "comorbidity_prevalence": {
+      "cardiovascular disease": 0.22,
+      "depression": 0.28,
+      "hypertension": 0.31,
+      "interstitial lung disease": 0.07,
+      "osteoporosis": 0.26
+    },
+    "health_literacy": {
+      "high": 12,
+      "medium": 46
+    },
+    "mean_barrier_load": 0.408,
+    "mean_comorbidity_count": 1.14,
+    "n": 58,
+    "sex": {
+      "female": 48,
+      "male": 10
+    },
+    "stage": {
+      "advanced": 13,
+      "early": 19,
+      "moderate": 26
+    }
+  },
+  "n": 100,
+  "scenario": "ra_high_burden",
+  "screening": {
+    "criteria_impact": [
+      {
+        "criterion": "health_literacy >= medium",
+        "kind": "inclusion",
+        "screened_out": 34,
+        "screened_out_rate": 0.34,
+        "sole_reason": 31
+      },
+      {
+        "criterion": "sdoh.transport == none",
+        "kind": "exclusion",
+        "screened_out": 11,
+        "screened_out_rate": 0.11,
+        "sole_reason": 8
+      },
+      {
+        "criterion": "age >= 18",
+        "kind": "inclusion",
+        "screened_out": 0,
+        "screened_out_rate": 0.0,
+        "sole_reason": 0
+      }
+    ],
+    "eligibility_rate": 0.58,
+    "n_eligible": 58
+  },
+  "seed": 21
+}

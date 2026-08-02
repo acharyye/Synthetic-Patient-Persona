@@ -1,0 +1,195 @@
+{
+  "burden": {
+    "mean_score": 0.3689,
+    "n_scored": 35,
+    "top": [
+      {
+        "drivers": [
+          "already struggles to take medication as prescribed",
+          "no reliable transport to the site",
+          "low health literacy — consent and diaries are harder",
+          "work pattern conflicts with weekday visits",
+          "no one at home to support attendance",
+          "multiple conditions competing for appointments"
+        ],
+        "patient_id": "rheumatoid-arthritis-s42-0041",
+        "score": 0.81
+      },
+      {
+        "drivers": [
+          "already struggles to take medication as prescribed",
+          "no reliable transport to the site",
+          "low health literacy — consent and diaries are harder",
+          "work pattern conflicts with weekday visits",
+          "no one at home to support attendance",
+          "lives rurally, long journey to site"
+        ],
+        "patient_id": "rheumatoid-arthritis-s42-0069",
+        "score": 0.76
+      },
+      {
+        "drivers": [
+          "already struggles to take medication as prescribed",
+          "no reliable transport to the site",
+          "low health literacy — consent and diaries are harder",
+          "work pattern conflicts with weekday visits",
+          "lives rurally, long journey to site"
+        ],
+        "patient_id": "rheumatoid-arthritis-s42-0043",
+        "score": 0.66
+      },
+      {
+        "drivers": [
+          "already struggles to take medication as prescribed",
+          "no reliable transport to the site",
+          "low health literacy — consent and diaries are harder",
+          "work pattern conflicts with weekday visits",
+          "lives rurally, long journey to site"
+        ],
+        "patient_id": "rheumatoid-arthritis-s42-0067",
+        "score": 0.66
+      },
+      {
+        "drivers": [
+          "already struggles to take medication as prescribed",
+          "no reliable transport to the site",
+          "work pattern conflicts with weekday visits",
+          "no one at home to support attendance",
+          "lives rurally, long journey to site"
+        ],
+        "patient_id": "rheumatoid-arthritis-s42-0027",
+        "score": 0.64
+      }
+    ]
+  },
+  "cohort_summary": {
+    "adherence_below_50pct": 29,
+    "adherence_mean": 0.56,
+    "age_mean": 56.4,
+    "age_range": [
+      26,
+      84
+    ],
+    "barrier_prevalence": {
+      "adherence": 0.5,
+      "competing_care": 0.08,
+      "comprehension": 0.33,
+      "cost": 0.34,
+      "digital_access": 0.29,
+      "distance": 0.22,
+      "mobility": 0.33,
+      "pill_burden": 0.32,
+      "scheduling": 0.19,
+      "transport": 0.1,
+      "transport_fragile": 0.43,
+      "unsupported": 0.37
+    },
+    "comorbidity_prevalence": {
+      "cardiovascular disease": 0.22,
+      "depression": 0.18,
+      "hypertension": 0.34,
+      "interstitial lung disease": 0.04,
+      "osteoporosis": 0.32
+    },
+    "health_literacy": {
+      "high": 16,
+      "low": 33,
+      "medium": 51
+    },
+    "mean_barrier_load": 0.598,
+    "mean_comorbidity_count": 1.1,
+    "n": 100,
+    "sex": {
+      "female": 86,
+      "male": 14
+    },
+    "stage": {
+      "advanced": 24,
+      "early": 37,
+      "moderate": 39
+    }
+  },
+  "condition": "rheumatoid arthritis",
+  "eligible_summary": {
+    "adherence_below_50pct": 11,
+    "adherence_mean": 0.58,
+    "age_mean": 54.7,
+    "age_range": [
+      35,
+      82
+    ],
+    "barrier_prevalence": {
+      "adherence": 0.46,
+      "competing_care": 0.09,
+      "comprehension": 0.4,
+      "cost": 0.46,
+      "digital_access": 0.37,
+      "distance": 0.23,
+      "mobility": 0.29,
+      "scheduling": 0.23,
+      "transport": 0.09,
+      "transport_fragile": 0.51,
+      "unsupported": 0.26
+    },
+    "comorbidity_prevalence": {
+      "cardiovascular disease": 0.2,
+      "depression": 0.2,
+      "hypertension": 0.26,
+      "osteoporosis": 0.31
+    },
+    "health_literacy": {
+      "high": 4,
+      "low": 14,
+      "medium": 17
+    },
+    "mean_barrier_load": 0.583,
+    "mean_comorbidity_count": 0.97,
+    "n": 35,
+    "sex": {
+      "female": 28,
+      "male": 7
+    },
+    "stage": {
+      "advanced": 6,
+      "early": 14,
+      "moderate": 15
+    }
+  },
+  "n": 100,
+  "scenario": "ra_biologic_naive",
+  "screening": {
+    "criteria_impact": [
+      {
+        "criterion": "biomarkers.DAS28 >= 3.2",
+        "kind": "inclusion",
+        "screened_out": 36,
+        "screened_out_rate": 0.36,
+        "sole_reason": 30
+      },
+      {
+        "criterion": "adalimumab",
+        "kind": "exclusion",
+        "screened_out": 32,
+        "screened_out_rate": 0.32,
+        "sole_reason": 26
+      },
+      {
+        "criterion": "interstitial lung disease",
+        "kind": "exclusion",
+        "screened_out": 4,
+        "screened_out_rate": 0.04,
+        "sole_reason": 2
+      },
+      {
+        "criterion": "methotrexate",
+        "kind": "inclusion",
+        "screened_out": 0,
+        "screened_out_rate": 0.0,
+        "sole_reason": 0
+      }
+    ],
+    "eligibility_rate": 0.35,
+    "n_eligible": 35
+  },
+  "seed": 42
+}

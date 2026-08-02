@@ -1,0 +1,177 @@
+{
+  "burden": {
+    "mean_score": 0.3885,
+    "n_scored": 40,
+    "top": [
+      {
+        "drivers": [
+          "already struggles to take medication as prescribed",
+          "no reliable transport to the site",
+          "low health literacy — consent and diaries are harder",
+          "work pattern conflicts with weekday visits",
+          "already on several medications",
+          "multiple conditions competing for appointments",
+          "lives rurally, long journey to site"
+        ],
+        "patient_id": "generic-chronic-condition-s42-0002",
+        "score": 0.97
+      },
+      {
+        "drivers": [
+          "already struggles to take medication as prescribed",
+          "no reliable transport to the site",
+          "low health literacy — consent and diaries are harder",
+          "work pattern conflicts with weekday visits",
+          "lives rurally, long journey to site"
+        ],
+        "patient_id": "generic-chronic-condition-s42-0017",
+        "score": 0.76
+      },
+      {
+        "drivers": [
+          "already struggles to take medication as prescribed",
+          "no reliable transport to the site",
+          "low health literacy — consent and diaries are harder",
+          "work pattern conflicts with weekday visits",
+          "lives rurally, long journey to site"
+        ],
+        "patient_id": "generic-chronic-condition-s42-0037",
+        "score": 0.76
+      },
+      {
+        "drivers": [
+          "already struggles to take medication as prescribed",
+          "no reliable transport to the site",
+          "low health literacy — consent and diaries are harder",
+          "already on several medications",
+          "lives rurally, long journey to site"
+        ],
+        "patient_id": "generic-chronic-condition-s42-0022",
+        "score": 0.72
+      },
+      {
+        "drivers": [
+          "already struggles to take medication as prescribed",
+          "no reliable transport to the site",
+          "already on several medications",
+          "multiple conditions competing for appointments",
+          "age 80+ — travel and fatigue compound"
+        ],
+        "patient_id": "generic-chronic-condition-s42-0000",
+        "score": 0.71
+      }
+    ]
+  },
+  "cohort_summary": {
+    "adherence_below_50pct": 9,
+    "adherence_mean": 0.63,
+    "age_mean": 63.8,
+    "age_range": [
+      28,
+      95
+    ],
+    "barrier_prevalence": {
+      "adherence": 0.42,
+      "competing_care": 0.18,
+      "comprehension": 0.36,
+      "cost": 0.24,
+      "digital_access": 0.36,
+      "distance": 0.22,
+      "mobility": 0.3,
+      "pill_burden": 0.34,
+      "scheduling": 0.14,
+      "transport": 0.16,
+      "transport_fragile": 0.26,
+      "unsupported": 0.22
+    },
+    "comorbidity_prevalence": {
+      "CKD": 0.06,
+      "COPD": 0.02,
+      "depression": 0.16,
+      "hypertension": 0.46,
+      "obesity": 0.28,
+      "type 2 diabetes": 0.14
+    },
+    "health_literacy": {
+      "high": 5,
+      "low": 18,
+      "medium": 27
+    },
+    "mean_barrier_load": 0.54,
+    "mean_comorbidity_count": 1.12,
+    "n": 50,
+    "sex": {
+      "female": 27,
+      "male": 23
+    },
+    "stage": {
+      "advanced": 19,
+      "early": 17,
+      "moderate": 14
+    }
+  },
+  "condition": "an unmapped condition",
+  "eligible_summary": {
+    "adherence_below_50pct": 8,
+    "adherence_mean": 0.63,
+    "age_mean": 69.4,
+    "age_range": [
+      50,
+      95
+    ],
+    "barrier_prevalence": {
+      "adherence": 0.4,
+      "competing_care": 0.17,
+      "comprehension": 0.35,
+      "cost": 0.2,
+      "digital_access": 0.4,
+      "distance": 0.2,
+      "mobility": 0.33,
+      "pill_burden": 0.38,
+      "transport": 0.17,
+      "transport_fragile": 0.33,
+      "unsupported": 0.17
+    },
+    "comorbidity_prevalence": {
+      "CKD": 0.07,
+      "COPD": 0.03,
+      "depression": 0.12,
+      "hypertension": 0.47,
+      "obesity": 0.33,
+      "type 2 diabetes": 0.12
+    },
+    "health_literacy": {
+      "high": 5,
+      "low": 14,
+      "medium": 21
+    },
+    "mean_barrier_load": 0.504,
+    "mean_comorbidity_count": 1.15,
+    "n": 40,
+    "sex": {
+      "female": 22,
+      "male": 18
+    },
+    "stage": {
+      "advanced": 17,
+      "early": 11,
+      "moderate": 12
+    }
+  },
+  "n": 50,
+  "scenario": "generic_fallback_condition",
+  "screening": {
+    "criteria_impact": [
+      {
+        "criterion": "age >= 50",
+        "kind": "inclusion",
+        "screened_out": 10,
+        "screened_out_rate": 0.2,
+        "sole_reason": 10
+      }
+    ],
+    "eligibility_rate": 0.8,
+    "n_eligible": 40
+  },
+  "seed": 42
+}

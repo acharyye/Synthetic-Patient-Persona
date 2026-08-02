@@ -1,0 +1,195 @@
+{
+  "burden": {
+    "mean_score": 0.5535,
+    "n_scored": 17,
+    "top": [
+      {
+        "drivers": [
+          "already struggles to take medication as prescribed",
+          "no reliable transport to the site",
+          "low health literacy — consent and diaries are harder",
+          "no one at home to support attendance",
+          "already on several medications",
+          "lives rurally, long journey to site",
+          "washout means stopping medication that is currently working"
+        ],
+        "patient_id": "breast-cancer-s99-0038",
+        "score": 1.0
+      },
+      {
+        "drivers": [
+          "already struggles to take medication as prescribed",
+          "low health literacy — consent and diaries are harder",
+          "work pattern conflicts with weekday visits",
+          "no one at home to support attendance",
+          "already on several medications",
+          "washout means stopping medication that is currently working"
+        ],
+        "patient_id": "breast-cancer-s99-0030",
+        "score": 0.88
+      },
+      {
+        "drivers": [
+          "already struggles to take medication as prescribed",
+          "low health literacy — consent and diaries are harder",
+          "work pattern conflicts with weekday visits",
+          "no one at home to support attendance",
+          "already on several medications",
+          "washout means stopping medication that is currently working"
+        ],
+        "patient_id": "breast-cancer-s99-0058",
+        "score": 0.88
+      },
+      {
+        "drivers": [
+          "already struggles to take medication as prescribed",
+          "no reliable transport to the site",
+          "no one at home to support attendance",
+          "already on several medications",
+          "lives rurally, long journey to site",
+          "washout means stopping medication that is currently working"
+        ],
+        "patient_id": "breast-cancer-s99-0001",
+        "score": 0.85
+      },
+      {
+        "drivers": [
+          "already struggles to take medication as prescribed",
+          "low health literacy — consent and diaries are harder",
+          "work pattern conflicts with weekday visits",
+          "already on several medications",
+          "lives rurally, long journey to site",
+          "washout means stopping medication that is currently working"
+        ],
+        "patient_id": "breast-cancer-s99-0002",
+        "score": 0.8
+      }
+    ]
+  },
+  "cohort_summary": {
+    "adherence_below_50pct": 9,
+    "adherence_mean": 0.67,
+    "age_mean": 62.0,
+    "age_range": [
+      34,
+      88
+    ],
+    "barrier_prevalence": {
+      "adherence": 0.31,
+      "competing_care": 0.12,
+      "comprehension": 0.32,
+      "cost": 0.26,
+      "digital_access": 0.29,
+      "distance": 0.18,
+      "mobility": 0.35,
+      "pill_burden": 0.33,
+      "scheduling": 0.17,
+      "transport": 0.06,
+      "transport_fragile": 0.32,
+      "unsupported": 0.33
+    },
+    "comorbidity_prevalence": {
+      "anxiety": 0.12,
+      "cardiovascular disease": 0.11,
+      "hypertension": 0.37,
+      "obesity": 0.31,
+      "osteoporosis": 0.19,
+      "type 2 diabetes": 0.16
+    },
+    "health_literacy": {
+      "high": 20,
+      "low": 32,
+      "medium": 48
+    },
+    "mean_barrier_load": 0.508,
+    "mean_comorbidity_count": 1.26,
+    "n": 100,
+    "sex": {
+      "female": 98,
+      "male": 1,
+      "other": 1
+    },
+    "stage": {
+      "I": 39,
+      "II": 36,
+      "III": 19,
+      "IV": 6
+    }
+  },
+  "condition": "breast cancer",
+  "eligible_summary": {
+    "adherence_below_50pct": 2,
+    "adherence_mean": 0.62,
+    "age_mean": 62.5,
+    "age_range": [
+      40,
+      78
+    ],
+    "barrier_prevalence": {
+      "adherence": 0.41,
+      "comprehension": 0.29,
+      "cost": 0.41,
+      "digital_access": 0.12,
+      "distance": 0.35,
+      "mobility": 0.18,
+      "pill_burden": 0.94,
+      "scheduling": 0.18,
+      "transport_fragile": 0.35,
+      "unsupported": 0.53
+    },
+    "comorbidity_prevalence": {
+      "anxiety": 0.18,
+      "cardiovascular disease": 0.06,
+      "hypertension": 0.41,
+      "obesity": 0.29,
+      "osteoporosis": 0.06,
+      "type 2 diabetes": 0.06
+    },
+    "health_literacy": {
+      "high": 1,
+      "low": 5,
+      "medium": 11
+    },
+    "mean_barrier_load": 0.616,
+    "mean_comorbidity_count": 1.06,
+    "n": 17,
+    "sex": {
+      "female": 16,
+      "other": 1
+    },
+    "stage": {
+      "III": 13,
+      "IV": 4
+    }
+  },
+  "n": 100,
+  "scenario": "breast_cancer_advanced",
+  "screening": {
+    "criteria_impact": [
+      {
+        "criterion": "stage >= III",
+        "kind": "inclusion",
+        "screened_out": 75,
+        "screened_out_rate": 0.75,
+        "sole_reason": 63
+      },
+      {
+        "criterion": "n_comorbidities >= 3",
+        "kind": "exclusion",
+        "screened_out": 12,
+        "screened_out_rate": 0.12,
+        "sole_reason": 4
+      },
+      {
+        "criterion": "age >= 80",
+        "kind": "exclusion",
+        "screened_out": 12,
+        "screened_out_rate": 0.12,
+        "sole_reason": 3
+      }
+    ],
+    "eligibility_rate": 0.17,
+    "n_eligible": 17
+  },
+  "seed": 99
+}

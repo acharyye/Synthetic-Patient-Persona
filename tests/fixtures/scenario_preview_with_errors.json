@@ -1,0 +1,50 @@
+{
+  "attribution": [
+    {
+      "criterion": "age >= 50",
+      "kind": "inclusion",
+      "screened_out": 30,
+      "shapley": 30.0,
+      "shapley_share": 1.0,
+      "sole_reason": 30
+    }
+  ],
+  "cohort": {
+    "cached": true,
+    "identity": "type_2_diabetes@v1 seed=42 n=200 as_of=2026-08-02",
+    "size": 200
+  },
+  "criteria_impact": [
+    {
+      "criterion": "age >= 50",
+      "kind": "inclusion",
+      "screened_out": 30,
+      "screened_out_rate": 0.15,
+      "sole_reason": 30
+    }
+  ],
+  "diagnostics": [
+    {
+      "column": null,
+      "index": 0,
+      "kind": "inclusion",
+      "message": "",
+      "ok": true,
+      "text": "age >= 50"
+    },
+    {
+      "column": 17,
+      "index": 1,
+      "kind": "inclusion",
+      "message": "unknown field 'bmi_at_screening'. Known fields: adherence_baseline, age, ancestry, biomarkers.<key>, condition, health_literacy, mean_medication_adherence, n_comorbidities, n_medications, sdoh.<key>, sex, stage",
+      "ok": false,
+      "text": "bmi_at_screening > 30"
+    }
+  ],
+  "eligibility_rate": 0.85,
+  "eligible": 170,
+  "screened": 200,
+  "sequence": 2,
+  "stale": true,
+  "stale_reason": "1 rule has errors \u2014 showing results for the 1 that parse. First problem: unknown field 'bmi_at_screening'. Known fields: adherence_baseline, age, ancestry, biomarkers.<key>, condition, health_literacy, mean_medication_adherence, n_comorbidities, n_medications, sdoh.<key>, sex, stage"
+}

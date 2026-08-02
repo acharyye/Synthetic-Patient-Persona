@@ -1,0 +1,519 @@
+{
+  "schema_version": 1,
+  "name": "type_2_diabetes",
+  "condition": "type 2 diabetes",
+  "aliases": [
+    "t2d",
+    "type ii diabetes",
+    "diabetes mellitus type 2",
+    "diabetes"
+  ],
+  "description": "Prevalent-population skew, not incident cases; US surveillance ballpark.",
+  "marginals": [
+    {
+      "field": "age",
+      "family": "normal",
+      "params": {
+        "mean": 62.0,
+        "sd": 12.0
+      },
+      "support": [
+        25,
+        95
+      ],
+      "provenance": {
+        "source": "Compiled from published prevalence summaries; not fitted to any dataset.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "tolerance": 4.0
+    },
+    {
+      "field": "sex",
+      "family": "categorical",
+      "params": {
+        "female": 0.48,
+        "male": 0.52
+      },
+      "support": [
+        "female",
+        "male",
+        "other"
+      ],
+      "provenance": {
+        "source": "Compiled from published prevalence summaries; not fitted to any dataset.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "tolerance": 0.06
+    },
+    {
+      "field": "stage",
+      "family": "categorical",
+      "params": {
+        "early": 0.4,
+        "moderate": 0.4,
+        "advanced": 0.2
+      },
+      "support": [
+        "early",
+        "moderate",
+        "advanced"
+      ],
+      "provenance": {
+        "source": "Compiled from published prevalence summaries; not fitted to any dataset.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "tolerance": 0.07,
+      "structural_paths": [
+        "stage is selected by the comorbidity_load axis, so it inherits every correlation that axis carries"
+      ]
+    },
+    {
+      "field": "comorbidities",
+      "family": "bernoulli_set",
+      "params": {
+        "hypertension": 0.7,
+        "obesity": 0.6,
+        "dyslipidemia": 0.65,
+        "CKD": 0.35,
+        "diabetic neuropathy": 0.3,
+        "cardiovascular disease": 0.3,
+        "diabetic retinopathy": 0.25,
+        "depression": 0.18
+      },
+      "provenance": {
+        "source": "Compiled from published prevalence summaries; not fitted to any dataset.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "tolerance": 0.2,
+      "structural_paths": [
+        "cohort.comorbidity_age_factor scales prevalence by age, stacking a causal age->comorbidity path on top of the latent age|comorbidity_load correlation",
+        "the latent comorbidity_load axis additionally modulates every threshold"
+      ]
+    },
+    {
+      "field": "health_literacy",
+      "family": "categorical",
+      "params": {
+        "low": 0.3,
+        "medium": 0.52,
+        "high": 0.18
+      },
+      "support": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "provenance": {
+        "source": "Approximate adult population shape from health-literacy surveys.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "tolerance": 0.06
+    },
+    {
+      "field": "medication_ladder",
+      "family": "ladder",
+      "params": {
+        "rungs": [
+          [
+            "metformin",
+            "1000mg BD"
+          ],
+          [
+            "empagliflozin",
+            "10mg OD"
+          ],
+          [
+            "semaglutide",
+            "1mg weekly"
+          ],
+          [
+            "insulin glargine",
+            "20u nocte"
+          ]
+        ]
+      },
+      "provenance": {
+        "source": "Compiled from published prevalence summaries; not fitted to any dataset.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "tolerance": 0.0
+    },
+    {
+      "field": "base_adherence",
+      "family": "scalar",
+      "params": {
+        "value": 0.72
+      },
+      "provenance": {
+        "source": "Compiled from published prevalence summaries; not fitted to any dataset.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "tolerance": 0.15,
+      "structural_paths": [
+        "adherence is DERIVED from literacy, SDOH and pill burden (see adherence.* assumptions), not sampled from this marginal directly"
+      ]
+    },
+    {
+      "field": "dx_delay_months",
+      "family": "scalar",
+      "params": {
+        "lo": 6,
+        "hi": 60
+      },
+      "provenance": {
+        "source": "Compiled from published prevalence summaries; not fitted to any dataset.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "tolerance": 0.0
+    },
+    {
+      "field": "biomarker:HbA1c_pct",
+      "family": "normal",
+      "params": {
+        "mean": 7.4,
+        "sd": 1.3,
+        "decimals": 1,
+        "stage_shift": [
+          0.95,
+          1.0,
+          1.12
+        ]
+      },
+      "support": [
+        5.7,
+        14.0
+      ],
+      "provenance": {
+        "source": "Compiled from published prevalence summaries; not fitted to any dataset.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "tolerance": 1.0,
+      "structural_paths": [
+        "stage_shift moves the mean by disease stage"
+      ]
+    },
+    {
+      "field": "biomarker:BMI",
+      "family": "normal",
+      "params": {
+        "mean": 32.0,
+        "sd": 6.0,
+        "decimals": 1,
+        "stage_shift": []
+      },
+      "support": [
+        18.0,
+        55.0
+      ],
+      "provenance": {
+        "source": "Compiled from published prevalence summaries; not fitted to any dataset.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "tolerance": 3.0,
+      "structural_paths": []
+    },
+    {
+      "field": "biomarker:eGFR",
+      "family": "normal",
+      "params": {
+        "mean": 78.0,
+        "sd": 22.0,
+        "decimals": 0,
+        "stage_shift": [
+          1.1,
+          1.0,
+          0.78
+        ]
+      },
+      "support": [
+        12.0,
+        125.0
+      ],
+      "provenance": {
+        "source": "Compiled from published prevalence summaries; not fitted to any dataset.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "tolerance": 11.0,
+      "structural_paths": [
+        "stage_shift moves the mean by disease stage"
+      ]
+    }
+  ],
+  "latent_correlations": [
+    {
+      "axis_a": "age",
+      "axis_b": "caregiver_support",
+      "rho": 0.2,
+      "provenance": {
+        "source": "Expert judgement. Directions are supported by the health-inequality literature; magnitudes are not fitted.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "tolerance": 0.02
+    },
+    {
+      "axis_a": "age",
+      "axis_b": "comorbidity_load",
+      "rho": 0.45,
+      "provenance": {
+        "source": "Expert judgement. Directions are supported by the health-inequality literature; magnitudes are not fitted.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "tolerance": 0.02
+    },
+    {
+      "axis_a": "age",
+      "axis_b": "digital_literacy",
+      "rho": -0.45,
+      "provenance": {
+        "source": "Expert judgement. Directions are supported by the health-inequality literature; magnitudes are not fitted.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "tolerance": 0.02
+    },
+    {
+      "axis_a": "age",
+      "axis_b": "financial_security",
+      "rho": 0.1,
+      "provenance": {
+        "source": "Expert judgement. Directions are supported by the health-inequality literature; magnitudes are not fitted.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "tolerance": 0.02
+    },
+    {
+      "axis_a": "age",
+      "axis_b": "mobility",
+      "rho": -0.4,
+      "provenance": {
+        "source": "Expert judgement. Directions are supported by the health-inequality literature; magnitudes are not fitted.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "tolerance": 0.02
+    },
+    {
+      "axis_a": "age",
+      "axis_b": "transport_access",
+      "rho": -0.25,
+      "provenance": {
+        "source": "Expert judgement. Directions are supported by the health-inequality literature; magnitudes are not fitted.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "tolerance": 0.02
+    },
+    {
+      "axis_a": "comorbidity_load",
+      "axis_b": "caregiver_support",
+      "rho": 0.15,
+      "provenance": {
+        "source": "Expert judgement. Directions are supported by the health-inequality literature; magnitudes are not fitted.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "tolerance": 0.02
+    },
+    {
+      "axis_a": "comorbidity_load",
+      "axis_b": "financial_security",
+      "rho": -0.2,
+      "provenance": {
+        "source": "Expert judgement. Directions are supported by the health-inequality literature; magnitudes are not fitted.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "tolerance": 0.02
+    },
+    {
+      "axis_a": "comorbidity_load",
+      "axis_b": "health_literacy",
+      "rho": -0.15,
+      "provenance": {
+        "source": "Expert judgement. Directions are supported by the health-inequality literature; magnitudes are not fitted.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "tolerance": 0.02
+    },
+    {
+      "axis_a": "comorbidity_load",
+      "axis_b": "mobility",
+      "rho": -0.35,
+      "provenance": {
+        "source": "Expert judgement. Directions are supported by the health-inequality literature; magnitudes are not fitted.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "tolerance": 0.02
+    },
+    {
+      "axis_a": "comorbidity_load",
+      "axis_b": "transport_access",
+      "rho": -0.15,
+      "provenance": {
+        "source": "Expert judgement. Directions are supported by the health-inequality literature; magnitudes are not fitted.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "tolerance": 0.02
+    },
+    {
+      "axis_a": "digital_literacy",
+      "axis_b": "financial_security",
+      "rho": 0.3,
+      "provenance": {
+        "source": "Expert judgement. Directions are supported by the health-inequality literature; magnitudes are not fitted.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "tolerance": 0.02
+    },
+    {
+      "axis_a": "digital_literacy",
+      "axis_b": "mobility",
+      "rho": 0.15,
+      "provenance": {
+        "source": "Expert judgement. Directions are supported by the health-inequality literature; magnitudes are not fitted.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "tolerance": 0.02
+    },
+    {
+      "axis_a": "financial_security",
+      "axis_b": "caregiver_support",
+      "rho": 0.2,
+      "provenance": {
+        "source": "Expert judgement. Directions are supported by the health-inequality literature; magnitudes are not fitted.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "tolerance": 0.02
+    },
+    {
+      "axis_a": "financial_security",
+      "axis_b": "mobility",
+      "rho": 0.2,
+      "provenance": {
+        "source": "Expert judgement. Directions are supported by the health-inequality literature; magnitudes are not fitted.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "tolerance": 0.02
+    },
+    {
+      "axis_a": "financial_security",
+      "axis_b": "transport_access",
+      "rho": 0.45,
+      "provenance": {
+        "source": "Expert judgement. Directions are supported by the health-inequality literature; magnitudes are not fitted.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "tolerance": 0.02
+    },
+    {
+      "axis_a": "health_literacy",
+      "axis_b": "caregiver_support",
+      "rho": 0.1,
+      "provenance": {
+        "source": "Expert judgement. Directions are supported by the health-inequality literature; magnitudes are not fitted.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "tolerance": 0.02
+    },
+    {
+      "axis_a": "health_literacy",
+      "axis_b": "digital_literacy",
+      "rho": 0.55,
+      "provenance": {
+        "source": "Expert judgement. Directions are supported by the health-inequality literature; magnitudes are not fitted.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "tolerance": 0.02
+    },
+    {
+      "axis_a": "health_literacy",
+      "axis_b": "financial_security",
+      "rho": 0.35,
+      "provenance": {
+        "source": "Expert judgement. Directions are supported by the health-inequality literature; magnitudes are not fitted.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "tolerance": 0.02
+    },
+    {
+      "axis_a": "health_literacy",
+      "axis_b": "transport_access",
+      "rho": 0.2,
+      "provenance": {
+        "source": "Expert judgement. Directions are supported by the health-inequality literature; magnitudes are not fitted.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "tolerance": 0.02
+    },
+    {
+      "axis_a": "mobility",
+      "axis_b": "caregiver_support",
+      "rho": -0.15,
+      "provenance": {
+        "source": "Expert judgement. Directions are supported by the health-inequality literature; magnitudes are not fitted.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "tolerance": 0.02
+    },
+    {
+      "axis_a": "transport_access",
+      "axis_b": "mobility",
+      "rho": 0.35,
+      "provenance": {
+        "source": "Expert judgement. Directions are supported by the health-inequality literature; magnitudes are not fitted.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "tolerance": 0.02
+    }
+  ],
+  "derivations": {
+    "barrier_severity": {
+      "transport": 0.3,
+      "scheduling": 0.24,
+      "cost": 0.22,
+      "unsupported": 0.2,
+      "adherence": 0.2,
+      "mobility": 0.18,
+      "comprehension": 0.16,
+      "competing_care": 0.15,
+      "distance": 0.14,
+      "transport_fragile": 0.12,
+      "pill_burden": 0.12,
+      "digital_access": 0.1
+    },
+    "goal_limit": 3,
+    "provenance": {
+      "source": "Expert judgement. Directions are supported by the health-inequality literature; magnitudes are not fitted.",
+      "confidence": "expert_guess",
+      "as_of": "2026-08-01"
+    }
+  }
+}

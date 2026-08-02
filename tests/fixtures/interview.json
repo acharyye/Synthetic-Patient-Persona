@@ -1,0 +1,22 @@
+{
+  "answer": "[offline] You asked: What side effects should I expect from treatment?\nSpeaking from what's on file for me:\n- salbutamol inhaler can cause the side effect tremor\n- salbutamol inhaler can cause the side effect palpitations\n- tiotropium can cause the side effect dry mouth\n- tiotropium can cause the side effect sore throat\nI feel like that's a lot to manage on top of everything else.",
+  "answer_with_citations": "[offline] You asked: What side effects should I expect from treatment?\nSpeaking from what's on file for me:\n- salbutamol inhaler can cause the side effect tremor [F098]\n- salbutamol inhaler can cause the side effect palpitations [F099]\n- tiotropium can cause the side effect dry mouth [F102]\n- tiotropium can cause the side effect sore throat [F103]\nI feel like that's a lot to manage on top of everything else.",
+  "attempts": 1,
+  "backend": "null",
+  "cited_fact_ids": [
+    "F098",
+    "F099",
+    "F102",
+    "F103"
+  ],
+  "disclaimer": "Synthetic personas for design and stakeholder simulation. Not medical advice, not regulatory evidence, not a statistical virtual control arm.",
+  "grounded": true,
+  "patient_id": "copd-s42-0000",
+  "question": "What side effects should I expect from treatment?",
+  "retrieval_confidence": 0.4286,
+  "sources": [
+    "Design judgement about trial participation demands.",
+    "Standard clinical reference material; textbook-level associations."
+  ],
+  "synthetic": true
+}

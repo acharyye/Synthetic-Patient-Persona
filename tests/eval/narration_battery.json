@@ -1,0 +1,455 @@
+{
+  "description": "Narration compliance battery. Fixed questions across conditions and barrier profiles, scored per (prompt_version, model, adapter_version). Cases are keyed by (condition, patient_id): patient_id alone was unique only within a cohort, which silently scored one condition's personas against another's expected facts. `expect_facts` are the top-ranked retrieved facts for the query, so citing a valid-but-irrelevant id passes the gate and fails recall.",
+  "cases": [
+    {
+      "id": "type_2_diabetes-sym-p0",
+      "condition": "type 2 diabetes",
+      "patient_id": "type-2-diabetes-s42-0001",
+      "persona_index": 0,
+      "barrier_load": 0.15,
+      "question": "What do you actually feel day to day?",
+      "limit": 16,
+      "expect_facts": [
+        "F057",
+        "F058",
+        "F059",
+        "F060"
+      ]
+    },
+    {
+      "id": "type_2_diabetes-proc-p0",
+      "condition": "type 2 diabetes",
+      "patient_id": "type-2-diabetes-s42-0001",
+      "persona_index": 0,
+      "barrier_load": 0.15,
+      "question": "What tests and monitoring are involved?",
+      "limit": 16,
+      "expect_facts": [
+        "F067",
+        "F072",
+        "F073",
+        "F078"
+      ]
+    },
+    {
+      "id": "type_2_diabetes-ae-p1",
+      "condition": "type 2 diabetes",
+      "patient_id": "type-2-diabetes-s42-0005",
+      "persona_index": 1,
+      "barrier_load": 0.59,
+      "question": "What side effects should I expect from treatment?",
+      "limit": 16,
+      "expect_facts": [
+        "F064",
+        "F065",
+        "F066",
+        "F069"
+      ]
+    },
+    {
+      "id": "type_2_diabetes-mitigation-p1",
+      "condition": "type 2 diabetes",
+      "patient_id": "type-2-diabetes-s42-0005",
+      "persona_index": 1,
+      "barrier_load": 0.59,
+      "question": "What support would make taking part possible?",
+      "limit": 16,
+      "expect_facts": [
+        "F042",
+        "F043",
+        "F051",
+        "F052"
+      ]
+    },
+    {
+      "id": "type_2_diabetes-tx-p2",
+      "condition": "type 2 diabetes",
+      "patient_id": "type-2-diabetes-s42-0004",
+      "persona_index": 2,
+      "barrier_load": 0.81,
+      "question": "What medication are you taking for it?",
+      "limit": 16,
+      "expect_facts": [
+        "F063",
+        "F068",
+        "F074",
+        "F080"
+      ]
+    },
+    {
+      "id": "type_2_diabetes-burden-p2",
+      "condition": "type 2 diabetes",
+      "patient_id": "type-2-diabetes-s42-0004",
+      "persona_index": 2,
+      "barrier_load": 0.81,
+      "question": "Could you get to the site twice a month?",
+      "limit": 16,
+      "expect_facts": [
+        "F011",
+        "F019",
+        "F012",
+        "F013"
+      ]
+    },
+    {
+      "id": "COPD-ae-p0",
+      "condition": "COPD",
+      "patient_id": "copd-s42-0005",
+      "persona_index": 0,
+      "barrier_load": 0,
+      "question": "What side effects should I expect from treatment?",
+      "limit": 16,
+      "expect_facts": [
+        "F098",
+        "F099",
+        "F102",
+        "F103"
+      ]
+    },
+    {
+      "id": "COPD-mitigation-p0",
+      "condition": "COPD",
+      "patient_id": "copd-s42-0005",
+      "persona_index": 0,
+      "barrier_load": 0,
+      "question": "What support would make taking part possible?",
+      "limit": 16,
+      "expect_facts": [
+        "F032",
+        "F033",
+        "F034",
+        "F035"
+      ]
+    },
+    {
+      "id": "COPD-tx-p1",
+      "condition": "COPD",
+      "patient_id": "copd-s42-0001",
+      "persona_index": 1,
+      "barrier_load": 0.32,
+      "question": "What medication are you taking for it?",
+      "limit": 16,
+      "expect_facts": [
+        "F097",
+        "F101",
+        "F105",
+        "F111"
+      ]
+    },
+    {
+      "id": "COPD-burden-p1",
+      "condition": "COPD",
+      "patient_id": "copd-s42-0001",
+      "persona_index": 1,
+      "barrier_load": 0.32,
+      "question": "Could you get to the site twice a month?",
+      "limit": 16,
+      "expect_facts": [
+        "F011",
+        "F019",
+        "F014",
+        "F012"
+      ]
+    },
+    {
+      "id": "COPD-sym-p2",
+      "condition": "COPD",
+      "patient_id": "copd-s42-0004",
+      "persona_index": 2,
+      "barrier_load": 1.44,
+      "question": "What do you actually feel day to day?",
+      "limit": 16,
+      "expect_facts": [
+        "F091",
+        "F092",
+        "F093",
+        "F094"
+      ]
+    },
+    {
+      "id": "COPD-proc-p2",
+      "condition": "COPD",
+      "patient_id": "copd-s42-0004",
+      "persona_index": 2,
+      "barrier_load": 1.44,
+      "question": "What tests and monitoring are involved?",
+      "limit": 16,
+      "expect_facts": [
+        "F104",
+        "F109",
+        "F114",
+        "F004"
+      ]
+    },
+    {
+      "id": "heart_failure-tx-p0",
+      "condition": "heart failure",
+      "patient_id": "heart-failure-s42-0001",
+      "persona_index": 0,
+      "barrier_load": 0.18,
+      "question": "What medication are you taking for it?",
+      "limit": 16,
+      "expect_facts": [
+        "F125",
+        "F131",
+        "F136",
+        "F140"
+      ]
+    },
+    {
+      "id": "heart_failure-burden-p0",
+      "condition": "heart failure",
+      "patient_id": "heart-failure-s42-0001",
+      "persona_index": 0,
+      "barrier_load": 0.18,
+      "question": "Could you get to the site twice a month?",
+      "limit": 16,
+      "expect_facts": [
+        "F011",
+        "F019",
+        "F012",
+        "F013"
+      ]
+    },
+    {
+      "id": "heart_failure-sym-p1",
+      "condition": "heart failure",
+      "patient_id": "heart-failure-s42-0004",
+      "persona_index": 1,
+      "barrier_load": 0.75,
+      "question": "What do you actually feel day to day?",
+      "limit": 16,
+      "expect_facts": [
+        "F120",
+        "F121",
+        "F122",
+        "F123"
+      ]
+    },
+    {
+      "id": "heart_failure-proc-p1",
+      "condition": "heart failure",
+      "patient_id": "heart-failure-s42-0004",
+      "persona_index": 1,
+      "barrier_load": 0.75,
+      "question": "What tests and monitoring are involved?",
+      "limit": 16,
+      "expect_facts": [
+        "F129",
+        "F130",
+        "F135",
+        "F139"
+      ]
+    },
+    {
+      "id": "heart_failure-ae-p2",
+      "condition": "heart failure",
+      "patient_id": "heart-failure-s42-0000",
+      "persona_index": 2,
+      "barrier_load": 1.25,
+      "question": "What side effects should I expect from treatment?",
+      "limit": 16,
+      "expect_facts": [
+        "F126",
+        "F127",
+        "F128",
+        "F132"
+      ]
+    },
+    {
+      "id": "heart_failure-mitigation-p2",
+      "condition": "heart failure",
+      "patient_id": "heart-failure-s42-0000",
+      "persona_index": 2,
+      "barrier_load": 1.25,
+      "question": "What support would make taking part possible?",
+      "limit": 16,
+      "expect_facts": [
+        "F034",
+        "F035",
+        "F038",
+        "F039"
+      ]
+    },
+    {
+      "id": "breast_cancer-sym-p0",
+      "condition": "breast cancer",
+      "patient_id": "breast-cancer-s42-0004",
+      "persona_index": 0,
+      "barrier_load": 0,
+      "question": "What do you actually feel day to day?",
+      "limit": 16,
+      "expect_facts": [
+        "F150",
+        "F151",
+        "F152",
+        "F153"
+      ]
+    },
+    {
+      "id": "breast_cancer-proc-p0",
+      "condition": "breast cancer",
+      "patient_id": "breast-cancer-s42-0004",
+      "persona_index": 0,
+      "barrier_load": 0,
+      "question": "What tests and monitoring are involved?",
+      "limit": 16,
+      "expect_facts": [
+        "F158",
+        "F164",
+        "F169",
+        "F170"
+      ]
+    },
+    {
+      "id": "breast_cancer-ae-p1",
+      "condition": "breast cancer",
+      "patient_id": "breast-cancer-s42-0005",
+      "persona_index": 1,
+      "barrier_load": 0.49,
+      "question": "What side effects should I expect from treatment?",
+      "limit": 16,
+      "expect_facts": [
+        "F155",
+        "F156",
+        "F157",
+        "F161"
+      ]
+    },
+    {
+      "id": "breast_cancer-mitigation-p1",
+      "condition": "breast cancer",
+      "patient_id": "breast-cancer-s42-0005",
+      "persona_index": 1,
+      "barrier_load": 0.49,
+      "question": "What support would make taking part possible?",
+      "limit": 16,
+      "expect_facts": [
+        "F040",
+        "F041",
+        "F051",
+        "F052"
+      ]
+    },
+    {
+      "id": "breast_cancer-tx-p2",
+      "condition": "breast cancer",
+      "patient_id": "breast-cancer-s42-0002",
+      "persona_index": 2,
+      "barrier_load": 0.82,
+      "question": "What medication are you taking for it?",
+      "limit": 16,
+      "expect_facts": [
+        "F154",
+        "F160",
+        "F165",
+        "F172"
+      ]
+    },
+    {
+      "id": "breast_cancer-burden-p2",
+      "condition": "breast cancer",
+      "patient_id": "breast-cancer-s42-0002",
+      "persona_index": 2,
+      "barrier_load": 0.82,
+      "question": "Could you get to the site twice a month?",
+      "limit": 16,
+      "expect_facts": [
+        "F011",
+        "F019",
+        "F012",
+        "F015"
+      ]
+    },
+    {
+      "id": "rheumatoid_arthritis-ae-p0",
+      "condition": "rheumatoid arthritis",
+      "patient_id": "rheumatoid-arthritis-s42-0001",
+      "persona_index": 0,
+      "barrier_load": 0.24,
+      "question": "What side effects should I expect from treatment?",
+      "limit": 16,
+      "expect_facts": [
+        "F186",
+        "F187",
+        "F188",
+        "F189"
+      ]
+    },
+    {
+      "id": "rheumatoid_arthritis-mitigation-p0",
+      "condition": "rheumatoid arthritis",
+      "patient_id": "rheumatoid-arthritis-s42-0001",
+      "persona_index": 0,
+      "barrier_load": 0.24,
+      "question": "What support would make taking part possible?",
+      "limit": 16,
+      "expect_facts": [
+        "F042",
+        "F043",
+        "F032",
+        "F033"
+      ]
+    },
+    {
+      "id": "rheumatoid_arthritis-tx-p1",
+      "condition": "rheumatoid arthritis",
+      "patient_id": "rheumatoid-arthritis-s42-0004",
+      "persona_index": 1,
+      "barrier_load": 0.32,
+      "question": "What medication are you taking for it?",
+      "limit": 16,
+      "expect_facts": [
+        "F185",
+        "F192",
+        "F196",
+        "F201"
+      ]
+    },
+    {
+      "id": "rheumatoid_arthritis-burden-p1",
+      "condition": "rheumatoid arthritis",
+      "patient_id": "rheumatoid-arthritis-s42-0004",
+      "persona_index": 1,
+      "barrier_load": 0.32,
+      "question": "Could you get to the site twice a month?",
+      "limit": 16,
+      "expect_facts": [
+        "F011",
+        "F019",
+        "F014",
+        "F012"
+      ]
+    },
+    {
+      "id": "rheumatoid_arthritis-sym-p2",
+      "condition": "rheumatoid arthritis",
+      "patient_id": "rheumatoid-arthritis-s42-0000",
+      "persona_index": 2,
+      "barrier_load": 1.14,
+      "question": "What do you actually feel day to day?",
+      "limit": 16,
+      "expect_facts": [
+        "F181",
+        "F182",
+        "F183",
+        "F184"
+      ]
+    },
+    {
+      "id": "rheumatoid_arthritis-proc-p2",
+      "condition": "rheumatoid arthritis",
+      "patient_id": "rheumatoid-arthritis-s42-0000",
+      "persona_index": 2,
+      "barrier_load": 1.14,
+      "question": "What tests and monitoring are involved?",
+      "limit": 16,
+      "expect_facts": [
+        "F190",
+        "F191",
+        "F195",
+        "F199"
+      ]
+    }
+  ]
+}

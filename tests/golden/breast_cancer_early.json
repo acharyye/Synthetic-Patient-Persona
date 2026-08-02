@@ -1,0 +1,193 @@
+{
+  "burden": {
+    "mean_score": 0.3733,
+    "n_scored": 75,
+    "top": [
+      {
+        "drivers": [
+          "already struggles to take medication as prescribed",
+          "no reliable transport to the site",
+          "low health literacy — consent and diaries are harder",
+          "work pattern conflicts with weekday visits",
+          "no one at home to support attendance",
+          "multiple conditions competing for appointments"
+        ],
+        "patient_id": "breast-cancer-s42-0027",
+        "score": 0.93
+      },
+      {
+        "drivers": [
+          "already struggles to take medication as prescribed",
+          "no reliable transport to the site",
+          "low health literacy — consent and diaries are harder",
+          "work pattern conflicts with weekday visits",
+          "no one at home to support attendance",
+          "lives rurally, long journey to site"
+        ],
+        "patient_id": "breast-cancer-s42-0058",
+        "score": 0.87
+      },
+      {
+        "drivers": [
+          "already struggles to take medication as prescribed",
+          "no reliable transport to the site",
+          "low health literacy — consent and diaries are harder",
+          "work pattern conflicts with weekday visits",
+          "no one at home to support attendance",
+          "lives rurally, long journey to site"
+        ],
+        "patient_id": "breast-cancer-s42-0071",
+        "score": 0.87
+      },
+      {
+        "drivers": [
+          "already struggles to take medication as prescribed",
+          "no reliable transport to the site",
+          "low health literacy — consent and diaries are harder",
+          "work pattern conflicts with weekday visits",
+          "no one at home to support attendance",
+          "lives rurally, long journey to site"
+        ],
+        "patient_id": "breast-cancer-s42-0090",
+        "score": 0.87
+      },
+      {
+        "drivers": [
+          "already struggles to take medication as prescribed",
+          "no reliable transport to the site",
+          "low health literacy — consent and diaries are harder",
+          "work pattern conflicts with weekday visits",
+          "no one at home to support attendance"
+        ],
+        "patient_id": "breast-cancer-s42-0040",
+        "score": 0.83
+      }
+    ]
+  },
+  "cohort_summary": {
+    "adherence_below_50pct": 15,
+    "adherence_mean": 0.66,
+    "age_mean": 60.8,
+    "age_range": [
+      28,
+      95
+    ],
+    "barrier_prevalence": {
+      "adherence": 0.37,
+      "competing_care": 0.09,
+      "comprehension": 0.33,
+      "cost": 0.3,
+      "digital_access": 0.29,
+      "distance": 0.17,
+      "mobility": 0.28,
+      "pill_burden": 0.31,
+      "scheduling": 0.15,
+      "transport": 0.17,
+      "transport_fragile": 0.28,
+      "unsupported": 0.4
+    },
+    "comorbidity_prevalence": {
+      "anxiety": 0.2,
+      "cardiovascular disease": 0.07,
+      "hypertension": 0.37,
+      "obesity": 0.27,
+      "osteoporosis": 0.19,
+      "type 2 diabetes": 0.14
+    },
+    "health_literacy": {
+      "high": 21,
+      "low": 33,
+      "medium": 46
+    },
+    "mean_barrier_load": 0.547,
+    "mean_comorbidity_count": 1.24,
+    "n": 100,
+    "sex": {
+      "female": 99,
+      "male": 1
+    },
+    "stage": {
+      "I": 49,
+      "II": 27,
+      "III": 17,
+      "IV": 7
+    }
+  },
+  "condition": "breast cancer",
+  "eligible_summary": {
+    "adherence_below_50pct": 8,
+    "adherence_mean": 0.67,
+    "age_mean": 58.3,
+    "age_range": [
+      28,
+      95
+    ],
+    "barrier_prevalence": {
+      "adherence": 0.35,
+      "competing_care": 0.04,
+      "comprehension": 0.29,
+      "cost": 0.27,
+      "digital_access": 0.29,
+      "distance": 0.19,
+      "mobility": 0.21,
+      "pill_burden": 0.12,
+      "scheduling": 0.17,
+      "transport": 0.15,
+      "transport_fragile": 0.31,
+      "unsupported": 0.41
+    },
+    "comorbidity_prevalence": {
+      "anxiety": 0.17,
+      "cardiovascular disease": 0.04,
+      "hypertension": 0.29,
+      "obesity": 0.27,
+      "osteoporosis": 0.16,
+      "type 2 diabetes": 0.08
+    },
+    "health_literacy": {
+      "high": 16,
+      "low": 22,
+      "medium": 37
+    },
+    "mean_barrier_load": 0.494,
+    "mean_comorbidity_count": 1.01,
+    "n": 75,
+    "sex": {
+      "female": 75
+    },
+    "stage": {
+      "I": 48,
+      "II": 27
+    }
+  },
+  "n": 100,
+  "scenario": "breast_cancer_early",
+  "screening": {
+    "criteria_impact": [
+      {
+        "criterion": "stage in {I, II}",
+        "kind": "inclusion",
+        "screened_out": 24,
+        "screened_out_rate": 0.24,
+        "sole_reason": 19
+      },
+      {
+        "criterion": "biomarkers.tumour_size_cm > 5.0",
+        "kind": "exclusion",
+        "screened_out": 5,
+        "screened_out_rate": 0.05,
+        "sole_reason": 0
+      },
+      {
+        "criterion": "sex not in {male}",
+        "kind": "inclusion",
+        "screened_out": 1,
+        "screened_out_rate": 0.01,
+        "sole_reason": 1
+      }
+    ],
+    "eligibility_rate": 0.75,
+    "n_eligible": 75
+  },
+  "seed": 42
+}

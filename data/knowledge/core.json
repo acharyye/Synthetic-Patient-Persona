@@ -1,0 +1,3496 @@
+{
+  "schema_version": 1,
+  "name": "core",
+  "description": "Small owned ontology: five conditions with symptoms, treatments and side effects, joined to a shared participation subgraph of procedures, requirements, barriers and mitigating resources.",
+  "nodes": [
+    {
+      "id": "req:fasting",
+      "kind": "Requirement",
+      "name": "you must not eat beforehand",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "req:onsite",
+      "kind": "Requirement",
+      "name": "you must attend the site in person",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "req:weekday",
+      "kind": "Requirement",
+      "name": "appointments are during working hours",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "req:frequent",
+      "kind": "Requirement",
+      "name": "visits repeat every few weeks",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "req:long_visit",
+      "kind": "Requirement",
+      "name": "the appointment takes most of a day",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "req:daily_task",
+      "kind": "Requirement",
+      "name": "you must record something every day",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "req:literacy",
+      "kind": "Requirement",
+      "name": "you must read and complete forms yourself",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "barrier:transport",
+      "kind": "Barrier",
+      "name": "you have no reliable way to get to the site",
+      "aliases": [
+        "transport"
+      ],
+      "note": "matches simulated barrier 'transport'"
+    },
+    {
+      "id": "barrier:scheduling",
+      "kind": "Barrier",
+      "name": "your work pattern clashes with appointment times",
+      "aliases": [
+        "scheduling"
+      ],
+      "note": "matches simulated barrier 'scheduling'"
+    },
+    {
+      "id": "barrier:cost",
+      "kind": "Barrier",
+      "name": "travel and time off work cost money you do not have",
+      "aliases": [
+        "cost"
+      ],
+      "note": "matches simulated barrier 'cost'"
+    },
+    {
+      "id": "barrier:unsupported",
+      "kind": "Barrier",
+      "name": "there is nobody at home to help you",
+      "aliases": [
+        "unsupported"
+      ],
+      "note": "matches simulated barrier 'unsupported'"
+    },
+    {
+      "id": "barrier:adherence",
+      "kind": "Barrier",
+      "name": "keeping to a treatment routine is already hard for you",
+      "aliases": [
+        "adherence"
+      ],
+      "note": "matches simulated barrier 'adherence'"
+    },
+    {
+      "id": "barrier:mobility",
+      "kind": "Barrier",
+      "name": "travelling and waiting are physically hard",
+      "aliases": [
+        "mobility"
+      ],
+      "note": "matches simulated barrier 'mobility'"
+    },
+    {
+      "id": "barrier:comprehension",
+      "kind": "Barrier",
+      "name": "forms and instructions are hard to follow",
+      "aliases": [
+        "comprehension"
+      ],
+      "note": "matches simulated barrier 'comprehension'"
+    },
+    {
+      "id": "barrier:competing_care",
+      "kind": "Barrier",
+      "name": "other conditions compete for the same appointments",
+      "aliases": [
+        "competing_care"
+      ],
+      "note": "matches simulated barrier 'competing_care'"
+    },
+    {
+      "id": "barrier:distance",
+      "kind": "Barrier",
+      "name": "the site is a long journey away",
+      "aliases": [
+        "distance"
+      ],
+      "note": "matches simulated barrier 'distance'"
+    },
+    {
+      "id": "barrier:pill_burden",
+      "kind": "Barrier",
+      "name": "your medication routine is already complicated",
+      "aliases": [
+        "pill_burden"
+      ],
+      "note": "matches simulated barrier 'pill_burden'"
+    },
+    {
+      "id": "barrier:digital_access",
+      "kind": "Barrier",
+      "name": "app-based tasks are difficult for you",
+      "aliases": [
+        "digital_access"
+      ],
+      "note": "matches simulated barrier 'digital_access'"
+    },
+    {
+      "id": "barrier:transport_fragile",
+      "kind": "Barrier",
+      "name": "your journey depends on public transport running",
+      "aliases": [
+        "transport_fragile"
+      ],
+      "note": "matches simulated barrier 'transport_fragile'"
+    },
+    {
+      "id": "proc:bloods",
+      "kind": "Procedure",
+      "name": "fasting blood tests",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "proc:monitoring",
+      "kind": "Procedure",
+      "name": "regular monitoring appointments",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "proc:imaging",
+      "kind": "Procedure",
+      "name": "scans",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "proc:diary",
+      "kind": "Procedure",
+      "name": "a daily symptom diary",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "res:a_travel_reimbursement_scheme",
+      "kind": "Resource",
+      "name": "a travel reimbursement scheme",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "res:arranged_patient_transport",
+      "kind": "Resource",
+      "name": "arranged patient transport",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "res:ground-floor_clinic_rooms",
+      "kind": "Resource",
+      "name": "ground-floor clinic rooms",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "res:remote_visits_by_video",
+      "kind": "Resource",
+      "name": "remote visits by video",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "res:a_local_clinic_partnership",
+      "kind": "Resource",
+      "name": "a local clinic partnership",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "res:same-day_expense_payment",
+      "kind": "Resource",
+      "name": "same-day expense payment",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "res:evening_and_weekend_clinic_slots",
+      "kind": "Resource",
+      "name": "evening and weekend clinic slots",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "res:a_study_buddy_or_research_nurse_contact",
+      "kind": "Resource",
+      "name": "a study buddy or research nurse contact",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "res:reminder_calls_from_the_research_nurse",
+      "kind": "Resource",
+      "name": "reminder calls from the research nurse",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "res:a_simplified_visit_schedule",
+      "kind": "Resource",
+      "name": "a simplified visit schedule",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "res:plain-language_study_materials",
+      "kind": "Resource",
+      "name": "plain-language study materials",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "res:paper_alternatives_to_app_tasks",
+      "kind": "Resource",
+      "name": "paper alternatives to app tasks",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "res:appointments_combined_with_routine_care",
+      "kind": "Resource",
+      "name": "appointments combined with routine care",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "cond:t2d",
+      "kind": "Condition",
+      "name": "type 2 diabetes",
+      "aliases": [
+        "t2d",
+        "type 2 diabetes mellitus",
+        "type ii diabetes",
+        "diabetes"
+      ],
+      "note": ""
+    },
+    {
+      "id": "stage:t2d:early",
+      "kind": "Stage",
+      "name": "early",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "stage:t2d:moderate",
+      "kind": "Stage",
+      "name": "moderate",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "stage:t2d:advanced",
+      "kind": "Stage",
+      "name": "advanced",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "sym:fatigue",
+      "kind": "Symptom",
+      "name": "fatigue",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "sym:increased_thirst",
+      "kind": "Symptom",
+      "name": "increased thirst",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "sym:frequent_urination",
+      "kind": "Symptom",
+      "name": "frequent urination",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "sym:blurred_vision",
+      "kind": "Symptom",
+      "name": "blurred vision",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "sym:slow-healing_wounds",
+      "kind": "Symptom",
+      "name": "slow-healing wounds",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "sym:numbness_in_the_feet",
+      "kind": "Symptom",
+      "name": "numbness in the feet",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "tx:metformin",
+      "kind": "Treatment",
+      "name": "metformin",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:nausea",
+      "kind": "AdverseEffect",
+      "name": "nausea",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:diarrhoea",
+      "kind": "AdverseEffect",
+      "name": "diarrhoea",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:metallic_taste",
+      "kind": "AdverseEffect",
+      "name": "metallic taste",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "tx:empagliflozin",
+      "kind": "Treatment",
+      "name": "empagliflozin",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:thrush",
+      "kind": "AdverseEffect",
+      "name": "thrush",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:dehydration",
+      "kind": "AdverseEffect",
+      "name": "dehydration",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:urinary_infection",
+      "kind": "AdverseEffect",
+      "name": "urinary infection",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "tx:semaglutide",
+      "kind": "Treatment",
+      "name": "semaglutide",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:reduced_appetite",
+      "kind": "AdverseEffect",
+      "name": "reduced appetite",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:vomiting",
+      "kind": "AdverseEffect",
+      "name": "vomiting",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "tx:insulin_glargine",
+      "kind": "Treatment",
+      "name": "insulin glargine",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:hypoglycaemia",
+      "kind": "AdverseEffect",
+      "name": "hypoglycaemia",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:weight_gain",
+      "kind": "AdverseEffect",
+      "name": "weight gain",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:injection-site_reaction",
+      "kind": "AdverseEffect",
+      "name": "injection-site reaction",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "cond:copd",
+      "kind": "Condition",
+      "name": "COPD",
+      "aliases": [
+        "chronic obstructive pulmonary disease",
+        "emphysema"
+      ],
+      "note": ""
+    },
+    {
+      "id": "stage:copd:gold1",
+      "kind": "Stage",
+      "name": "GOLD1",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "stage:copd:gold2",
+      "kind": "Stage",
+      "name": "GOLD2",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "stage:copd:gold3",
+      "kind": "Stage",
+      "name": "GOLD3",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "stage:copd:gold4",
+      "kind": "Stage",
+      "name": "GOLD4",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "sym:breathlessness",
+      "kind": "Symptom",
+      "name": "breathlessness",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "sym:chronic_cough",
+      "kind": "Symptom",
+      "name": "chronic cough",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "sym:wheezing",
+      "kind": "Symptom",
+      "name": "wheezing",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "sym:chest_tightness",
+      "kind": "Symptom",
+      "name": "chest tightness",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "sym:frequent_chest_infections",
+      "kind": "Symptom",
+      "name": "frequent chest infections",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "tx:salbutamol_inhaler",
+      "kind": "Treatment",
+      "name": "salbutamol inhaler",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:tremor",
+      "kind": "AdverseEffect",
+      "name": "tremor",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:palpitations",
+      "kind": "AdverseEffect",
+      "name": "palpitations",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "tx:tiotropium",
+      "kind": "Treatment",
+      "name": "tiotropium",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:dry_mouth",
+      "kind": "AdverseEffect",
+      "name": "dry mouth",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:sore_throat",
+      "kind": "AdverseEffect",
+      "name": "sore throat",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "tx:inhaled_corticosteroid",
+      "kind": "Treatment",
+      "name": "inhaled corticosteroid",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:oral_thrush",
+      "kind": "AdverseEffect",
+      "name": "oral thrush",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:hoarse_voice",
+      "kind": "AdverseEffect",
+      "name": "hoarse voice",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:chest_infections",
+      "kind": "AdverseEffect",
+      "name": "chest infections",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "tx:home_oxygen",
+      "kind": "Treatment",
+      "name": "home oxygen",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:dry_nose",
+      "kind": "AdverseEffect",
+      "name": "dry nose",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:restricted_mobility",
+      "kind": "AdverseEffect",
+      "name": "restricted mobility",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "cond:hf",
+      "kind": "Condition",
+      "name": "heart failure",
+      "aliases": [
+        "chf",
+        "congestive heart failure"
+      ],
+      "note": ""
+    },
+    {
+      "id": "stage:hf:nyha1",
+      "kind": "Stage",
+      "name": "NYHA1",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "stage:hf:nyha2",
+      "kind": "Stage",
+      "name": "NYHA2",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "stage:hf:nyha3",
+      "kind": "Stage",
+      "name": "NYHA3",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "stage:hf:nyha4",
+      "kind": "Stage",
+      "name": "NYHA4",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "sym:ankle_swelling",
+      "kind": "Symptom",
+      "name": "ankle swelling",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "sym:palpitations",
+      "kind": "Symptom",
+      "name": "palpitations",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "sym:difficulty_lying_flat",
+      "kind": "Symptom",
+      "name": "difficulty lying flat",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "tx:ramipril",
+      "kind": "Treatment",
+      "name": "ramipril",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:dry_cough",
+      "kind": "AdverseEffect",
+      "name": "dry cough",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:dizziness",
+      "kind": "AdverseEffect",
+      "name": "dizziness",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:raised_potassium",
+      "kind": "AdverseEffect",
+      "name": "raised potassium",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "tx:bisoprolol",
+      "kind": "Treatment",
+      "name": "bisoprolol",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:fatigue",
+      "kind": "AdverseEffect",
+      "name": "fatigue",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:cold_hands_and_feet",
+      "kind": "AdverseEffect",
+      "name": "cold hands and feet",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:slow_heart_rate",
+      "kind": "AdverseEffect",
+      "name": "slow heart rate",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "tx:spironolactone",
+      "kind": "Treatment",
+      "name": "spironolactone",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:breast_tenderness",
+      "kind": "AdverseEffect",
+      "name": "breast tenderness",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "tx:furosemide",
+      "kind": "Treatment",
+      "name": "furosemide",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:frequent_urination",
+      "kind": "AdverseEffect",
+      "name": "frequent urination",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "cond:breast_cancer",
+      "kind": "Condition",
+      "name": "breast cancer",
+      "aliases": [
+        "breast carcinoma"
+      ],
+      "note": ""
+    },
+    {
+      "id": "stage:breast_cancer:i",
+      "kind": "Stage",
+      "name": "I",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "stage:breast_cancer:ii",
+      "kind": "Stage",
+      "name": "II",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "stage:breast_cancer:iii",
+      "kind": "Stage",
+      "name": "III",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "stage:breast_cancer:iv",
+      "kind": "Stage",
+      "name": "IV",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "sym:breast_lump",
+      "kind": "Symptom",
+      "name": "breast lump",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "sym:skin_changes",
+      "kind": "Symptom",
+      "name": "skin changes",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "sym:pain",
+      "kind": "Symptom",
+      "name": "pain",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "tx:anastrozole",
+      "kind": "Treatment",
+      "name": "anastrozole",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:hot_flushes",
+      "kind": "AdverseEffect",
+      "name": "hot flushes",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:joint_pain",
+      "kind": "AdverseEffect",
+      "name": "joint pain",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:bone_thinning",
+      "kind": "AdverseEffect",
+      "name": "bone thinning",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "tx:tamoxifen",
+      "kind": "Treatment",
+      "name": "tamoxifen",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:blood_clots",
+      "kind": "AdverseEffect",
+      "name": "blood clots",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:mood_changes",
+      "kind": "AdverseEffect",
+      "name": "mood changes",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "tx:paclitaxel",
+      "kind": "Treatment",
+      "name": "paclitaxel",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:hair_loss",
+      "kind": "AdverseEffect",
+      "name": "hair loss",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:numbness_in_the_hands",
+      "kind": "AdverseEffect",
+      "name": "numbness in the hands",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "tx:trastuzumab",
+      "kind": "Treatment",
+      "name": "trastuzumab",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:heart_strain",
+      "kind": "AdverseEffect",
+      "name": "heart strain",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:chills",
+      "kind": "AdverseEffect",
+      "name": "chills",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "cond:ra",
+      "kind": "Condition",
+      "name": "rheumatoid arthritis",
+      "aliases": [
+        "ra",
+        "seropositive arthritis"
+      ],
+      "note": ""
+    },
+    {
+      "id": "stage:ra:early",
+      "kind": "Stage",
+      "name": "early",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "stage:ra:moderate",
+      "kind": "Stage",
+      "name": "moderate",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "stage:ra:advanced",
+      "kind": "Stage",
+      "name": "advanced",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "sym:joint_pain",
+      "kind": "Symptom",
+      "name": "joint pain",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "sym:morning_stiffness",
+      "kind": "Symptom",
+      "name": "morning stiffness",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "sym:joint_swelling",
+      "kind": "Symptom",
+      "name": "joint swelling",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "tx:methotrexate",
+      "kind": "Treatment",
+      "name": "methotrexate",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:mouth_ulcers",
+      "kind": "AdverseEffect",
+      "name": "mouth ulcers",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:hair_thinning",
+      "kind": "AdverseEffect",
+      "name": "hair thinning",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "tx:hydroxychloroquine",
+      "kind": "Treatment",
+      "name": "hydroxychloroquine",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:rash",
+      "kind": "AdverseEffect",
+      "name": "rash",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "tx:adalimumab",
+      "kind": "Treatment",
+      "name": "adalimumab",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:infections",
+      "kind": "AdverseEffect",
+      "name": "infections",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "tx:prednisolone",
+      "kind": "Treatment",
+      "name": "prednisolone",
+      "aliases": [],
+      "note": ""
+    },
+    {
+      "id": "ae:raised_blood_sugar",
+      "kind": "AdverseEffect",
+      "name": "raised blood sugar",
+      "aliases": [],
+      "note": ""
+    }
+  ],
+  "facts": [
+    {
+      "id": "F001",
+      "subject": "proc:bloods",
+      "predicate": "IMPOSES",
+      "object": "req:fasting",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F002",
+      "subject": "proc:bloods",
+      "predicate": "IMPOSES",
+      "object": "req:onsite",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F003",
+      "subject": "proc:bloods",
+      "predicate": "IMPOSES",
+      "object": "req:weekday",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F004",
+      "subject": "proc:monitoring",
+      "predicate": "IMPOSES",
+      "object": "req:onsite",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F005",
+      "subject": "proc:monitoring",
+      "predicate": "IMPOSES",
+      "object": "req:frequent",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F006",
+      "subject": "proc:monitoring",
+      "predicate": "IMPOSES",
+      "object": "req:weekday",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F007",
+      "subject": "proc:imaging",
+      "predicate": "IMPOSES",
+      "object": "req:onsite",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F008",
+      "subject": "proc:imaging",
+      "predicate": "IMPOSES",
+      "object": "req:long_visit",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F009",
+      "subject": "proc:diary",
+      "predicate": "IMPOSES",
+      "object": "req:daily_task",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F010",
+      "subject": "proc:diary",
+      "predicate": "IMPOSES",
+      "object": "req:literacy",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F011",
+      "subject": "req:onsite",
+      "predicate": "BLOCKED_BY",
+      "object": "barrier:transport",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F012",
+      "subject": "req:onsite",
+      "predicate": "BLOCKED_BY",
+      "object": "barrier:mobility",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F013",
+      "subject": "req:onsite",
+      "predicate": "BLOCKED_BY",
+      "object": "barrier:distance",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F014",
+      "subject": "req:onsite",
+      "predicate": "BLOCKED_BY",
+      "object": "barrier:transport_fragile",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F015",
+      "subject": "req:onsite",
+      "predicate": "BLOCKED_BY",
+      "object": "barrier:cost",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F016",
+      "subject": "req:weekday",
+      "predicate": "BLOCKED_BY",
+      "object": "barrier:scheduling",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F017",
+      "subject": "req:weekday",
+      "predicate": "BLOCKED_BY",
+      "object": "barrier:cost",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F018",
+      "subject": "req:frequent",
+      "predicate": "BLOCKED_BY",
+      "object": "barrier:scheduling",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F019",
+      "subject": "req:frequent",
+      "predicate": "BLOCKED_BY",
+      "object": "barrier:transport",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F020",
+      "subject": "req:frequent",
+      "predicate": "BLOCKED_BY",
+      "object": "barrier:competing_care",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F021",
+      "subject": "req:frequent",
+      "predicate": "BLOCKED_BY",
+      "object": "barrier:cost",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F022",
+      "subject": "req:long_visit",
+      "predicate": "BLOCKED_BY",
+      "object": "barrier:scheduling",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F023",
+      "subject": "req:long_visit",
+      "predicate": "BLOCKED_BY",
+      "object": "barrier:mobility",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F024",
+      "subject": "req:long_visit",
+      "predicate": "BLOCKED_BY",
+      "object": "barrier:unsupported",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F025",
+      "subject": "req:daily_task",
+      "predicate": "BLOCKED_BY",
+      "object": "barrier:adherence",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F026",
+      "subject": "req:daily_task",
+      "predicate": "BLOCKED_BY",
+      "object": "barrier:comprehension",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F027",
+      "subject": "req:daily_task",
+      "predicate": "BLOCKED_BY",
+      "object": "barrier:digital_access",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F028",
+      "subject": "req:literacy",
+      "predicate": "BLOCKED_BY",
+      "object": "barrier:comprehension",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F029",
+      "subject": "req:literacy",
+      "predicate": "BLOCKED_BY",
+      "object": "barrier:digital_access",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F030",
+      "subject": "req:fasting",
+      "predicate": "BLOCKED_BY",
+      "object": "barrier:competing_care",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F031",
+      "subject": "req:fasting",
+      "predicate": "BLOCKED_BY",
+      "object": "barrier:adherence",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F032",
+      "subject": "barrier:transport",
+      "predicate": "MITIGATED_BY",
+      "object": "res:a_travel_reimbursement_scheme",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F033",
+      "subject": "barrier:transport",
+      "predicate": "MITIGATED_BY",
+      "object": "res:arranged_patient_transport",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F034",
+      "subject": "barrier:mobility",
+      "predicate": "MITIGATED_BY",
+      "object": "res:arranged_patient_transport",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F035",
+      "subject": "barrier:mobility",
+      "predicate": "MITIGATED_BY",
+      "object": "res:ground-floor_clinic_rooms",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F036",
+      "subject": "barrier:distance",
+      "predicate": "MITIGATED_BY",
+      "object": "res:remote_visits_by_video",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F037",
+      "subject": "barrier:distance",
+      "predicate": "MITIGATED_BY",
+      "object": "res:a_local_clinic_partnership",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F038",
+      "subject": "barrier:transport_fragile",
+      "predicate": "MITIGATED_BY",
+      "object": "res:a_travel_reimbursement_scheme",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F039",
+      "subject": "barrier:transport_fragile",
+      "predicate": "MITIGATED_BY",
+      "object": "res:remote_visits_by_video",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F040",
+      "subject": "barrier:cost",
+      "predicate": "MITIGATED_BY",
+      "object": "res:a_travel_reimbursement_scheme",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F041",
+      "subject": "barrier:cost",
+      "predicate": "MITIGATED_BY",
+      "object": "res:same-day_expense_payment",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F042",
+      "subject": "barrier:scheduling",
+      "predicate": "MITIGATED_BY",
+      "object": "res:evening_and_weekend_clinic_slots",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F043",
+      "subject": "barrier:scheduling",
+      "predicate": "MITIGATED_BY",
+      "object": "res:remote_visits_by_video",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F044",
+      "subject": "barrier:unsupported",
+      "predicate": "MITIGATED_BY",
+      "object": "res:a_study_buddy_or_research_nurse_contact",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F045",
+      "subject": "barrier:adherence",
+      "predicate": "MITIGATED_BY",
+      "object": "res:reminder_calls_from_the_research_nurse",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F046",
+      "subject": "barrier:adherence",
+      "predicate": "MITIGATED_BY",
+      "object": "res:a_simplified_visit_schedule",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F047",
+      "subject": "barrier:comprehension",
+      "predicate": "MITIGATED_BY",
+      "object": "res:plain-language_study_materials",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F048",
+      "subject": "barrier:comprehension",
+      "predicate": "MITIGATED_BY",
+      "object": "res:a_study_buddy_or_research_nurse_contact",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F049",
+      "subject": "barrier:digital_access",
+      "predicate": "MITIGATED_BY",
+      "object": "res:paper_alternatives_to_app_tasks",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F050",
+      "subject": "barrier:digital_access",
+      "predicate": "MITIGATED_BY",
+      "object": "res:plain-language_study_materials",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F051",
+      "subject": "barrier:competing_care",
+      "predicate": "MITIGATED_BY",
+      "object": "res:a_simplified_visit_schedule",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F052",
+      "subject": "barrier:competing_care",
+      "predicate": "MITIGATED_BY",
+      "object": "res:appointments_combined_with_routine_care",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F053",
+      "subject": "barrier:pill_burden",
+      "predicate": "MITIGATED_BY",
+      "object": "res:a_simplified_visit_schedule",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F054",
+      "subject": "cond:t2d",
+      "predicate": "HAS_STAGE",
+      "object": "stage:t2d:early",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F055",
+      "subject": "cond:t2d",
+      "predicate": "HAS_STAGE",
+      "object": "stage:t2d:moderate",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F056",
+      "subject": "cond:t2d",
+      "predicate": "HAS_STAGE",
+      "object": "stage:t2d:advanced",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F057",
+      "subject": "cond:t2d",
+      "predicate": "PRESENTS",
+      "object": "sym:fatigue",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F058",
+      "subject": "cond:t2d",
+      "predicate": "PRESENTS",
+      "object": "sym:increased_thirst",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F059",
+      "subject": "cond:t2d",
+      "predicate": "PRESENTS",
+      "object": "sym:frequent_urination",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F060",
+      "subject": "cond:t2d",
+      "predicate": "PRESENTS",
+      "object": "sym:blurred_vision",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F061",
+      "subject": "cond:t2d",
+      "predicate": "PRESENTS",
+      "object": "sym:slow-healing_wounds",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F062",
+      "subject": "cond:t2d",
+      "predicate": "PRESENTS",
+      "object": "sym:numbness_in_the_feet",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F063",
+      "subject": "cond:t2d",
+      "predicate": "TREATED_BY",
+      "object": "tx:metformin",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F064",
+      "subject": "tx:metformin",
+      "predicate": "CAUSES",
+      "object": "ae:nausea",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F065",
+      "subject": "tx:metformin",
+      "predicate": "CAUSES",
+      "object": "ae:diarrhoea",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F066",
+      "subject": "tx:metformin",
+      "predicate": "CAUSES",
+      "object": "ae:metallic_taste",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F067",
+      "subject": "tx:metformin",
+      "predicate": "REQUIRES",
+      "object": "proc:bloods",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F068",
+      "subject": "cond:t2d",
+      "predicate": "TREATED_BY",
+      "object": "tx:empagliflozin",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F069",
+      "subject": "tx:empagliflozin",
+      "predicate": "CAUSES",
+      "object": "ae:thrush",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F070",
+      "subject": "tx:empagliflozin",
+      "predicate": "CAUSES",
+      "object": "ae:dehydration",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F071",
+      "subject": "tx:empagliflozin",
+      "predicate": "CAUSES",
+      "object": "ae:urinary_infection",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F072",
+      "subject": "tx:empagliflozin",
+      "predicate": "REQUIRES",
+      "object": "proc:bloods",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F073",
+      "subject": "tx:empagliflozin",
+      "predicate": "REQUIRES",
+      "object": "proc:monitoring",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F074",
+      "subject": "cond:t2d",
+      "predicate": "TREATED_BY",
+      "object": "tx:semaglutide",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F075",
+      "subject": "tx:semaglutide",
+      "predicate": "CAUSES",
+      "object": "ae:nausea",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F076",
+      "subject": "tx:semaglutide",
+      "predicate": "CAUSES",
+      "object": "ae:reduced_appetite",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F077",
+      "subject": "tx:semaglutide",
+      "predicate": "CAUSES",
+      "object": "ae:vomiting",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F078",
+      "subject": "tx:semaglutide",
+      "predicate": "REQUIRES",
+      "object": "proc:monitoring",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F079",
+      "subject": "tx:semaglutide",
+      "predicate": "REQUIRES",
+      "object": "proc:diary",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F080",
+      "subject": "cond:t2d",
+      "predicate": "TREATED_BY",
+      "object": "tx:insulin_glargine",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F081",
+      "subject": "tx:insulin_glargine",
+      "predicate": "CAUSES",
+      "object": "ae:hypoglycaemia",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F082",
+      "subject": "tx:insulin_glargine",
+      "predicate": "CAUSES",
+      "object": "ae:weight_gain",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F083",
+      "subject": "tx:insulin_glargine",
+      "predicate": "CAUSES",
+      "object": "ae:injection-site_reaction",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F084",
+      "subject": "tx:insulin_glargine",
+      "predicate": "REQUIRES",
+      "object": "proc:monitoring",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F085",
+      "subject": "tx:insulin_glargine",
+      "predicate": "REQUIRES",
+      "object": "proc:bloods",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F086",
+      "subject": "tx:insulin_glargine",
+      "predicate": "REQUIRES",
+      "object": "proc:diary",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F087",
+      "subject": "cond:copd",
+      "predicate": "HAS_STAGE",
+      "object": "stage:copd:gold1",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F088",
+      "subject": "cond:copd",
+      "predicate": "HAS_STAGE",
+      "object": "stage:copd:gold2",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F089",
+      "subject": "cond:copd",
+      "predicate": "HAS_STAGE",
+      "object": "stage:copd:gold3",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F090",
+      "subject": "cond:copd",
+      "predicate": "HAS_STAGE",
+      "object": "stage:copd:gold4",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F091",
+      "subject": "cond:copd",
+      "predicate": "PRESENTS",
+      "object": "sym:breathlessness",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F092",
+      "subject": "cond:copd",
+      "predicate": "PRESENTS",
+      "object": "sym:chronic_cough",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F093",
+      "subject": "cond:copd",
+      "predicate": "PRESENTS",
+      "object": "sym:wheezing",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F094",
+      "subject": "cond:copd",
+      "predicate": "PRESENTS",
+      "object": "sym:chest_tightness",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F095",
+      "subject": "cond:copd",
+      "predicate": "PRESENTS",
+      "object": "sym:frequent_chest_infections",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F096",
+      "subject": "cond:copd",
+      "predicate": "PRESENTS",
+      "object": "sym:fatigue",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F097",
+      "subject": "cond:copd",
+      "predicate": "TREATED_BY",
+      "object": "tx:salbutamol_inhaler",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F098",
+      "subject": "tx:salbutamol_inhaler",
+      "predicate": "CAUSES",
+      "object": "ae:tremor",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F099",
+      "subject": "tx:salbutamol_inhaler",
+      "predicate": "CAUSES",
+      "object": "ae:palpitations",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F100",
+      "subject": "tx:salbutamol_inhaler",
+      "predicate": "REQUIRES",
+      "object": "proc:diary",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F101",
+      "subject": "cond:copd",
+      "predicate": "TREATED_BY",
+      "object": "tx:tiotropium",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F102",
+      "subject": "tx:tiotropium",
+      "predicate": "CAUSES",
+      "object": "ae:dry_mouth",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F103",
+      "subject": "tx:tiotropium",
+      "predicate": "CAUSES",
+      "object": "ae:sore_throat",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F104",
+      "subject": "tx:tiotropium",
+      "predicate": "REQUIRES",
+      "object": "proc:monitoring",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F105",
+      "subject": "cond:copd",
+      "predicate": "TREATED_BY",
+      "object": "tx:inhaled_corticosteroid",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F106",
+      "subject": "tx:inhaled_corticosteroid",
+      "predicate": "CAUSES",
+      "object": "ae:oral_thrush",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F107",
+      "subject": "tx:inhaled_corticosteroid",
+      "predicate": "CAUSES",
+      "object": "ae:hoarse_voice",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F108",
+      "subject": "tx:inhaled_corticosteroid",
+      "predicate": "CAUSES",
+      "object": "ae:chest_infections",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F109",
+      "subject": "tx:inhaled_corticosteroid",
+      "predicate": "REQUIRES",
+      "object": "proc:monitoring",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F110",
+      "subject": "tx:inhaled_corticosteroid",
+      "predicate": "REQUIRES",
+      "object": "proc:diary",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F111",
+      "subject": "cond:copd",
+      "predicate": "TREATED_BY",
+      "object": "tx:home_oxygen",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F112",
+      "subject": "tx:home_oxygen",
+      "predicate": "CAUSES",
+      "object": "ae:dry_nose",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F113",
+      "subject": "tx:home_oxygen",
+      "predicate": "CAUSES",
+      "object": "ae:restricted_mobility",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F114",
+      "subject": "tx:home_oxygen",
+      "predicate": "REQUIRES",
+      "object": "proc:monitoring",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F115",
+      "subject": "tx:home_oxygen",
+      "predicate": "REQUIRES",
+      "object": "proc:imaging",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F116",
+      "subject": "cond:hf",
+      "predicate": "HAS_STAGE",
+      "object": "stage:hf:nyha1",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F117",
+      "subject": "cond:hf",
+      "predicate": "HAS_STAGE",
+      "object": "stage:hf:nyha2",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F118",
+      "subject": "cond:hf",
+      "predicate": "HAS_STAGE",
+      "object": "stage:hf:nyha3",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F119",
+      "subject": "cond:hf",
+      "predicate": "HAS_STAGE",
+      "object": "stage:hf:nyha4",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F120",
+      "subject": "cond:hf",
+      "predicate": "PRESENTS",
+      "object": "sym:breathlessness",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F121",
+      "subject": "cond:hf",
+      "predicate": "PRESENTS",
+      "object": "sym:ankle_swelling",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F122",
+      "subject": "cond:hf",
+      "predicate": "PRESENTS",
+      "object": "sym:fatigue",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F123",
+      "subject": "cond:hf",
+      "predicate": "PRESENTS",
+      "object": "sym:palpitations",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F124",
+      "subject": "cond:hf",
+      "predicate": "PRESENTS",
+      "object": "sym:difficulty_lying_flat",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F125",
+      "subject": "cond:hf",
+      "predicate": "TREATED_BY",
+      "object": "tx:ramipril",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F126",
+      "subject": "tx:ramipril",
+      "predicate": "CAUSES",
+      "object": "ae:dry_cough",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F127",
+      "subject": "tx:ramipril",
+      "predicate": "CAUSES",
+      "object": "ae:dizziness",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F128",
+      "subject": "tx:ramipril",
+      "predicate": "CAUSES",
+      "object": "ae:raised_potassium",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F129",
+      "subject": "tx:ramipril",
+      "predicate": "REQUIRES",
+      "object": "proc:bloods",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F130",
+      "subject": "tx:ramipril",
+      "predicate": "REQUIRES",
+      "object": "proc:monitoring",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F131",
+      "subject": "cond:hf",
+      "predicate": "TREATED_BY",
+      "object": "tx:bisoprolol",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F132",
+      "subject": "tx:bisoprolol",
+      "predicate": "CAUSES",
+      "object": "ae:fatigue",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F133",
+      "subject": "tx:bisoprolol",
+      "predicate": "CAUSES",
+      "object": "ae:cold_hands_and_feet",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F134",
+      "subject": "tx:bisoprolol",
+      "predicate": "CAUSES",
+      "object": "ae:slow_heart_rate",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F135",
+      "subject": "tx:bisoprolol",
+      "predicate": "REQUIRES",
+      "object": "proc:monitoring",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F136",
+      "subject": "cond:hf",
+      "predicate": "TREATED_BY",
+      "object": "tx:spironolactone",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F137",
+      "subject": "tx:spironolactone",
+      "predicate": "CAUSES",
+      "object": "ae:raised_potassium",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F138",
+      "subject": "tx:spironolactone",
+      "predicate": "CAUSES",
+      "object": "ae:breast_tenderness",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F139",
+      "subject": "tx:spironolactone",
+      "predicate": "REQUIRES",
+      "object": "proc:bloods",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F140",
+      "subject": "cond:hf",
+      "predicate": "TREATED_BY",
+      "object": "tx:furosemide",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F141",
+      "subject": "tx:furosemide",
+      "predicate": "CAUSES",
+      "object": "ae:frequent_urination",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F142",
+      "subject": "tx:furosemide",
+      "predicate": "CAUSES",
+      "object": "ae:dehydration",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F143",
+      "subject": "tx:furosemide",
+      "predicate": "CAUSES",
+      "object": "ae:dizziness",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F144",
+      "subject": "tx:furosemide",
+      "predicate": "REQUIRES",
+      "object": "proc:bloods",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F145",
+      "subject": "tx:furosemide",
+      "predicate": "REQUIRES",
+      "object": "proc:monitoring",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F146",
+      "subject": "cond:breast_cancer",
+      "predicate": "HAS_STAGE",
+      "object": "stage:breast_cancer:i",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F147",
+      "subject": "cond:breast_cancer",
+      "predicate": "HAS_STAGE",
+      "object": "stage:breast_cancer:ii",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F148",
+      "subject": "cond:breast_cancer",
+      "predicate": "HAS_STAGE",
+      "object": "stage:breast_cancer:iii",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F149",
+      "subject": "cond:breast_cancer",
+      "predicate": "HAS_STAGE",
+      "object": "stage:breast_cancer:iv",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F150",
+      "subject": "cond:breast_cancer",
+      "predicate": "PRESENTS",
+      "object": "sym:breast_lump",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F151",
+      "subject": "cond:breast_cancer",
+      "predicate": "PRESENTS",
+      "object": "sym:skin_changes",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F152",
+      "subject": "cond:breast_cancer",
+      "predicate": "PRESENTS",
+      "object": "sym:fatigue",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F153",
+      "subject": "cond:breast_cancer",
+      "predicate": "PRESENTS",
+      "object": "sym:pain",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F154",
+      "subject": "cond:breast_cancer",
+      "predicate": "TREATED_BY",
+      "object": "tx:anastrozole",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F155",
+      "subject": "tx:anastrozole",
+      "predicate": "CAUSES",
+      "object": "ae:hot_flushes",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F156",
+      "subject": "tx:anastrozole",
+      "predicate": "CAUSES",
+      "object": "ae:joint_pain",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F157",
+      "subject": "tx:anastrozole",
+      "predicate": "CAUSES",
+      "object": "ae:bone_thinning",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F158",
+      "subject": "tx:anastrozole",
+      "predicate": "REQUIRES",
+      "object": "proc:monitoring",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F159",
+      "subject": "tx:anastrozole",
+      "predicate": "REQUIRES",
+      "object": "proc:imaging",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F160",
+      "subject": "cond:breast_cancer",
+      "predicate": "TREATED_BY",
+      "object": "tx:tamoxifen",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F161",
+      "subject": "tx:tamoxifen",
+      "predicate": "CAUSES",
+      "object": "ae:hot_flushes",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F162",
+      "subject": "tx:tamoxifen",
+      "predicate": "CAUSES",
+      "object": "ae:blood_clots",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F163",
+      "subject": "tx:tamoxifen",
+      "predicate": "CAUSES",
+      "object": "ae:mood_changes",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F164",
+      "subject": "tx:tamoxifen",
+      "predicate": "REQUIRES",
+      "object": "proc:monitoring",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F165",
+      "subject": "cond:breast_cancer",
+      "predicate": "TREATED_BY",
+      "object": "tx:paclitaxel",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F166",
+      "subject": "tx:paclitaxel",
+      "predicate": "CAUSES",
+      "object": "ae:hair_loss",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F167",
+      "subject": "tx:paclitaxel",
+      "predicate": "CAUSES",
+      "object": "ae:numbness_in_the_hands",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F168",
+      "subject": "tx:paclitaxel",
+      "predicate": "CAUSES",
+      "object": "ae:fatigue",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F169",
+      "subject": "tx:paclitaxel",
+      "predicate": "REQUIRES",
+      "object": "proc:monitoring",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F170",
+      "subject": "tx:paclitaxel",
+      "predicate": "REQUIRES",
+      "object": "proc:bloods",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F171",
+      "subject": "tx:paclitaxel",
+      "predicate": "REQUIRES",
+      "object": "proc:imaging",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F172",
+      "subject": "cond:breast_cancer",
+      "predicate": "TREATED_BY",
+      "object": "tx:trastuzumab",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F173",
+      "subject": "tx:trastuzumab",
+      "predicate": "CAUSES",
+      "object": "ae:heart_strain",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F174",
+      "subject": "tx:trastuzumab",
+      "predicate": "CAUSES",
+      "object": "ae:chills",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F175",
+      "subject": "tx:trastuzumab",
+      "predicate": "CAUSES",
+      "object": "ae:fatigue",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F176",
+      "subject": "tx:trastuzumab",
+      "predicate": "REQUIRES",
+      "object": "proc:monitoring",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F177",
+      "subject": "tx:trastuzumab",
+      "predicate": "REQUIRES",
+      "object": "proc:imaging",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F178",
+      "subject": "cond:ra",
+      "predicate": "HAS_STAGE",
+      "object": "stage:ra:early",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F179",
+      "subject": "cond:ra",
+      "predicate": "HAS_STAGE",
+      "object": "stage:ra:moderate",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F180",
+      "subject": "cond:ra",
+      "predicate": "HAS_STAGE",
+      "object": "stage:ra:advanced",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F181",
+      "subject": "cond:ra",
+      "predicate": "PRESENTS",
+      "object": "sym:joint_pain",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F182",
+      "subject": "cond:ra",
+      "predicate": "PRESENTS",
+      "object": "sym:morning_stiffness",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F183",
+      "subject": "cond:ra",
+      "predicate": "PRESENTS",
+      "object": "sym:joint_swelling",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F184",
+      "subject": "cond:ra",
+      "predicate": "PRESENTS",
+      "object": "sym:fatigue",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F185",
+      "subject": "cond:ra",
+      "predicate": "TREATED_BY",
+      "object": "tx:methotrexate",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F186",
+      "subject": "tx:methotrexate",
+      "predicate": "CAUSES",
+      "object": "ae:nausea",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F187",
+      "subject": "tx:methotrexate",
+      "predicate": "CAUSES",
+      "object": "ae:mouth_ulcers",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F188",
+      "subject": "tx:methotrexate",
+      "predicate": "CAUSES",
+      "object": "ae:fatigue",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F189",
+      "subject": "tx:methotrexate",
+      "predicate": "CAUSES",
+      "object": "ae:hair_thinning",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F190",
+      "subject": "tx:methotrexate",
+      "predicate": "REQUIRES",
+      "object": "proc:bloods",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F191",
+      "subject": "tx:methotrexate",
+      "predicate": "REQUIRES",
+      "object": "proc:monitoring",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F192",
+      "subject": "cond:ra",
+      "predicate": "TREATED_BY",
+      "object": "tx:hydroxychloroquine",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F193",
+      "subject": "tx:hydroxychloroquine",
+      "predicate": "CAUSES",
+      "object": "ae:nausea",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F194",
+      "subject": "tx:hydroxychloroquine",
+      "predicate": "CAUSES",
+      "object": "ae:rash",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F195",
+      "subject": "tx:hydroxychloroquine",
+      "predicate": "REQUIRES",
+      "object": "proc:monitoring",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F196",
+      "subject": "cond:ra",
+      "predicate": "TREATED_BY",
+      "object": "tx:adalimumab",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F197",
+      "subject": "tx:adalimumab",
+      "predicate": "CAUSES",
+      "object": "ae:injection-site_reaction",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F198",
+      "subject": "tx:adalimumab",
+      "predicate": "CAUSES",
+      "object": "ae:infections",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F199",
+      "subject": "tx:adalimumab",
+      "predicate": "REQUIRES",
+      "object": "proc:bloods",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F200",
+      "subject": "tx:adalimumab",
+      "predicate": "REQUIRES",
+      "object": "proc:monitoring",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F201",
+      "subject": "cond:ra",
+      "predicate": "TREATED_BY",
+      "object": "tx:prednisolone",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F202",
+      "subject": "tx:prednisolone",
+      "predicate": "CAUSES",
+      "object": "ae:weight_gain",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F203",
+      "subject": "tx:prednisolone",
+      "predicate": "CAUSES",
+      "object": "ae:raised_blood_sugar",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F204",
+      "subject": "tx:prednisolone",
+      "predicate": "CAUSES",
+      "object": "ae:bone_thinning",
+      "provenance": {
+        "source": "Standard clinical reference material; textbook-level associations.",
+        "confidence": "published_aggregate",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    },
+    {
+      "id": "F205",
+      "subject": "tx:prednisolone",
+      "predicate": "REQUIRES",
+      "object": "proc:bloods",
+      "provenance": {
+        "source": "Design judgement about trial participation demands.",
+        "confidence": "expert_guess",
+        "as_of": "2026-08-01"
+      },
+      "qualifier": ""
+    }
+  ]
+}

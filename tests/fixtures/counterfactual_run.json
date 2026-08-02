@@ -1,0 +1,884 @@
+{
+  "assumptions": {
+    "assumptions": [
+      {
+        "changelog": [],
+        "confidence": "expert_guess",
+        "description": "Additive penalties for access and support barriers.",
+        "name": "adherence.access_effect",
+        "params": {
+          "age_penalty": -0.05,
+          "age_penalty_from": 80,
+          "caregiver_none": -0.06,
+          "employment_shift_work": -0.07,
+          "residence_rural": -0.03,
+          "transport_none": -0.12,
+          "transport_public": -0.04
+        },
+        "source": "Expert judgement. Signs are well supported; magnitudes are not fitted.",
+        "tags": [
+          "adherence",
+          "sdoh",
+          "cohort"
+        ],
+        "version": 1
+      },
+      {
+        "changelog": [],
+        "confidence": "expert_guess",
+        "description": "Clamp on derived adherence. Nobody is modelled as perfectly zero.",
+        "name": "adherence.bounds",
+        "params": {
+          "max": 1.0,
+          "min": 0.05,
+          "per_drug_noise_sd": 0.06
+        },
+        "source": "Modelling convention.",
+        "tags": [
+          "adherence",
+          "cohort"
+        ],
+        "version": 1
+      },
+      {
+        "changelog": [],
+        "confidence": "expert_guess",
+        "description": "Additive shift to baseline adherence by health-literacy band.",
+        "name": "adherence.literacy_effect",
+        "params": {
+          "high": 0.07,
+          "low": -0.14,
+          "medium": 0.0
+        },
+        "source": "Expert judgement, directionally consistent with adherence literature.",
+        "tags": [
+          "adherence",
+          "cohort"
+        ],
+        "version": 1
+      },
+      {
+        "changelog": [],
+        "confidence": "expert_guess",
+        "description": "Penalty per medication beyond `free_medications`, plus draw noise.",
+        "name": "adherence.pill_burden",
+        "params": {
+          "free_medications": 2,
+          "noise_sd": 0.08,
+          "per_extra_medication": -0.035
+        },
+        "source": "Expert judgement; polypharmacy-adherence relationship is real, slope is not.",
+        "tags": [
+          "adherence",
+          "cohort"
+        ],
+        "version": 1
+      },
+      {
+        "changelog": [],
+        "confidence": "expert_guess",
+        "description": "Weight contributed by each barrier when present. Summed, then scaled by protocol intensity, then clamped to [0, 1].",
+        "name": "burden.factor_weights",
+        "params": {
+          "elderly": 0.06,
+          "low_adherence": 0.2,
+          "low_literacy": 0.12,
+          "multimorbidity": 0.09,
+          "no_caregiver": 0.1,
+          "no_transport": 0.18,
+          "polypharmacy": 0.09,
+          "rural": 0.04,
+          "working": 0.12
+        },
+        "source": "Expert judgement. Ordering is defensible; absolute weights are not.",
+        "tags": [
+          "burden",
+          "protocol"
+        ],
+        "version": 1
+      },
+      {
+        "changelog": [],
+        "confidence": "expert_guess",
+        "description": "Multiplier applied to the summed barrier weight as the protocol gets heavier. Amplifies existing barriers; adds nothing to a persona with none.",
+        "name": "burden.protocol_intensity",
+        "params": {
+          "base": 1.0,
+          "daily_diary": 0.1,
+          "visits_12_plus": 0.15,
+          "visits_24_plus": 0.15,
+          "washout": 0.1
+        },
+        "source": "Expert judgement. The multiplicative form is a modelling choice.",
+        "tags": [
+          "burden",
+          "protocol"
+        ],
+        "version": 1
+      },
+      {
+        "changelog": [],
+        "confidence": "expert_guess",
+        "description": "Cut-points at which a barrier counts as present.",
+        "name": "burden.trigger_thresholds",
+        "params": {
+          "at_risk_score": 0.4,
+          "elderly_from_age": 80,
+          "low_adherence_below": 0.6,
+          "multimorbidity_at_least": 3,
+          "polypharmacy_at_least": 3
+        },
+        "source": "Expert judgement; conventional round numbers, not derived cut-points.",
+        "tags": [
+          "burden",
+          "protocol"
+        ],
+        "version": 1
+      },
+      {
+        "changelog": [],
+        "confidence": "expert_guess",
+        "description": "Comorbidity prevalence is scaled by intercept + slope*(age - pivot). Independent Bernoulli draws \u2014 correlation structure is NOT modelled.",
+        "name": "cohort.comorbidity_age_factor",
+        "params": {
+          "cap": 0.95,
+          "intercept": 0.75,
+          "pivot_age": 45,
+          "slope": 0.01
+        },
+        "source": "Expert judgement. The independence assumption is a known limitation.",
+        "tags": [
+          "cohort",
+          "known-limitation"
+        ],
+        "version": 1
+      },
+      {
+        "changelog": [],
+        "confidence": "expert_guess",
+        "description": "Per-condition age/sex/stage/comorbidity/biomarker priors in cohort/epidemiology.py. Order-of-magnitude literature ballparks.",
+        "name": "cohort.condition_priors",
+        "params": {
+          "conditions": 5,
+          "source_module": "spp.cohort.epidemiology"
+        },
+        "source": "Compiled from published prevalence summaries; not fitted to any dataset.",
+        "tags": [
+          "cohort",
+          "known-limitation"
+        ],
+        "version": 1
+      },
+      {
+        "changelog": [],
+        "confidence": "measured",
+        "description": "Validity gate on the trait correlation matrix. Loading fails if the minimum eigenvalue falls below `min_eigenvalue`. Projection to the nearest PSD matrix is DISABLED by default and is never silent: enabling it returns the exact list of pairs that moved and by how much, which must then be recorded here as a correction. A projected matrix no longer matches its specification, so the ledger would stop describing what is actually sampled.",
+        "name": "cohort.correlation_psd_gate",
+        "params": {
+          "allow_projection": false,
+          "min_eigenvalue": 1e-06,
+          "recorded_corrections": []
+        },
+        "source": "Engineering invariant, not an empirical claim.",
+        "tags": [
+          "cohort",
+          "correlation",
+          "invariant"
+        ],
+        "version": 1
+      },
+      {
+        "changelog": [],
+        "confidence": "published_aggregate",
+        "description": "Population health-literacy distribution, not condition-specific.",
+        "name": "cohort.health_literacy_mix",
+        "params": {
+          "high": 0.18,
+          "low": 0.3,
+          "medium": 0.52
+        },
+        "source": "Approximate adult population shape from health-literacy surveys.",
+        "tags": [
+          "cohort"
+        ],
+        "version": 1
+      },
+      {
+        "changelog": [],
+        "confidence": "expert_guess",
+        "description": "Share of personas recorded outside the female/male binary.",
+        "name": "cohort.other_sex_fraction",
+        "params": {
+          "fraction": 0.005
+        },
+        "source": "Modelling convention so downstream code exercises the third option.",
+        "tags": [
+          "cohort"
+        ],
+        "version": 1
+      },
+      {
+        "changelog": [],
+        "confidence": "expert_guess",
+        "description": "Pairwise correlations between persona trait axes, fed to the Gaussian copula. Keys are 'axis_a|axis_b'. Convention: higher = 'more' of what the axis is named, so caregiver_support 0.9 means well supported.\n\nSEMANTICS (decided once, do not mix): these are LATENT GAUSSIAN correlations \u2014 the rho of the copula's underlying normal, which is what a copula fit to real data would estimate. They are NOT the correlations you will measure on the generated cohort. Pushing rho through the copula attenuates it to (6/pi)*arcsin(rho/2) on the uniforms (0.45 -> 0.4334), and discretising into a categorical or count marginal attenuates it substantially further. That is expected and quantified, not error.\n\nA pair omitted here is asserted UNCORRELATED. Correlation does not propagate through shared neighbours in a correlation matrix, so every relationship that should exist must be listed explicitly.",
+        "name": "cohort.trait_correlations",
+        "params": {
+          "age|caregiver_support": 0.2,
+          "age|comorbidity_load": 0.45,
+          "age|digital_literacy": -0.45,
+          "age|financial_security": 0.1,
+          "age|mobility": -0.4,
+          "age|transport_access": -0.25,
+          "comorbidity_load|caregiver_support": 0.15,
+          "comorbidity_load|financial_security": -0.2,
+          "comorbidity_load|health_literacy": -0.15,
+          "comorbidity_load|mobility": -0.35,
+          "comorbidity_load|transport_access": -0.15,
+          "digital_literacy|financial_security": 0.3,
+          "digital_literacy|mobility": 0.15,
+          "financial_security|caregiver_support": 0.2,
+          "financial_security|mobility": 0.2,
+          "financial_security|transport_access": 0.45,
+          "health_literacy|caregiver_support": 0.1,
+          "health_literacy|digital_literacy": 0.55,
+          "health_literacy|financial_security": 0.35,
+          "health_literacy|transport_access": 0.2,
+          "mobility|caregiver_support": -0.15,
+          "transport_access|mobility": 0.35
+        },
+        "source": "Expert judgement. Directions are well supported by health-inequality literature; magnitudes are not fitted to any dataset.",
+        "tags": [
+          "cohort",
+          "correlation"
+        ],
+        "version": 1
+      },
+      {
+        "changelog": [],
+        "confidence": "expert_guess",
+        "description": "The model that produces persona speech, and the prompt version it was recorded against. Registered here because swapping a model changes outputs exactly as changing a coefficient does \u2014 it is not a config detail. A swap invalidates every cassette (CassetteAdapter refuses to replay across models) and requires re-running the narration evals.",
+        "name": "narration.model",
+        "params": {
+          "backend": "ollama",
+          "max_regenerations": 1,
+          "model": "qwen2.5:7b-instruct",
+          "model_digest": "",
+          "num_ctx": 8192,
+          "num_predict": 700,
+          "prompt_version": 1,
+          "seed": 42,
+          "temperature": 0.0,
+          "top_p": 1.0
+        },
+        "source": "Chosen for local, offline-first operation. NOT yet exercised against a live model: every compliance number to date comes from scripted stub models written to test the instrument, so this model's actual citation compliance is UNMEASURED. Pass bars are pre-registered in tests/eval/pass_bars.json (before any live run); run scripts/record_narration.py --canary then --record to measure.",
+        "tags": [
+          "narration",
+          "known-limitation"
+        ],
+        "version": 1
+      },
+      {
+        "changelog": [],
+        "confidence": "expert_guess",
+        "description": "Panel turn order: highest barrier load speaks first. Deterministic and defensible \u2014 the most encumbered personas have the most to say about a design, so a truncated session still contains the signal.",
+        "name": "panel.speaking_order",
+        "params": {
+          "max_probes": 2,
+          "probe_after": 3,
+          "strategy": "barrier_load_desc"
+        },
+        "source": "Modelling choice, NOT a neutral default. Later speakers see the transcript, so the most burdened persona anchors every session. tests/test_narration.py asserts theme sets are stable under a permuted order; if that ever fails, themes are order-fragile and a design review should not lean on them.",
+        "tags": [
+          "narration",
+          "panel"
+        ],
+        "version": 1
+      },
+      {
+        "changelog": [],
+        "confidence": "expert_guess",
+        "description": "Probability a persona attends a scheduled visit. Logistic in adherence, accumulated burden and barrier load.",
+        "name": "timeline.attendance",
+        "params": {
+          "adherence_weight": 2.0,
+          "barrier_weight": -0.9,
+          "burden_weight": -1.0,
+          "ceiling": 0.99,
+          "floor": 0.02,
+          "intercept": 3.2,
+          "visit_burden_weight": -2.2
+        },
+        "source": "Expert judgement, shaped to give plausible per-visit attendance.",
+        "tags": [
+          "timeline",
+          "hazard"
+        ],
+        "version": 1
+      },
+      {
+        "changelog": [],
+        "confidence": "expert_guess",
+        "description": "Per-persona multipliers on burden components, by profile signal. A shift worker weights scheduling friction far above someone retired \u2014 the same protocol is not the same ask.",
+        "name": "timeline.burden_sensitivity",
+        "params": {
+          "base": 1.0,
+          "caregiving_scheduling": 1.5,
+          "elderly_time": 1.4,
+          "low_digital_cognitive": 1.8,
+          "low_financial_financial": 2.4,
+          "low_literacy_cognitive": 2.0,
+          "low_mobility_travel": 2.2,
+          "multimorbidity_time": 1.5,
+          "no_transport_travel": 2.5,
+          "rural_travel": 1.6,
+          "shift_work_scheduling": 3.0,
+          "working_scheduling": 1.8
+        },
+        "source": "Expert judgement. Magnitudes are illustrative, ordering is the claim.",
+        "tags": [
+          "timeline",
+          "burden"
+        ],
+        "version": 1
+      },
+      {
+        "changelog": [],
+        "confidence": "expert_guess",
+        "description": "Discrete-time dropout hazard evaluated at each visit. Logistic in cumulative burden, barrier load, adherence deficit and consecutive missed visits.",
+        "name": "timeline.dropout_hazard",
+        "params": {
+          "adherence_deficit_weight": 1.2,
+          "barrier_weight": 0.8,
+          "burden_increment_weight": 2.0,
+          "consecutive_missed_weight": 0.6,
+          "cumulative_burden_weight": 0.0,
+          "intercept": -5.6484,
+          "max_per_visit": 0.25,
+          "washout_bump": 0.3
+        },
+        "source": "intercept and cumulative_burden_weight are fitted JOINTLY by scripts/calibrate_hazard.py against two anchors \u2014 a light protocol (4 remote visits/yr -> 93% retention) and a heavy one (24 visits/yr with diary and washout -> 55%). A mid-intensity 12-visit protocol is HELD OUT and lands at ~81% without being fitted, which is the evidence that the two-parameter form generalises rather than interpolating.\n\nIMPORTANT: the anchors are plausibility targets drawn from commonly reported retention ranges, NOT a fit to any observed dataset. The LEVEL of the curve is an assumption. Only the DIFFERENCE between two designs should be read as signal.\n\ncumulative_burden_weight is FROZEN AT ZERO \u2014 unidentifiable from the current anchors, NOT fitted. The two anchors differ mainly in visit count, and count already compounds through survival, so the objective is a flat ridge in this direction: any small value hits both anchors equally well. (An earlier fit returned 0.047; that was the first feasible point on the ridge, i.e. noise, not a calibrated quantity. A number in the ledger reads as calibrated no matter what this note says, so shipping it would have been misleading.) Freezing to zero lets burden_increment_weight carry per-visit burden honestly.\n\nConfirmed dead weight today: with the term at zero, every retention band still holds (light 94.8%, heavy 58.2%, held-out 81.2%) and the fixed-visit-count comparison still separates 12 remote (84.2%) from 12 on-site (81.2%).\n\nTHIRD-ANCHOR PLAN: to identify it for real, add an anchor that varies per-visit burden at FIXED visit count (12 on-site vs 12 remote). Then unfreeze and fit intercept + cumulative_burden_weight against the three anchors. Until that anchor exists, do not treat this coefficient as evidence that accumulated burden does or does not matter.",
+        "tags": [
+          "timeline",
+          "hazard",
+          "known-limitation"
+        ],
+        "version": 1
+      },
+      {
+        "changelog": [],
+        "confidence": "expert_guess",
+        "description": "Burden vector components accrued by one on-site visit, before persona-specific sensitivity is applied. Unitless, roughly 'fraction of one visit's worth of tolerance consumed'.",
+        "name": "timeline.visit_burden",
+        "params": {
+          "cognitive": 0.01,
+          "daily_diary_cognitive": 0.015,
+          "financial": 0.025,
+          "procedural": 0.02,
+          "procedure_increment": 0.012,
+          "remote_travel_multiplier": 0.1,
+          "scheduling": 0.02,
+          "time": 0.03,
+          "travel": 0.045,
+          "washout_procedural": 0.08
+        },
+        "source": "Expert judgement. The relative shape matters more than the scale.",
+        "tags": [
+          "timeline",
+          "burden"
+        ],
+        "version": 1
+      },
+      {
+        "changelog": [],
+        "confidence": "expert_guess",
+        "description": "Severity assigned to each derived barrier. Feeds the dropout hazard and orders the barrier list a persona narrates from.",
+        "name": "traits.barrier_severity",
+        "params": {
+          "adherence": 0.2,
+          "competing_care": 0.15,
+          "comprehension": 0.16,
+          "cost": 0.22,
+          "digital_access": 0.1,
+          "distance": 0.14,
+          "mobility": 0.18,
+          "pill_burden": 0.12,
+          "scheduling": 0.24,
+          "transport": 0.3,
+          "transport_fragile": 0.12,
+          "unsupported": 0.2
+        },
+        "source": "Expert judgement. Relative ordering is the defensible part.",
+        "tags": [
+          "traits",
+          "hazard"
+        ],
+        "version": 1
+      }
+    ],
+    "count": 20,
+    "unquotable": [
+      "adherence.access_effect",
+      "adherence.bounds",
+      "adherence.literacy_effect",
+      "adherence.pill_burden",
+      "burden.factor_weights",
+      "burden.protocol_intensity",
+      "burden.trigger_thresholds",
+      "cohort.comorbidity_age_factor",
+      "cohort.condition_priors",
+      "cohort.other_sex_fraction",
+      "cohort.trait_correlations",
+      "narration.model",
+      "panel.speaking_order",
+      "timeline.attendance",
+      "timeline.burden_sensitivity",
+      "timeline.dropout_hazard",
+      "timeline.visit_burden",
+      "traits.barrier_severity"
+    ]
+  },
+  "baseline_curve": [
+    {
+      "completed": 0,
+      "day": 0,
+      "dropped": 0,
+      "retained": 100,
+      "retention": 1.0
+    },
+    {
+      "completed": 0,
+      "day": 15,
+      "dropped": 0,
+      "retained": 100,
+      "retention": 1.0
+    },
+    {
+      "completed": 0,
+      "day": 30,
+      "dropped": 1,
+      "retained": 99,
+      "retention": 0.99
+    },
+    {
+      "completed": 0,
+      "day": 45,
+      "dropped": 1,
+      "retained": 99,
+      "retention": 0.99
+    },
+    {
+      "completed": 0,
+      "day": 60,
+      "dropped": 5,
+      "retained": 95,
+      "retention": 0.95
+    },
+    {
+      "completed": 0,
+      "day": 75,
+      "dropped": 5,
+      "retained": 95,
+      "retention": 0.95
+    },
+    {
+      "completed": 0,
+      "day": 90,
+      "dropped": 8,
+      "retained": 92,
+      "retention": 0.92
+    },
+    {
+      "completed": 0,
+      "day": 105,
+      "dropped": 8,
+      "retained": 92,
+      "retention": 0.92
+    },
+    {
+      "completed": 0,
+      "day": 120,
+      "dropped": 9,
+      "retained": 91,
+      "retention": 0.91
+    },
+    {
+      "completed": 0,
+      "day": 135,
+      "dropped": 9,
+      "retained": 91,
+      "retention": 0.91
+    },
+    {
+      "completed": 0,
+      "day": 150,
+      "dropped": 10,
+      "retained": 90,
+      "retention": 0.9
+    },
+    {
+      "completed": 0,
+      "day": 165,
+      "dropped": 10,
+      "retained": 90,
+      "retention": 0.9
+    },
+    {
+      "completed": 0,
+      "day": 180,
+      "dropped": 10,
+      "retained": 90,
+      "retention": 0.9
+    },
+    {
+      "completed": 0,
+      "day": 195,
+      "dropped": 10,
+      "retained": 90,
+      "retention": 0.9
+    },
+    {
+      "completed": 0,
+      "day": 210,
+      "dropped": 10,
+      "retained": 90,
+      "retention": 0.9
+    },
+    {
+      "completed": 0,
+      "day": 225,
+      "dropped": 10,
+      "retained": 90,
+      "retention": 0.9
+    },
+    {
+      "completed": 0,
+      "day": 240,
+      "dropped": 12,
+      "retained": 88,
+      "retention": 0.88
+    },
+    {
+      "completed": 0,
+      "day": 255,
+      "dropped": 12,
+      "retained": 88,
+      "retention": 0.88
+    },
+    {
+      "completed": 0,
+      "day": 270,
+      "dropped": 13,
+      "retained": 87,
+      "retention": 0.87
+    },
+    {
+      "completed": 0,
+      "day": 285,
+      "dropped": 13,
+      "retained": 87,
+      "retention": 0.87
+    },
+    {
+      "completed": 0,
+      "day": 300,
+      "dropped": 14,
+      "retained": 86,
+      "retention": 0.86
+    },
+    {
+      "completed": 0,
+      "day": 315,
+      "dropped": 14,
+      "retained": 86,
+      "retention": 0.86
+    },
+    {
+      "completed": 0,
+      "day": 330,
+      "dropped": 14,
+      "retained": 86,
+      "retention": 0.86
+    },
+    {
+      "completed": 0,
+      "day": 345,
+      "dropped": 14,
+      "retained": 86,
+      "retention": 0.86
+    },
+    {
+      "completed": 0,
+      "day": 360,
+      "dropped": 14,
+      "retained": 86,
+      "retention": 0.86
+    },
+    {
+      "completed": 86,
+      "day": 365,
+      "dropped": 14,
+      "retained": 86,
+      "retention": 0.86
+    }
+  ],
+  "baseline_retention": 0.86,
+  "burden_shift": {
+    "cognitive": 0.0038,
+    "financial": 0.0094,
+    "procedural": 0.0052,
+    "scheduling": 0.0079,
+    "time": 0.0112,
+    "travel": -0.1587
+  },
+  "change": "remote ['v001', 'v003', 'v005']",
+  "disclaimer": "Simulated under stated assumptions. Not a forecast, not medical advice, not regulatory evidence. Retention LEVELS are calibrated to plausibility targets rather than fitted to observed data \u2014 read the DIFFERENCE between designs, and check `sensitivity` and `assumptions` before quoting anything.",
+  "eligibility_attribution": {
+    "headline": "'age >= 50' is responsible for 100% of total attrition (20.0 of 20 exclusions)",
+    "method": "Exact Shapley value of the exclusion veto game: each persona's blame is split 1/|failing rules|. No sampling.",
+    "n_excluded": 20,
+    "rules": [
+      {
+        "criterion": "age >= 50",
+        "kind": "inclusion",
+        "screened_out": 20,
+        "shapley": 20.0,
+        "shapley_share": 1.0,
+        "sole_reason": 20
+      }
+    ]
+  },
+  "example_lost": [],
+  "example_recovered": [
+    {
+      "baseline": "dropped",
+      "baseline_exit_day": 30,
+      "baseline_exit_reason": "this visit (travel)",
+      "diverged_at_day": 30,
+      "diverged_at_event": 2,
+      "patient_id": "type-2-diabetes-s42-0073",
+      "variant": "retained",
+      "variant_exit_day": null,
+      "variant_exit_reason": null
+    }
+  ],
+  "lost": 0,
+  "net_flips": 1,
+  "perturbed": 99,
+  "provenance": {
+    "artifact_version": 1,
+    "cohort_seed_path": null,
+    "cohort_size": 100,
+    "condition": "type 2 diabetes",
+    "duration_days": 365,
+    "generated_at": "FIXTURE",
+    "master_seed": 42,
+    "schedule_name": "protocol",
+    "schedule_visits": 12
+  },
+  "recovered": 1,
+  "retention_delta": 0.01,
+  "sensitivity": null,
+  "sign_stability": {
+    "net_flips": [
+      1,
+      1
+    ],
+    "retention_deltas": [
+      0.01,
+      0.0104
+    ],
+    "seeds": [
+      42,
+      1234
+    ],
+    "sign_stable": true,
+    "verdict": "consistent direction across seeds"
+  },
+  "title": "type 2 diabetes: remote ['v001', 'v003', 'v005']",
+  "unchanged": 0,
+  "variant_curve": [
+    {
+      "completed": 0,
+      "day": 0,
+      "dropped": 0,
+      "retained": 100,
+      "retention": 1.0
+    },
+    {
+      "completed": 0,
+      "day": 15,
+      "dropped": 0,
+      "retained": 100,
+      "retention": 1.0
+    },
+    {
+      "completed": 0,
+      "day": 30,
+      "dropped": 0,
+      "retained": 100,
+      "retention": 1.0
+    },
+    {
+      "completed": 0,
+      "day": 45,
+      "dropped": 0,
+      "retained": 100,
+      "retention": 1.0
+    },
+    {
+      "completed": 0,
+      "day": 60,
+      "dropped": 4,
+      "retained": 96,
+      "retention": 0.96
+    },
+    {
+      "completed": 0,
+      "day": 75,
+      "dropped": 4,
+      "retained": 96,
+      "retention": 0.96
+    },
+    {
+      "completed": 0,
+      "day": 90,
+      "dropped": 7,
+      "retained": 93,
+      "retention": 0.93
+    },
+    {
+      "completed": 0,
+      "day": 105,
+      "dropped": 7,
+      "retained": 93,
+      "retention": 0.93
+    },
+    {
+      "completed": 0,
+      "day": 120,
+      "dropped": 8,
+      "retained": 92,
+      "retention": 0.92
+    },
+    {
+      "completed": 0,
+      "day": 135,
+      "dropped": 8,
+      "retained": 92,
+      "retention": 0.92
+    },
+    {
+      "completed": 0,
+      "day": 150,
+      "dropped": 9,
+      "retained": 91,
+      "retention": 0.91
+    },
+    {
+      "completed": 0,
+      "day": 165,
+      "dropped": 9,
+      "retained": 91,
+      "retention": 0.91
+    },
+    {
+      "completed": 0,
+      "day": 180,
+      "dropped": 9,
+      "retained": 91,
+      "retention": 0.91
+    },
+    {
+      "completed": 0,
+      "day": 195,
+      "dropped": 9,
+      "retained": 91,
+      "retention": 0.91
+    },
+    {
+      "completed": 0,
+      "day": 210,
+      "dropped": 9,
+      "retained": 91,
+      "retention": 0.91
+    },
+    {
+      "completed": 0,
+      "day": 225,
+      "dropped": 9,
+      "retained": 91,
+      "retention": 0.91
+    },
+    {
+      "completed": 0,
+      "day": 240,
+      "dropped": 11,
+      "retained": 89,
+      "retention": 0.89
+    },
+    {
+      "completed": 0,
+      "day": 255,
+      "dropped": 11,
+      "retained": 89,
+      "retention": 0.89
+    },
+    {
+      "completed": 0,
+      "day": 270,
+      "dropped": 12,
+      "retained": 88,
+      "retention": 0.88
+    },
+    {
+      "completed": 0,
+      "day": 285,
+      "dropped": 12,
+      "retained": 88,
+      "retention": 0.88
+    },
+    {
+      "completed": 0,
+      "day": 300,
+      "dropped": 13,
+      "retained": 87,
+      "retention": 0.87
+    },
+    {
+      "completed": 0,
+      "day": 315,
+      "dropped": 13,
+      "retained": 87,
+      "retention": 0.87
+    },
+    {
+      "completed": 0,
+      "day": 330,
+      "dropped": 13,
+      "retained": 87,
+      "retention": 0.87
+    },
+    {
+      "completed": 0,
+      "day": 345,
+      "dropped": 13,
+      "retained": 87,
+      "retention": 0.87
+    },
+    {
+      "completed": 0,
+      "day": 360,
+      "dropped": 13,
+      "retained": 87,
+      "retention": 0.87
+    },
+    {
+      "completed": 87,
+      "day": 365,
+      "dropped": 13,
+      "retained": 87,
+      "retention": 0.87
+    }
+  ],
+  "variant_retention": 0.87
+}

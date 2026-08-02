@@ -1,0 +1,24 @@
+__pycache__/
+*.pyc
+.env
+.venv/
+venv/
+# Downloaded corpora are regenerable — kg_loader re-fetches Hetionet on demand.
+data/*
+!data/.gitkeep
+# ...but prior packs and the knowledge pack are SOURCE OF TRUTH, not data dumps.
+# CONDITION_EPI was migrated into prior_packs and deleted from code; the graph is
+# authored, not downloaded. Losing these loses the cohort generator's priors.
+!data/prior_packs/
+!data/knowledge/
+.pytest_cache/
+*.egg-info/
+.DS_Store
+
+# SPA
+ui/node_modules/
+ui/dist/
+ui/test-results/
+
+# Evidence bundles are committed per release; scratch canary state is not.
+evidence/*/_canary.json

@@ -1,0 +1,193 @@
+{
+  "burden": {
+    "mean_score": 0.3968,
+    "n_scored": 28,
+    "top": [
+      {
+        "drivers": [
+          "already struggles to take medication as prescribed",
+          "no reliable transport to the site",
+          "low health literacy — consent and diaries are harder",
+          "already on several medications",
+          "multiple conditions competing for appointments",
+          "age 80+ — travel and fatigue compound"
+        ],
+        "patient_id": "heart-failure-s42-0059",
+        "score": 0.85
+      },
+      {
+        "drivers": [
+          "already struggles to take medication as prescribed",
+          "no reliable transport to the site",
+          "low health literacy — consent and diaries are harder",
+          "already on several medications"
+        ],
+        "patient_id": "heart-failure-s42-0015",
+        "score": 0.68
+      },
+      {
+        "drivers": [
+          "already struggles to take medication as prescribed",
+          "no reliable transport to the site",
+          "work pattern conflicts with weekday visits",
+          "already on several medications"
+        ],
+        "patient_id": "heart-failure-s42-0046",
+        "score": 0.68
+      },
+      {
+        "drivers": [
+          "already struggles to take medication as prescribed",
+          "no reliable transport to the site",
+          "work pattern conflicts with weekday visits",
+          "already on several medications"
+        ],
+        "patient_id": "heart-failure-s42-0071",
+        "score": 0.68
+      },
+      {
+        "drivers": [
+          "already struggles to take medication as prescribed",
+          "no one at home to support attendance",
+          "already on several medications",
+          "multiple conditions competing for appointments",
+          "age 80+ — travel and fatigue compound",
+          "lives rurally, long journey to site"
+        ],
+        "patient_id": "heart-failure-s42-0041",
+        "score": 0.67
+      }
+    ]
+  },
+  "cohort_summary": {
+    "adherence_below_50pct": 27,
+    "adherence_mean": 0.59,
+    "age_mean": 74.4,
+    "age_range": [
+      45,
+      98
+    ],
+    "barrier_prevalence": {
+      "adherence": 0.47,
+      "competing_care": 0.54,
+      "comprehension": 0.28,
+      "cost": 0.19,
+      "digital_access": 0.39,
+      "distance": 0.14,
+      "mobility": 0.35,
+      "pill_burden": 0.48,
+      "scheduling": 0.14,
+      "transport": 0.1,
+      "transport_fragile": 0.18,
+      "unsupported": 0.32
+    },
+    "comorbidity_prevalence": {
+      "CKD": 0.46,
+      "COPD": 0.22,
+      "anemia": 0.36,
+      "atrial fibrillation": 0.46,
+      "depression": 0.17,
+      "hypertension": 0.68,
+      "type 2 diabetes": 0.4
+    },
+    "health_literacy": {
+      "high": 20,
+      "low": 28,
+      "medium": 52
+    },
+    "mean_barrier_load": 0.59,
+    "mean_comorbidity_count": 2.75,
+    "n": 100,
+    "sex": {
+      "female": 52,
+      "male": 46,
+      "other": 2
+    },
+    "stage": {
+      "NYHA1": 15,
+      "NYHA2": 39,
+      "NYHA3": 32,
+      "NYHA4": 14
+    }
+  },
+  "condition": "heart failure",
+  "eligible_summary": {
+    "adherence_below_50pct": 7,
+    "adherence_mean": 0.58,
+    "age_mean": 72.8,
+    "age_range": [
+      45,
+      90
+    ],
+    "barrier_prevalence": {
+      "adherence": 0.46,
+      "competing_care": 0.43,
+      "comprehension": 0.25,
+      "cost": 0.11,
+      "digital_access": 0.36,
+      "distance": 0.07,
+      "mobility": 0.39,
+      "pill_burden": 0.61,
+      "scheduling": 0.14,
+      "transport": 0.07,
+      "transport_fragile": 0.18,
+      "unsupported": 0.21
+    },
+    "comorbidity_prevalence": {
+      "COPD": 0.25,
+      "anemia": 0.36,
+      "atrial fibrillation": 0.54,
+      "depression": 0.25,
+      "hypertension": 0.71,
+      "type 2 diabetes": 0.25
+    },
+    "health_literacy": {
+      "high": 3,
+      "low": 7,
+      "medium": 18
+    },
+    "mean_barrier_load": 0.53,
+    "mean_comorbidity_count": 2.36,
+    "n": 28,
+    "sex": {
+      "female": 17,
+      "male": 9,
+      "other": 2
+    },
+    "stage": {
+      "NYHA2": 16,
+      "NYHA3": 8,
+      "NYHA4": 4
+    }
+  },
+  "n": 100,
+  "scenario": "heart_failure_ungrounded",
+  "screening": {
+    "criteria_impact": [
+      {
+        "criterion": "CKD",
+        "kind": "exclusion",
+        "screened_out": 46,
+        "screened_out_rate": 0.46,
+        "sole_reason": 30
+      },
+      {
+        "criterion": "biomarkers.LVEF_pct < 45",
+        "kind": "inclusion",
+        "screened_out": 37,
+        "screened_out_rate": 0.37,
+        "sole_reason": 12
+      },
+      {
+        "criterion": "stage >= NYHA2",
+        "kind": "inclusion",
+        "screened_out": 15,
+        "screened_out_rate": 0.15,
+        "sole_reason": 5
+      }
+    ],
+    "eligibility_rate": 0.28,
+    "n_eligible": 28
+  },
+  "seed": 42
+}

@@ -1,0 +1,133 @@
+{
+  "description": "Retrieval eval set: query -> fact ids that must be recalled AND top-ranked. Relevance, not just recall \u2014 an earlier version of this set was authored from whatever retrieval already returned, which measured stability while retrieval was ignoring the question text entirely. Expectations are computed at each case's own limit and barrier set.",
+  "cases": [
+    {
+      "id": "sym-t2d",
+      "anchor": "type 2 diabetes",
+      "query": "What do I actually feel day to day?",
+      "expect_facts": [
+        "F057",
+        "F058",
+        "F059",
+        "F060"
+      ],
+      "expect_top_ranked": true,
+      "limit": 24
+    },
+    {
+      "id": "sym-copd",
+      "anchor": "COPD",
+      "query": "What are my symptoms?",
+      "expect_facts": [
+        "F091",
+        "F092",
+        "F093",
+        "F094"
+      ],
+      "expect_top_ranked": true,
+      "limit": 24
+    },
+    {
+      "id": "tx-hf",
+      "anchor": "heart failure",
+      "query": "What medication are you taking?",
+      "expect_facts": [
+        "F125",
+        "F131",
+        "F136"
+      ],
+      "expect_top_ranked": true,
+      "limit": 24
+    },
+    {
+      "id": "ae-ra",
+      "anchor": "rheumatoid arthritis",
+      "query": "What side effects should I expect?",
+      "expect_facts": [
+        "F186",
+        "F187",
+        "F188",
+        "F189"
+      ],
+      "expect_top_ranked": true,
+      "limit": 24
+    },
+    {
+      "id": "ae-breast",
+      "anchor": "breast cancer",
+      "query": "What side effects will treatment cause?",
+      "expect_facts": [
+        "F155",
+        "F156",
+        "F157",
+        "F161"
+      ],
+      "expect_top_ranked": true,
+      "limit": 24
+    },
+    {
+      "id": "burden-transport",
+      "anchor": "type 2 diabetes",
+      "query": "Could you get to the site twice a month?",
+      "expect_facts": [
+        "F011",
+        "F019",
+        "F012"
+      ],
+      "expect_top_ranked": true,
+      "limit": 24,
+      "barriers": [
+        "transport"
+      ]
+    },
+    {
+      "id": "burden-scheduling",
+      "anchor": "COPD",
+      "query": "Would attending during work hours be difficult?",
+      "expect_facts": [
+        "F016",
+        "F017",
+        "F018"
+      ],
+      "expect_top_ranked": true,
+      "limit": 24,
+      "barriers": [
+        "scheduling"
+      ]
+    },
+    {
+      "id": "mitigation",
+      "anchor": "heart failure",
+      "query": "What support would make taking part possible?",
+      "expect_facts": [
+        "F032",
+        "F033",
+        "F034"
+      ],
+      "expect_top_ranked": true,
+      "limit": 24,
+      "barriers": [
+        "transport"
+      ]
+    },
+    {
+      "id": "procedures",
+      "anchor": "type 2 diabetes",
+      "query": "What tests and monitoring are involved?",
+      "expect_facts": [
+        "F067",
+        "F072",
+        "F073"
+      ],
+      "expect_top_ranked": true,
+      "limit": 24
+    },
+    {
+      "id": "neg-unknown-condition",
+      "anchor": "a condition nobody has",
+      "query": "How are you?",
+      "expect_facts": [],
+      "limit": 24
+    }
+  ]
+}

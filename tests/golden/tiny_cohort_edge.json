@@ -1,0 +1,98 @@
+{
+  "burden": {
+    "mean_score": 0.16,
+    "n_scored": 1,
+    "top": [
+      {
+        "drivers": [
+          "no one at home to support attendance",
+          "lives rurally, long journey to site"
+        ],
+        "patient_id": "copd-s1-0000",
+        "score": 0.16
+      }
+    ]
+  },
+  "cohort_summary": {
+    "adherence_below_50pct": 0,
+    "adherence_mean": 0.67,
+    "age_mean": 46.0,
+    "age_range": [
+      46,
+      46
+    ],
+    "barrier_prevalence": {
+      "cost": 1.0,
+      "distance": 1.0,
+      "unsupported": 1.0
+    },
+    "comorbidity_prevalence": {
+      "depression": 1.0
+    },
+    "health_literacy": {
+      "medium": 1
+    },
+    "mean_barrier_load": 0.56,
+    "mean_comorbidity_count": 1.0,
+    "n": 1,
+    "sex": {
+      "male": 1
+    },
+    "stage": {
+      "GOLD2": 1
+    }
+  },
+  "condition": "COPD",
+  "eligible_summary": {
+    "adherence_below_50pct": 0,
+    "adherence_mean": 0.67,
+    "age_mean": 46.0,
+    "age_range": [
+      46,
+      46
+    ],
+    "barrier_prevalence": {
+      "cost": 1.0,
+      "distance": 1.0,
+      "unsupported": 1.0
+    },
+    "comorbidity_prevalence": {
+      "depression": 1.0
+    },
+    "health_literacy": {
+      "medium": 1
+    },
+    "mean_barrier_load": 0.56,
+    "mean_comorbidity_count": 1.0,
+    "n": 1,
+    "sex": {
+      "male": 1
+    },
+    "stage": {
+      "GOLD2": 1
+    }
+  },
+  "n": 1,
+  "scenario": "tiny_cohort_edge",
+  "screening": {
+    "criteria_impact": [
+      {
+        "criterion": "age >= 40",
+        "kind": "inclusion",
+        "screened_out": 0,
+        "screened_out_rate": 0.0,
+        "sole_reason": 0
+      },
+      {
+        "criterion": "CKD",
+        "kind": "exclusion",
+        "screened_out": 0,
+        "screened_out_rate": 0.0,
+        "sole_reason": 0
+      }
+    ],
+    "eligibility_rate": 1.0,
+    "n_eligible": 1
+  },
+  "seed": 1
+}

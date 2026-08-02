@@ -1,0 +1,277 @@
+/* Scenario Lab — instrument panel, not dashboard.
+ *
+ * Tokens extend the server-rendered report's palette so the two surfaces read as
+ * one system. Three commitments, all deliberate:
+ *
+ * 1. Monospace is the protagonist. Every count, rate, seed and persona id is set
+ *    in it with tabular figures, because the numbers ARE the product. Prose gets
+ *    the sans; the sans never gets a number.
+ * 2. No webfont. Offline-first is a product constraint here, not a preference —
+ *    a CDN font that silently falls back would be a real bug in a room with no
+ *    wifi, which is exactly where this gets demoed.
+ * 3. Red is reserved. --integrity is never-quote / parse error / ungrounded, and
+ *    nothing else. A lost persona is a COST, not an integrity failure, so it
+ *    takes amber. Keeping that separation is what lets the ledger's semantics
+ *    stay legible at a glance.
+ */
+
+:root {
+  --ink: #12161c;
+  --ink-2: #3d4650;
+  --muted: #6b7684;
+  /* Neutrals biased cool toward the accent rather than a default mid-grey. */
+  --paper: #f6f8fa;
+  --panel: #ffffff;
+  --rule: #dde3ea;
+  --rule-soft: #eaeef3;
+
+  --accent: #1c4f8f;
+  --accent-soft: #eaf0f8;
+
+  --recovered: #0f7b4f;
+  --lost: #8a5a00;
+  --integrity: #b3261e;
+  --integrity-soft: #fdf0ef;
+
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --step: 4px;
+  --shadow: 0 1px 2px rgba(18, 22, 28, 0.05);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #e8ecf1;
+    --ink-2: #b9c2cd;
+    --muted: #8b95a3;
+    --paper: #0e1216;
+    --panel: #161b21;
+    --rule: #262e37;
+    --rule-soft: #1d242b;
+    --accent: #6fa8e8;
+    --accent-soft: #17222f;
+    --recovered: #4cc38a;
+    --lost: #d9a441;
+    --integrity: #f2837a;
+    --integrity-soft: #2a1a19;
+    --shadow: none;
+  }
+}
+
+:root[data-theme="dark"] {
+  --ink: #e8ecf1; --ink-2: #b9c2cd; --muted: #8b95a3;
+  --paper: #0e1216; --panel: #161b21; --rule: #262e37; --rule-soft: #1d242b;
+  --accent: #6fa8e8; --accent-soft: #17222f;
+  --recovered: #4cc38a; --lost: #d9a441;
+  --integrity: #f2837a; --integrity-soft: #2a1a19; --shadow: none;
+}
+:root[data-theme="light"] {
+  --ink: #12161c; --ink-2: #3d4650; --muted: #6b7684;
+  --paper: #f6f8fa; --panel: #ffffff; --rule: #dde3ea; --rule-soft: #eaeef3;
+  --accent: #1c4f8f; --accent-soft: #eaf0f8;
+  --recovered: #0f7b4f; --lost: #8a5a00;
+  --integrity: #b3261e; --integrity-soft: #fdf0ef;
+  --shadow: 0 1px 2px rgba(18, 22, 28, 0.05);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 14px/1.55 var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Every numeral in the app goes through this. */
+.num, .mono {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* ---- shell -------------------------------------------------------------- */
+
+.lab {
+  display: grid;
+  grid-template-columns: minmax(300px, 24rem) minmax(0, 1fr) minmax(260px, 20rem);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-areas: "head head head" "rules readout rail" "share share share";
+  height: 100vh;
+  gap: 1px;
+  background: var(--rule);
+}
+
+@media (max-width: 1100px) {
+  .lab {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "head" "rules" "readout" "rail" "share";
+    height: auto;
+  }
+}
+
+.head {
+  grid-area: head; background: var(--panel);
+  display: flex; align-items: baseline; gap: calc(var(--step) * 3);
+  padding: calc(var(--step) * 3) calc(var(--step) * 5);
+  flex-wrap: wrap;
+}
+.head h1 {
+  margin: 0; font-size: 15px; font-weight: 650; letter-spacing: -0.01em;
+}
+.head .where { color: var(--muted); font-size: 13px; }
+
+.col { background: var(--panel); overflow-y: auto; padding: calc(var(--step) * 5); }
+.rules { grid-area: rules; }
+.readout { grid-area: readout; }
+.rail { grid-area: rail; }
+
+h2 {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.09em;
+  color: var(--muted); font-weight: 650; margin: 0 0 calc(var(--step) * 3);
+}
+h2 + h2 { margin-top: calc(var(--step) * 6); }
+
+/* ---- rule editor -------------------------------------------------------- */
+
+.rule-group { margin-bottom: calc(var(--step) * 6); }
+.rule-row { display: flex; align-items: stretch; gap: 0; margin-bottom: calc(var(--step) * 2); }
+
+.rule-row input {
+  flex: 1; min-width: 0;
+  font: 13px/1.4 var(--mono);
+  color: var(--ink); background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  padding: calc(var(--step) * 2) calc(var(--step) * 2.5);
+}
+.rule-row input:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: -1px; border-color: var(--accent);
+}
+/* Parse error: integrity red, because a rule that cannot be read is a rule that
+   cannot be trusted — the same class as an ungrounded answer. */
+.rule-row.invalid input {
+  border-color: var(--integrity); background: var(--integrity-soft);
+}
+.rule-row button {
+  border: 1px solid var(--rule); border-left: none; background: var(--panel);
+  color: var(--muted); cursor: pointer; padding: 0 calc(var(--step) * 2.5);
+  font: 13px var(--mono); border-radius: 0 2px 2px 0;
+}
+.rule-row button:hover { color: var(--integrity); }
+
+.diag {
+  font: 12px/1.4 var(--mono); color: var(--integrity);
+  margin: 0 0 calc(var(--step) * 2); padding-left: calc(var(--step) * 2.5);
+  border-left: 2px solid var(--integrity);
+}
+.add {
+  font: 12px var(--sans); color: var(--accent); background: none;
+  border: 1px dashed var(--rule); border-radius: 2px; cursor: pointer;
+  padding: calc(var(--step) * 1.5) calc(var(--step) * 3); width: 100%;
+}
+.add:hover { border-color: var(--accent); background: var(--accent-soft); }
+
+/* ---- readout ------------------------------------------------------------ */
+
+.figure { display: flex; align-items: baseline; gap: calc(var(--step) * 3); }
+.figure .big {
+  font-family: var(--mono); font-variant-numeric: tabular-nums;
+  font-size: 46px; font-weight: 600; letter-spacing: -0.03em; line-height: 1;
+}
+.figure .of { color: var(--muted); font-size: 13px; }
+
+/* Stale = last-valid numbers, visibly marked. Never blank the preview: a person
+   mid-keystroke has not broken anything. */
+.stale { position: relative; }
+.stale .figure .big, .stale .impact { opacity: 0.45; }
+.stale-note {
+  display: flex; gap: calc(var(--step) * 2); align-items: flex-start;
+  font: 12px/1.45 var(--sans); color: var(--integrity);
+  background: var(--integrity-soft); border: 1px solid var(--integrity);
+  border-radius: 2px; padding: calc(var(--step) * 2) calc(var(--step) * 3);
+  margin: calc(var(--step) * 4) 0;
+}
+
+.impact { width: 100%; border-collapse: collapse; margin-top: calc(var(--step) * 4); }
+.impact th {
+  font: 11px var(--sans); text-transform: uppercase; letter-spacing: 0.07em;
+  color: var(--muted); text-align: left; font-weight: 650;
+  padding: 0 calc(var(--step) * 2) calc(var(--step) * 2); border-bottom: 1px solid var(--rule);
+}
+.impact th.r, .impact td.r { text-align: right; }
+.impact td {
+  padding: calc(var(--step) * 2); border-bottom: 1px solid var(--rule-soft);
+  font-size: 13px;
+}
+.impact td.crit { font-family: var(--mono); font-size: 12px; }
+.impact tr:last-child td { border-bottom: none; }
+
+.share-bar {
+  display: inline-block; height: 6px; border-radius: 1px;
+  background: var(--accent); min-width: 2px; vertical-align: middle;
+}
+
+/* ---- provenance rail ---------------------------------------------------- */
+/* Persistent column, never a footer. This is the visible form of four phases of
+   seed-stamping and ledger discipline — if it reads as chrome, the design has
+   failed the product. */
+
+.rail { border-left: 1px solid var(--rule); }
+.stamp { display: flex; flex-direction: column; gap: calc(var(--step) * 2); }
+.stamp-row {
+  display: flex; justify-content: space-between; gap: calc(var(--step) * 3);
+  font-size: 12px; padding-bottom: calc(var(--step) * 2);
+  border-bottom: 1px solid var(--rule-soft);
+}
+.stamp-row .k { color: var(--muted); }
+.stamp-row .v {
+  font-family: var(--mono); font-variant-numeric: tabular-nums;
+  text-align: right; word-break: break-all;
+}
+
+.ledger-line {
+  display: flex; justify-content: space-between; gap: calc(var(--step) * 2);
+  font-size: 12px; padding: calc(var(--step) * 1.5) 0;
+  border-bottom: 1px solid var(--rule-soft);
+}
+.ledger-line .name { font-family: var(--mono); font-size: 11px; color: var(--ink-2); }
+.tag {
+  font: 10px var(--sans); text-transform: uppercase; letter-spacing: 0.06em;
+  padding: 2px 6px; border-radius: 2px; white-space: nowrap; font-weight: 650;
+}
+.tag.never { color: var(--integrity); background: var(--integrity-soft); }
+.tag.ok { color: var(--recovered); background: transparent; border: 1px solid var(--rule); }
+
+/* ---- share bar ---------------------------------------------------------- */
+
+.share {
+  grid-area: share; background: var(--panel);
+  display: flex; align-items: center; gap: calc(var(--step) * 3);
+  padding: calc(var(--step) * 2.5) calc(var(--step) * 5);
+  border-top: 1px solid var(--rule);
+}
+.share label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.share code {
+  flex: 1; min-width: 0; font: 12px var(--mono); color: var(--ink-2);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.share button {
+  font: 12px var(--sans); color: var(--accent); background: var(--accent-soft);
+  border: 1px solid var(--rule); border-radius: 2px; cursor: pointer;
+  padding: calc(var(--step) * 1.5) calc(var(--step) * 3);
+}
+
+.controls { display: flex; gap: calc(var(--step) * 3); align-items: center; margin-left: auto; }
+.controls label { font-size: 12px; color: var(--muted); display: flex; gap: calc(var(--step)*1.5); align-items: center; }
+.controls input, .controls select {
+  font: 12px var(--mono); color: var(--ink); background: var(--panel);
+  border: 1px solid var(--rule); border-radius: 2px; padding: 3px 6px; width: 6rem;
+}
+.controls select { width: auto; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}

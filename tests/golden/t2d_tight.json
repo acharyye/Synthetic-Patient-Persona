@@ -1,0 +1,152 @@
+{
+  "burden": {
+    "mean_score": 0.27,
+    "n_scored": 1,
+    "top": [
+      {
+        "drivers": [
+          "already on several medications",
+          "multiple conditions competing for appointments",
+          "washout means stopping medication that is currently working"
+        ],
+        "patient_id": "type-2-diabetes-s42-0069",
+        "score": 0.27
+      }
+    ]
+  },
+  "cohort_summary": {
+    "adherence_below_50pct": 12,
+    "adherence_mean": 0.65,
+    "age_mean": 61.4,
+    "age_range": [
+      35,
+      86
+    ],
+    "barrier_prevalence": {
+      "adherence": 0.31,
+      "competing_care": 0.57,
+      "comprehension": 0.26,
+      "cost": 0.24,
+      "digital_access": 0.33,
+      "distance": 0.15,
+      "mobility": 0.29,
+      "pill_burden": 0.2,
+      "scheduling": 0.18,
+      "transport": 0.05,
+      "transport_fragile": 0.31,
+      "unsupported": 0.29
+    },
+    "comorbidity_prevalence": {
+      "CKD": 0.33,
+      "cardiovascular disease": 0.29,
+      "depression": 0.15,
+      "diabetic neuropathy": 0.24,
+      "diabetic retinopathy": 0.19,
+      "dyslipidemia": 0.51,
+      "hypertension": 0.57,
+      "obesity": 0.57
+    },
+    "health_literacy": {
+      "high": 20,
+      "low": 26,
+      "medium": 54
+    },
+    "mean_barrier_load": 0.525,
+    "mean_comorbidity_count": 2.85,
+    "n": 100,
+    "sex": {
+      "female": 33,
+      "male": 67
+    },
+    "stage": {
+      "advanced": 16,
+      "early": 42,
+      "moderate": 42
+    }
+  },
+  "condition": "type 2 diabetes",
+  "eligible_summary": {
+    "adherence_below_50pct": 0,
+    "adherence_mean": 0.74,
+    "age_mean": 73.0,
+    "age_range": [
+      73,
+      73
+    ],
+    "barrier_prevalence": {
+      "competing_care": 1.0,
+      "mobility": 1.0,
+      "pill_burden": 1.0
+    },
+    "comorbidity_prevalence": {
+      "depression": 1.0,
+      "diabetic neuropathy": 1.0,
+      "dyslipidemia": 1.0,
+      "hypertension": 1.0,
+      "obesity": 1.0
+    },
+    "health_literacy": {
+      "medium": 1
+    },
+    "mean_barrier_load": 0.45,
+    "mean_comorbidity_count": 5.0,
+    "n": 1,
+    "sex": {
+      "male": 1
+    },
+    "stage": {
+      "advanced": 1
+    }
+  },
+  "n": 100,
+  "scenario": "t2d_tight",
+  "screening": {
+    "criteria_impact": [
+      {
+        "criterion": "biomarkers.HbA1c_pct >= 9.0",
+        "kind": "inclusion",
+        "screened_out": 86,
+        "screened_out_rate": 0.86,
+        "sole_reason": 7
+      },
+      {
+        "criterion": "age >= 60",
+        "kind": "inclusion",
+        "screened_out": 43,
+        "screened_out_rate": 0.43,
+        "sole_reason": 2
+      },
+      {
+        "criterion": "stage in {moderate, advanced}",
+        "kind": "inclusion",
+        "screened_out": 42,
+        "screened_out_rate": 0.42,
+        "sole_reason": 1
+      },
+      {
+        "criterion": "CKD",
+        "kind": "exclusion",
+        "screened_out": 33,
+        "screened_out_rate": 0.33,
+        "sole_reason": 1
+      },
+      {
+        "criterion": "adherence_baseline < 0.6",
+        "kind": "exclusion",
+        "screened_out": 31,
+        "screened_out_rate": 0.31,
+        "sole_reason": 0
+      },
+      {
+        "criterion": "cardiovascular disease",
+        "kind": "exclusion",
+        "screened_out": 29,
+        "screened_out_rate": 0.29,
+        "sole_reason": 2
+      }
+    ],
+    "eligibility_rate": 0.01,
+    "n_eligible": 1
+  },
+  "seed": 42
+}

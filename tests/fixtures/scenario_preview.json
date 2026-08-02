@@ -1,0 +1,88 @@
+{
+  "attribution": [
+    {
+      "criterion": "biomarkers.HbA1c_pct >= 7.5",
+      "kind": "inclusion",
+      "screened_out": 93,
+      "shapley": 73.667,
+      "shapley_share": 0.53,
+      "sole_reason": 55
+    },
+    {
+      "criterion": "CKD",
+      "kind": "exclusion",
+      "screened_out": 61,
+      "shapley": 44.667,
+      "shapley_share": 0.3213,
+      "sole_reason": 29
+    },
+    {
+      "criterion": "age >= 50",
+      "kind": "inclusion",
+      "screened_out": 30,
+      "shapley": 20.667,
+      "shapley_share": 0.1487,
+      "sole_reason": 12
+    }
+  ],
+  "cohort": {
+    "cached": false,
+    "identity": "type_2_diabetes@v1 seed=42 n=200 as_of=2026-08-02",
+    "size": 200
+  },
+  "criteria_impact": [
+    {
+      "criterion": "biomarkers.HbA1c_pct >= 7.5",
+      "kind": "inclusion",
+      "screened_out": 93,
+      "screened_out_rate": 0.465,
+      "sole_reason": 55
+    },
+    {
+      "criterion": "CKD",
+      "kind": "exclusion",
+      "screened_out": 61,
+      "screened_out_rate": 0.305,
+      "sole_reason": 29
+    },
+    {
+      "criterion": "age >= 50",
+      "kind": "inclusion",
+      "screened_out": 30,
+      "screened_out_rate": 0.15,
+      "sole_reason": 12
+    }
+  ],
+  "diagnostics": [
+    {
+      "column": null,
+      "index": 0,
+      "kind": "inclusion",
+      "message": "",
+      "ok": true,
+      "text": "age >= 50"
+    },
+    {
+      "column": null,
+      "index": 1,
+      "kind": "inclusion",
+      "message": "",
+      "ok": true,
+      "text": "biomarkers.HbA1c_pct >= 7.5"
+    },
+    {
+      "column": null,
+      "index": 2,
+      "kind": "exclusion",
+      "message": "",
+      "ok": true,
+      "text": "CKD"
+    }
+  ],
+  "eligibility_rate": 0.305,
+  "eligible": 61,
+  "screened": 200,
+  "sequence": 1,
+  "stale": false,
+  "stale_reason": ""
+}

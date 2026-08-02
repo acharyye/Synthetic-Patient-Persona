@@ -1,0 +1,58 @@
+{
+  "description": "PRE-REGISTERED pass bars for the narration compliance eval. Committed BEFORE any live model has been run, because the one instrument failure a canary cannot catch is grading the first numbers by rationalisation. If a bar turns out to be wrong, change it in a separate, explicit commit that says so — never in the same change that reports a result against it.",
+  "registered_on": "2026-08-01",
+  "registered_before_first_live_run": true,
+  "prompt_version": 1,
+  "target_model": "qwen2.5:7b-instruct",
+
+  "hard": {
+    "citation_validity": {
+      "min": 1.0,
+      "rationale": "fact_ids is a JSON-schema enum of exactly the retrieved ids, so an out-of-context citation is ungrammatical. A miss here is an adapter, schema or backend bug — NOT model non-compliance. Triage the plumbing before touching the prompt.",
+      "on_miss": "investigate_adapter"
+    },
+    "parse_failure_rate": {
+      "max": 0.0,
+      "rationale": "Constrained decode guarantees a schema-valid object. Any parse failure means the backend ignored `format`, which invalidates every other number in the run.",
+      "on_miss": "investigate_adapter"
+    },
+    "context_overflow_rate": {
+      "max": 0.0,
+      "rationale": "The recorder refuses takes that would not fit num_ctx. A non-zero rate means prompts outgrew the window and the run is not measuring what it claims.",
+      "on_miss": "raise_num_ctx_or_shorten_prompt"
+    }
+  },
+
+  "soft": {
+    "factual_coverage": {
+      "min": 0.9,
+      "rationale": "Fraction of factual segments carrying at least one citation. The model declares segment kind itself, so this is a genuine behavioural measure. Below the bar, iterate the prompt.",
+      "on_miss": "iterate_prompt"
+    },
+    "model_recall": {
+      "min": 0.5,
+      "rationale": "Of the expected facts that retrieval actually surfaced, how many the model cited. This is the model's job. A miss indicts the prompt. Set at 0.5 because a 2-3 segment answer cannot cite all four expected facts — this bar asks for half, not completeness.",
+      "on_miss": "iterate_prompt"
+    },
+    "system_recall": {
+      "min": 0.4,
+      "rationale": "Of ALL expected facts, how many were cited end to end. Lower than model_recall by construction: it also fails when retrieval did not surface the fact. A system miss with a model pass is a RETRIEVAL problem — iterate the intent scorer, not the prompt.",
+      "on_miss": "iterate_retrieval_if_model_recall_passes"
+    },
+    "hard_failure_rate": {
+      "max": 0.15,
+      "rationale": "Fraction still ungrounded after the one permitted retry. Some failure is expected from a 7B model; a high rate means the contract is not learnable from the prompt as written.",
+      "on_miss": "iterate_prompt"
+    },
+    "retry_rate": {
+      "max": 0.4,
+      "rationale": "Fraction needing the corrective regeneration. Diagnostic rather than a quality bar: high retry with low hard-failure means the repair instruction works but the first attempt does not.",
+      "on_miss": "iterate_prompt"
+    }
+  },
+
+  "diagnostics_no_bar": {
+    "position_bias": "Distribution of cited-fact positions in the offered list. Constrained decode plus an enum invites citing whatever appears first. If concentrated in the top two positions, enable seeded fact-order permutation in the prompt builder — deterministic per persona, so purity holds.",
+    "factual_segment_fraction": "Share of segments declared `factual` per question type. The gate deliberately no longer guesses at segment kind, so kind-dodging — asserting content while labelling it `feeling` to skip citing — would show up here as an anomalously low fraction on fact-seeking questions."
+  }
+}

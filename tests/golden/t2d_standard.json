@@ -1,0 +1,198 @@
+{
+  "burden": {
+    "mean_score": 0.3619,
+    "n_scored": 26,
+    "top": [
+      {
+        "drivers": [
+          "already struggles to take medication as prescribed",
+          "no reliable transport to the site",
+          "no one at home to support attendance",
+          "already on several medications",
+          "multiple conditions competing for appointments"
+        ],
+        "patient_id": "type-2-diabetes-s42-0016",
+        "score": 0.76
+      },
+      {
+        "drivers": [
+          "already struggles to take medication as prescribed",
+          "no reliable transport to the site",
+          "work pattern conflicts with weekday visits",
+          "no one at home to support attendance",
+          "lives rurally, long journey to site"
+        ],
+        "patient_id": "type-2-diabetes-s42-0077",
+        "score": 0.74
+      },
+      {
+        "drivers": [
+          "already struggles to take medication as prescribed",
+          "low health literacy — consent and diaries are harder",
+          "work pattern conflicts with weekday visits",
+          "already on several medications",
+          "multiple conditions competing for appointments"
+        ],
+        "patient_id": "type-2-diabetes-s42-0004",
+        "score": 0.71
+      },
+      {
+        "drivers": [
+          "already struggles to take medication as prescribed",
+          "no reliable transport to the site",
+          "low health literacy — consent and diaries are harder",
+          "work pattern conflicts with weekday visits"
+        ],
+        "patient_id": "type-2-diabetes-s42-0025",
+        "score": 0.71
+      },
+      {
+        "drivers": [
+          "already struggles to take medication as prescribed",
+          "low health literacy — consent and diaries are harder",
+          "work pattern conflicts with weekday visits",
+          "multiple conditions competing for appointments"
+        ],
+        "patient_id": "type-2-diabetes-s42-0000",
+        "score": 0.61
+      }
+    ]
+  },
+  "cohort_summary": {
+    "adherence_below_50pct": 12,
+    "adherence_mean": 0.65,
+    "age_mean": 61.4,
+    "age_range": [
+      35,
+      86
+    ],
+    "barrier_prevalence": {
+      "adherence": 0.31,
+      "competing_care": 0.57,
+      "comprehension": 0.26,
+      "cost": 0.24,
+      "digital_access": 0.33,
+      "distance": 0.15,
+      "mobility": 0.29,
+      "pill_burden": 0.2,
+      "scheduling": 0.18,
+      "transport": 0.05,
+      "transport_fragile": 0.31,
+      "unsupported": 0.29
+    },
+    "comorbidity_prevalence": {
+      "CKD": 0.33,
+      "cardiovascular disease": 0.29,
+      "depression": 0.15,
+      "diabetic neuropathy": 0.24,
+      "diabetic retinopathy": 0.19,
+      "dyslipidemia": 0.51,
+      "hypertension": 0.57,
+      "obesity": 0.57
+    },
+    "health_literacy": {
+      "high": 20,
+      "low": 26,
+      "medium": 54
+    },
+    "mean_barrier_load": 0.525,
+    "mean_comorbidity_count": 2.85,
+    "n": 100,
+    "sex": {
+      "female": 33,
+      "male": 67
+    },
+    "stage": {
+      "advanced": 16,
+      "early": 42,
+      "moderate": 42
+    }
+  },
+  "condition": "type 2 diabetes",
+  "eligible_summary": {
+    "adherence_below_50pct": 3,
+    "adherence_mean": 0.63,
+    "age_mean": 64.7,
+    "age_range": [
+      50,
+      80
+    ],
+    "barrier_prevalence": {
+      "adherence": 0.35,
+      "competing_care": 0.38,
+      "comprehension": 0.35,
+      "cost": 0.12,
+      "digital_access": 0.35,
+      "distance": 0.12,
+      "mobility": 0.15,
+      "pill_burden": 0.23,
+      "scheduling": 0.08,
+      "transport": 0.08,
+      "transport_fragile": 0.23,
+      "unsupported": 0.27
+    },
+    "comorbidity_prevalence": {
+      "cardiovascular disease": 0.46,
+      "depression": 0.15,
+      "diabetic neuropathy": 0.27,
+      "diabetic retinopathy": 0.15,
+      "dyslipidemia": 0.5,
+      "hypertension": 0.46,
+      "obesity": 0.5
+    },
+    "health_literacy": {
+      "high": 1,
+      "low": 9,
+      "medium": 16
+    },
+    "mean_barrier_load": 0.437,
+    "mean_comorbidity_count": 2.5,
+    "n": 26,
+    "sex": {
+      "female": 7,
+      "male": 19
+    },
+    "stage": {
+      "advanced": 4,
+      "early": 9,
+      "moderate": 13
+    }
+  },
+  "n": 100,
+  "scenario": "t2d_standard",
+  "screening": {
+    "criteria_impact": [
+      {
+        "criterion": "biomarkers.HbA1c_pct >= 7.5",
+        "kind": "inclusion",
+        "screened_out": 43,
+        "screened_out_rate": 0.43,
+        "sole_reason": 27
+      },
+      {
+        "criterion": "CKD",
+        "kind": "exclusion",
+        "screened_out": 33,
+        "screened_out_rate": 0.33,
+        "sole_reason": 14
+      },
+      {
+        "criterion": "age >= 50",
+        "kind": "inclusion",
+        "screened_out": 17,
+        "screened_out_rate": 0.17,
+        "sole_reason": 8
+      },
+      {
+        "criterion": "biomarkers.eGFR < 45",
+        "kind": "exclusion",
+        "screened_out": 7,
+        "screened_out_rate": 0.07,
+        "sole_reason": 2
+      }
+    ],
+    "eligibility_rate": 0.26,
+    "n_eligible": 26
+  },
+  "seed": 42
+}
