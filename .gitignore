@@ -22,3 +22,12 @@ ui/test-results/
 
 # Evidence bundles are committed per release; scratch canary state is not.
 evidence/*/_canary.json
+
+# Authoring tools — kept locally, not published. These are working notes and
+# agent context, not project documentation; the invariants they index are
+# duplicated in module docstrings and tests, which is where they belong.
+CLAUDE.md
+CLAUDE_HANDOFF.md
+PLAN.md
+spp_vision_and_roadmap.md
+Brief.txt
