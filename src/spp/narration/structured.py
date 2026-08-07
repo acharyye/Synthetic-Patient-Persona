@@ -29,9 +29,14 @@ loudly rather than silently degrading to unchecked prose.
 from __future__ import annotations
 
 import json
+import re
 from typing import Any, Literal
 
 from pydantic import BaseModel, Field
+
+# Literal citation markers a model may write into `text` despite the
+# structured contract carrying ids separately.
+_INLINE_MARKER = re.compile(r"\s*\[F\d+(?:\s*,\s*F\d+)*\]")
 
 SegmentKind = Literal["factual", "feeling"]
 
@@ -63,10 +68,20 @@ class StructuredAnswer(BaseModel):
         return seen
 
     def render(self, with_citations: bool = True) -> str:
-        """Assemble prose. This is code, which is the whole point."""
+        """Assemble prose. This is code, which is the whole point.
+
+        Strips any literal `[F012]` markers the model wrote INTO the text before
+        appending the real ones. Observed in 7 of 25 takes on the first live run:
+        the prompt still carries the pre-structured-decode instruction to cite
+        inline, so the model satisfies both contracts and the citations render
+        twice. The prompt is the root cause (fixing it bumps PROMPT_VERSION and
+        invalidates cassettes); this keeps the renderer robust regardless, since
+        a stray marker is always possible.
+        """
         parts: list[str] = []
         for segment in self.segments:
-            text = segment.text.strip()
+            text = _INLINE_MARKER.sub("", segment.text).strip()
+            text = " ".join(text.split())
             if not text:
                 continue
             if with_citations and segment.fact_ids:
