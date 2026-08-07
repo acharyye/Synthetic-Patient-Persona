@@ -31,3 +31,6 @@ CLAUDE_HANDOFF.md
 PLAN.md
 spp_vision_and_roadmap.md
 Brief.txt
+
+# Protocol CI working output (verdicts are artifacts, not source)
+ci/out/

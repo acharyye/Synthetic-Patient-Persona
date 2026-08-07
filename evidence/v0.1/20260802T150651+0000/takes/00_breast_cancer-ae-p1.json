@@ -1,0 +1,62 @@
+{
+  "attempts": 1,
+  "case_id": "breast_cancer-ae-p1",
+  "citation_valid": true,
+  "cited": [
+    "F155",
+    "F156",
+    "F162",
+    "F163",
+    "F166",
+    "F167",
+    "F168",
+    "F173",
+    "F174",
+    "F175"
+  ],
+  "cited_factual_segments": 1,
+  "cited_positions": [
+    0,
+    1,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "expected_facts": [
+    "F155",
+    "F156",
+    "F157",
+    "F161"
+  ],
+  "factual_segments": 1,
+  "failure": "",
+  "grounded": true,
+  "parse_failed": false,
+  "patient_id": "breast-cancer-s42-0005",
+  "question": "What side effects should I expect from treatment?",
+  "response_chars": 459,
+  "retrieved_facts": [
+    "F155",
+    "F156",
+    "F157",
+    "F161",
+    "F162",
+    "F163",
+    "F166",
+    "F167",
+    "F168",
+    "F173",
+    "F174",
+    "F175",
+    "F154",
+    "F160",
+    "F165",
+    "F172"
+  ],
+  "total_segments": 1
+}

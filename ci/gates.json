@@ -1,0 +1,6 @@
+{
+  "$comment": "PRE-REGISTERED gates for Protocol CI. Committed before any verdict existed, for the same reason as tests/eval/pass_bars.json: a threshold chosen after seeing a number is not a threshold. Changing one is its own explicit commit that says why.",
+  "retention_drop_pp": { "fail": 1.0, "warn": 0.25 },
+  "require_sign_stability_for_fail": true,
+  "max_new_sole_reason_share": { "warn": 0.15 }
+}

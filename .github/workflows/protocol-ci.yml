@@ -1,0 +1,112 @@
+name: Protocol CI
+
+# Gates protocol design changes the way tests gate code changes. A retention
+# regression is a failing check with a flip table in the PR comment.
+#
+# Pure core: this path never calls an LLM. tests/test_protocol_ci.py enforces
+# that rather than trusting this comment.
+
+on:
+  pull_request:
+    paths:
+      - "protocols/**"
+      - "src/spp/**"
+      - "data/prior_packs/**"
+      - "ci/gates.json"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Need the base commit to diff against for changed-file detection.
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install
+        run: pip install -r requirements.txt
+
+      - name: Find changed scenarios
+        id: changed
+        run: |
+          BASE="${{ github.event.pull_request.base.sha }}"
+          CHANGED=$(git diff --name-only "$BASE"...HEAD || true)
+          SCENARIOS=$(PYTHONPATH=src python -c "
+          import sys
+          from spp.ci.cli import changed_scenarios
+          print('\n'.join(changed_scenarios(sys.stdin.read().splitlines())))
+          " <<< "$CHANGED")
+          # When only engine or pack code changed, gate EVERY scenario — a
+          # simulation change can move a design nobody edited.
+          if [ -z "$SCENARIOS" ]; then
+            SCENARIOS=$(ls protocols/*.json 2>/dev/null | grep -v '\.baseline\.json' || true)
+          fi
+          echo "list<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$SCENARIOS" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Gate each scenario
+        id: gate
+        env:
+          PYTHONPATH: src
+        run: |
+          set +e
+          STATUS=0
+          : > ci-comment.md
+          while IFS= read -r SCENARIO; do
+            [ -z "$SCENARIO" ] && continue
+            echo "::group::$SCENARIO"
+            python -m spp.ci.cli check "$SCENARIO" --gates ci/gates.json --out "ci/out"
+            RC=$?
+            [ $RC -ne 0 ] && STATUS=$RC
+            cat ci/out/verdict.md >> ci-comment.md
+            echo "" >> ci-comment.md
+            echo "::endgroup::"
+          done <<< "${{ steps.changed.outputs.list }}"
+          exit $STATUS
+
+      - name: Post or update the PR comment
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            if (!fs.existsSync('ci-comment.md')) return;
+            const body = fs.readFileSync('ci-comment.md', 'utf8');
+            if (!body.trim()) return;
+
+            const marker = '<!-- spp-protocol-ci -->';
+            const { owner, repo } = context.repo;
+            const issue_number = context.payload.pull_request.number;
+
+            // Sticky: update in place so a busy PR gets one comment, not one
+            // per push.
+            const existing = await github.paginate(
+              github.rest.issues.listComments, { owner, repo, issue_number });
+            const mine = existing.find(c => c.body.includes(marker));
+
+            if (mine) {
+              await github.rest.issues.updateComment(
+                { owner, repo, comment_id: mine.id, body });
+            } else {
+              await github.rest.issues.createComment(
+                { owner, repo, issue_number, body });
+            }
+
+      - name: Upload verdict artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: protocol-ci-verdict
+          path: ci/out/
+          if-no-files-found: ignore

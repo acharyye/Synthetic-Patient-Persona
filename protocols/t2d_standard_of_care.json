@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "name": "t2d_standard_of_care",
+  "description": "Reference type 2 diabetes protocol: monthly on-site visits over a year, with an HbA1c floor and renal exclusions. This is the design the repo gates itself against.",
+  "condition": "type 2 diabetes",
+  "pack": "type_2_diabetes",
+  "cohort_size": 300,
+  "seed": 42,
+  "duration_days": 365,
+  "inclusion": [
+    "age >= 50",
+    "biomarkers.HbA1c_pct >= 7.5"
+  ],
+  "exclusion": [
+    "biomarkers.eGFR < 45",
+    "CKD"
+  ],
+  "burden": {
+    "visits_per_year": 12,
+    "travel_required": true,
+    "daily_diary": false,
+    "washout_required": false,
+    "procedures": ["fasting bloods at every visit"]
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "attempts": 1,
+  "case_id": "type_2_diabetes-mitigation-p1",
+  "citation_valid": true,
+  "cited": [
+    "F042",
+    "F036",
+    "F041",
+    "F051",
+    "F052"
+  ],
+  "cited_factual_segments": 3,
+  "cited_positions": [
+    0,
+    8,
+    13,
+    2,
+    3
+  ],
+  "expected_facts": [
+    "F042",
+    "F043",
+    "F051",
+    "F052"
+  ],
+  "factual_segments": 3,
+  "failure": "",
+  "grounded": true,
+  "parse_failed": false,
+  "patient_id": "type-2-diabetes-s42-0005",
+  "question": "What support would make taking part possible?",
+  "response_chars": 342,
+  "retrieved_facts": [
+    "F042",
+    "F043",
+    "F051",
+    "F052",
+    "F032",
+    "F033",
+    "F034",
+    "F035",
+    "F036",
+    "F037",
+    "F038",
+    "F039",
+    "F040",
+    "F041",
+    "F045",
+    "F046"
+  ],
+  "total_segments": 3
+}

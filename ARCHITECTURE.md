@@ -173,3 +173,45 @@ If you need to understand a behavior or change it safely, start here:
 3. `src/spp/cohort/generator.py` and `src/spp/protocol/eligibility.py` for core decisions.
 4. `src/spp/simulation/` for retention and counterfactuals.
 5. `src/spp/narration/` for grounded speech and evidence handling.
+
+## Protocol CI (`src/spp/ci/`)
+
+Gates protocol design changes the way tests gate code changes: a retention
+regression is a failing check with a flip table in the PR comment.
+
+**Packaging, not new capability.** It reuses the counterfactual engine, the
+closed-form Shapley attribution and the evidence-bundle discipline. Nothing in
+`simulation/` was touched to build it, and nothing statistical is invented here —
+if a comparison is not expressible as CRN-paired flips plus existing
+attributions, it does not go in the verdict.
+
+**Pure core.** No LLM on this path, enforced by `TestPureCore` in
+`tests/test_protocol_ci.py` rather than by comment — the same move that keeps
+simulate/narrate real.
+
+### The strict/lenient split
+`protocol/lenient.py` scores the valid subset because a half-typed rule in the
+editor is a person mid-keystroke. `ci/scenario_file.py` is the opposite: an
+unparseable rule in a **committed** scenario is a hard error, because gating on
+"the rules that happened to parse" would gate on a design nobody wrote.
+
+### The baseline reading rule
+`protocols/<name>.baseline.json` is committed and diffed like a golden file.
+Regeneration prints its diff: an expected one is a redesign, an unexpected one is
+something to investigate before committing. `require_compatible` refuses a
+baseline whose pack version, seed, cohort size, duration or engine version
+differs — a baseline from a different population is not a baseline.
+
+**The baseline stores the scenario it came from.** This is load-bearing, not
+housekeeping. Without it the sign-stability control has nothing to compare
+against, the only available fallback is the candidate against itself, that yields
+zero flips at every seed, which reports "not sign-stable", which downgrades
+**every FAIL to WARN** — a gate that cannot fail while looking like protection.
+That bug existed and is now pinned by `TestGateCanActuallyFail`.
+
+### Gates are pre-registered
+`ci/gates.json` is committed, chosen before any verdict existed — same rule as
+`tests/eval/pass_bars.json`. FAIL requires the drop to exceed the threshold
+**and** be sign-stable across two seeds; a drop that flips direction when the
+population is redrawn is below the paired design's resolution and downgrades to
+WARN. The gate refuses to assert what its own method cannot distinguish.

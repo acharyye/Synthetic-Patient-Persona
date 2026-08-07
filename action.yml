@@ -1,0 +1,44 @@
+name: "Protocol CI"
+description: "Gate a protocol/scenario design change on simulated retention regression."
+author: "Synthetic Patient Persona"
+branding:
+  icon: "git-pull-request"
+  color: "blue"
+
+inputs:
+  scenario:
+    description: "Path to the scenario file to gate."
+    required: true
+  gates:
+    description: "Path to the pre-registered gates config."
+    required: false
+    default: "ci/gates.json"
+  out:
+    description: "Directory for verdict.json and verdict.md."
+    required: false
+    default: "ci/out"
+
+outputs:
+  outcome:
+    description: "PASS, WARN or FAIL."
+    value: ${{ steps.check.outputs.outcome }}
+  verdict-markdown:
+    description: "Path to the rendered PR comment."
+    value: ${{ steps.check.outputs.markdown }}
+
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      id: check
+      env:
+        PYTHONPATH: src
+      run: |
+        set +e
+        python -m spp.ci.cli check "${{ inputs.scenario }}" \
+          --gates "${{ inputs.gates }}" --out "${{ inputs.out }}"
+        RC=$?
+        OUTCOME=$(python -c "import json;print(json.load(open('${{ inputs.out }}/verdict.json'))['outcome'])" 2>/dev/null || echo UNKNOWN)
+        echo "outcome=$OUTCOME" >> "$GITHUB_OUTPUT"
+        echo "markdown=${{ inputs.out }}/verdict.md" >> "$GITHUB_OUTPUT"
+        exit $RC
