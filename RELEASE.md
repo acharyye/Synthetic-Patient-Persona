@@ -72,8 +72,9 @@ metrics** — a bundle containing only what went well is not evidence.
 The first three are the E2E suite narrated — `npx playwright test` in `ui/`,
 which boots the API and the dev server itself. The fourth is the new one.
 
-(Those specs are not yet wired into GitHub Actions; `protocol-ci.yml` is
-currently the only workflow. v0.1 and early v0.2 notes said otherwise.)
+All three test surfaces run on every push and PR (`.github/workflows/tests.yml`):
+Python, SPA typecheck and tests, then the E2E specs. `protocol-ci.yml` is
+separate and gates protocol *designs* rather than code.
 
 ### 1. Type a rule, watch attrition move
 
