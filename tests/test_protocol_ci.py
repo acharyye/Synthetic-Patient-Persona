@@ -16,6 +16,7 @@ from spp.ci import (
     ScenarioError,
     ScenarioFile,
     build_baseline,
+    discover_scenarios,
     evaluate,
     load_scenario,
     read_baseline,
@@ -296,6 +297,28 @@ class TestPathFilter:
     def test_it_respects_the_root(self):
         assert changed_scenarios(["designs/a.json"], root="designs") == ["designs/a.json"]
         assert changed_scenarios(["designs/a.json"], root="protocols") == []
+
+    def test_discovery_agrees_with_the_path_filter(self, tmp_path):
+        """Both answer "is this a scenario?" and must not disagree.
+
+        They did: `changed_scenarios` excluded baselines, `discover_scenarios`
+        did not, so `spp ci list` reported a correctly committed baseline as
+        INVALID — a listing that cries wolf about its own convention.
+        """
+        (tmp_path / "a.json").write_text("{}")
+        (tmp_path / "a.baseline.json").write_text("{}")
+        (tmp_path / "b.yaml").write_text("{}")
+
+        discovered = [p.name for p in discover_scenarios(tmp_path)]
+
+        assert discovered == ["a.json", "b.yaml"]
+        assert discovered == [
+            Path(p).name
+            for p in changed_scenarios(
+                [f"{tmp_path.name}/{n}" for n in ("a.json", "a.baseline.json", "b.yaml")],
+                root=tmp_path.name,
+            )
+        ]
 
 
 class TestCliExitCodes:

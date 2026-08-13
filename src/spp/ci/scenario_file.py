@@ -203,11 +203,17 @@ def dump_scenario(scenario: ScenarioFile, path: str | Path) -> Path:
 
 
 def discover_scenarios(root: str | Path, pattern: str = "*.json") -> list[Path]:
-    """Every scenario file under `root`, sorted. Used by the CI path filter."""
+    """Every scenario file under `root`, sorted. Used by the CI path filter.
+
+    Baselines live beside their scenario as `<name>.baseline.json` and are
+    excluded here, the same way `cli.changed_scenarios` excludes them: a
+    baseline is an expectation about a scenario, not a scenario, and listing it
+    as one made `spp ci list` report a committed baseline as INVALID.
+    """
     root = Path(root)
     if not root.exists():
         return []
     found = sorted(root.rglob(pattern))
     if pattern == "*.json":
         found += sorted(root.rglob("*.yaml")) + sorted(root.rglob("*.yml"))
-    return sorted(set(found))
+    return sorted(p for p in set(found) if not p.name.endswith(".baseline.json"))
