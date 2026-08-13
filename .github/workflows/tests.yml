@@ -29,9 +29,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # 3.13, not 3.12. tests/test_golden.py pins byte-exact output, and byte
+      # exactness is a property of the whole numeric stack, not just this code:
+      # on 3.11 the same commit lands 0.526 where the committed golden says
+      # 0.525. The goldens were generated on 3.13, so that is the interpreter
+      # this suite is evidence about. Changing it is a golden regeneration.
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.13"
           cache: pip
 
       - uses: actions/setup-node@v4
