@@ -69,8 +69,11 @@ metrics** — a bundle containing only what went well is not evidence.
 
 ## The demo, in four moves
 
-The first three are the E2E suite narrated (`ui/e2e/killer-interactions.spec.ts`,
-run in CI). The fourth is the new one.
+The first three are the E2E suite narrated — `npx playwright test` in `ui/`,
+which boots the API and the dev server itself. The fourth is the new one.
+
+(Those specs are not yet wired into GitHub Actions; `protocol-ci.yml` is
+currently the only workflow. v0.1 and early v0.2 notes said otherwise.)
 
 ### 1. Type a rule, watch attrition move
 
