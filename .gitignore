@@ -31,6 +31,11 @@ CLAUDE_HANDOFF.md
 PLAN.md
 spp_vision_and_roadmap.md
 Brief.txt
+protocol_ci_plan.md
+
+# Write-ups about the project are not the project. Drafts live locally; the
+# claims they make are only as good as RELEASE.md and the evidence bundles.
+linkedin_article.md
 
 # Protocol CI working output (verdicts are artifacts, not source)
 ci/out/
