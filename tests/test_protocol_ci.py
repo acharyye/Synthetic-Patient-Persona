@@ -24,6 +24,11 @@ from spp.ci import (
     write_baseline,
 )
 from spp.ci.cli import changed_scenarios, main
+from spp.foundation.runtime import (
+    MIN_SUPPORTED_PYTHON,
+    EnvironmentMismatch,
+    RuntimeStamp,
+)
 from spp.ci.scenario_file import ENGINE_VERSION
 from spp.ci.verdict import SignStability, _gate
 
@@ -319,6 +324,57 @@ class TestPathFilter:
                 root=tmp_path.name,
             )
         ]
+
+
+class TestRuntimeStamp:
+    """Tiered enforcement: refuse what nothing vouches for, warn on the rest.
+
+    The tiering is only honest while the CI matrix runs the goldens on every
+    supported interpreter. If that ever stops, the warn tier loses its backing
+    and has to go back to refusing.
+    """
+
+    def _stamp(self, **kw) -> RuntimeStamp:
+        base = dict(python_version="3.13.0", numpy_version="2.5.2", lock_hash="abc123")
+        return RuntimeStamp(**{**base, **kw})
+
+    def test_identical_environments_say_nothing(self):
+        assert self._stamp().check_against(self._stamp()) == []
+
+    def test_a_different_lock_is_refused(self):
+        """Strict tier. Different artifacts are a different environment."""
+        with pytest.raises(EnvironmentMismatch, match="dependency lock differs"):
+            self._stamp().check_against(self._stamp(lock_hash="def456"))
+
+    def test_an_interpreter_inside_the_range_only_warns(self):
+        """Not refused: the matrix is standing evidence that this is safe."""
+        warnings = self._stamp().check_against(self._stamp(python_version="3.11.9"))
+        assert len(warnings) == 1
+        assert "interpreters differ" in warnings[0]
+        assert "CI-enforced" in warnings[0]
+
+    def test_an_interpreter_below_the_floor_is_refused(self):
+        """Nothing covers 3.10, so there is no evidence to appeal to."""
+        with pytest.raises(EnvironmentMismatch, match="below the supported floor"):
+            self._stamp().check_against(self._stamp(python_version="3.10.14"))
+
+    def test_the_floor_matches_what_the_project_claims(self):
+        """A floor that drifts from pyproject is a promise nobody checks."""
+        pyproject = (Path(__file__).resolve().parents[1] / "pyproject.toml").read_text()
+        declared = f'requires-python = ">={".".join(map(str, MIN_SUPPORTED_PYTHON))}"'
+        assert declared in pyproject
+
+    def test_a_baseline_refuses_a_relocked_environment(self):
+        """End to end through require_compatible, not just the stamp."""
+        scenario = load_scenario(DOGFOOD)
+        baseline = build_baseline(scenario)
+        candidate = baseline.config.model_copy(
+            update={"runtime": baseline.config.runtime.model_copy(
+                update={"lock_hash": "0000000000000000"}
+            )}
+        )
+        with pytest.raises(EnvironmentMismatch):
+            baseline.require_compatible(candidate)
 
 
 class TestCliExitCodes:

@@ -48,6 +48,13 @@ def render_markdown(verdict: Verdict, max_flips: int = 8) -> str:
     lines.append(f"Sign stability: {verdict.sign_stability.describe()}")
     lines.append("")
 
+    # Environment differences the matrix vouches for. Surfaced rather than
+    # refused, and never as an error badge — a reader who sees red for something
+    # CI proves is safe learns to ignore red.
+    for warning in verdict.environment_warnings:
+        lines.append(f"> ⚠️ {warning}")
+        lines.append("")
+
     flips = [*verdict.lost, *verdict.recovered]
     if flips:
         lines.append("#### Who moved")

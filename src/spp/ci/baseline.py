@@ -32,6 +32,7 @@ from pydantic import BaseModel, Field
 from ..cohort import generate_cohort
 from ..cohort.packs import pack_for
 from ..foundation.ledger import LEDGER, LEDGER_SCHEMA_VERSION
+from ..foundation.runtime import RuntimeStamp
 from ..protocol import attribute_eligibility, screen
 from ..simulation import (
     VisitSchedule,
@@ -43,7 +44,12 @@ from ..simulation import (
 from ..simulation.schedule import ScheduledVisit
 from .scenario_file import ENGINE_VERSION, ScenarioFile
 
-BASELINE_SCHEMA_VERSION = 1
+# v2 adds the runtime stamp. The bump is load-bearing rather than cosmetic: a v1
+# baseline has no recorded environment, and pydantic would default-populate one
+# from whoever happens to be reading the file — a stale baseline silently
+# acquiring the reader's environment and comparing equal to everything. Refusing
+# v1 forces a regeneration that records what actually produced it.
+BASELINE_SCHEMA_VERSION = 2
 
 
 class IncompatibleBaseline(RuntimeError):
@@ -67,6 +73,9 @@ class ConfigStamp(BaseModel):
     cohort_size: int
     master_seed: int
     duration_days: int
+    # The third term. Seeds and declared assumptions were always stamped;
+    # the environment was travelling undeclared until it moved a golden.
+    runtime: RuntimeStamp = Field(default_factory=RuntimeStamp)
 
     @classmethod
     def of(cls, scenario: ScenarioFile) -> ConfigStamp:
@@ -84,7 +93,7 @@ class ConfigStamp(BaseModel):
         return (
             f"{self.pack_id}@v{self.pack_version} seed={self.master_seed} "
             f"n={self.cohort_size} days={self.duration_days} "
-            f"engine=v{self.engine_version}"
+            f"engine=v{self.engine_version} {self.runtime.describe()}"
         )
 
 
@@ -139,7 +148,17 @@ class Baseline(BaseModel):
                 + "\n\nA baseline from a different population is not a baseline. "
                 "Regenerate it with `spp ci baseline <scenario>` and review the diff."
             )
+        # Strict tier: raises when the environment is one nothing vouches for —
+        # a different dependency lock, or an interpreter outside the supported
+        # range. Differences the CI matrix covers come back as warnings instead,
+        # which is `environment_warnings`' job, because refusing there would
+        # assert a danger this system demonstrably does not have.
+        self.config.runtime.check_against(candidate.runtime)
         return self
+
+    def environment_warnings(self, candidate: ConfigStamp) -> list[str]:
+        """Environment differences CI vouches for: reported, never refused."""
+        return self.config.runtime.check_against(candidate.runtime)
 
 
 def build_schedule(scenario: ScenarioFile) -> VisitSchedule:

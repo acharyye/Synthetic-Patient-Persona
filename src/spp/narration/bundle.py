@@ -27,6 +27,7 @@ from typing import Any
 from pydantic import BaseModel, Field
 
 from ..foundation.ledger import LEDGER_SCHEMA_VERSION
+from ..foundation.runtime import RuntimeStamp
 
 BUNDLE_VERSION = 1
 EVIDENCE_DIR = Path(__file__).resolve().parents[3] / "evidence"
@@ -47,6 +48,11 @@ class BundleManifest(BaseModel):
     # bundle's references — so the version it was written against travels with
     # it, and an alias table can be scoped to a release rather than guessed at.
     ledger_schema_version: int = LEDGER_SCHEMA_VERSION
+    # The environment, on the same footing as the model digest and the sampling
+    # settings. A bundle is evidence about one configuration; the interpreter
+    # and the resolved dependency set are part of that configuration, and were
+    # the part that used to travel undeclared.
+    runtime: RuntimeStamp = Field(default_factory=RuntimeStamp)
     sampling: dict[str, Any] = Field(default_factory=dict)
     battery_cases: int = 0
     accepted_takes: int = 0
@@ -121,6 +127,7 @@ Recorded {manifest.recorded_at} against **{identity}**, prompt v{manifest.prompt
 | canary sensitive | {manifest.canary_sensitive} |
 | pass bars met | {manifest.bars_passed} |
 | ledger schema | v{manifest.ledger_schema_version} |
+| environment | {manifest.runtime.describe()} |
 
 ## Read in this order
 

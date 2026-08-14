@@ -126,6 +126,7 @@ class Verdict(BaseModel):
     perturbed: int = 0
 
     attribution_deltas: list[AttributionDelta] = Field(default_factory=list)
+    environment_warnings: list[str] = Field(default_factory=list)
     sign_stability: SignStability = Field(default_factory=SignStability)
     gates: Gates = Field(default_factory=Gates)
     ledger: dict = Field(default_factory=dict)
@@ -203,6 +204,7 @@ def evaluate(
     gates = gates or Gates()
     config = ConfigStamp.of(candidate)
     baseline.require_compatible(config)
+    env_warnings = baseline.environment_warnings(config)
 
     result = run_scenario(candidate)
     screening = result["screening"]
@@ -259,6 +261,7 @@ def evaluate(
         baseline_hash=baseline.scenario_hash,
         candidate_hash=candidate.scenario_hash(),
         config=config,
+        environment_warnings=env_warnings,
         baseline_retention=baseline_retention,
         candidate_retention=candidate_retention,
         retention_delta_pp=delta_pp,
