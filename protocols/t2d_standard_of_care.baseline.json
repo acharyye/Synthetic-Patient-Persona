@@ -45,14 +45,14 @@
     "pack_id": "type_2_diabetes",
     "pack_version": 1,
     "runtime": {
-      "lock_hash": "0c9031359dfa45f4",
+      "lock_hash": "24f055e496ea3a5b",
       "numpy_version": "2.5.2",
       "python_version": "3.13.0"
     }
   },
   "eligibility_rate": 0.25,
   "eligible": 75,
-  "generated_at": "2026-08-14T16:19:47+00:00",
+  "generated_at": "2026-08-14T22:27:33+00:00",
   "ledger": {
     "assumptions": [
       {

@@ -45,6 +45,9 @@ from pydantic import BaseModel, Field
 MIN_SUPPORTED_PYTHON = (3, 11)
 
 LOCK_FILENAME = "uv.lock"
+# The rendered export is preferred: it is the resolved artifact set with no
+# project version in it. See _lock_hash.
+EXPORT_FILENAME = "requirements.txt"
 
 
 class EnvironmentMismatch(RuntimeError):
@@ -53,7 +56,22 @@ class EnvironmentMismatch(RuntimeError):
 
 @lru_cache(maxsize=1)
 def _lock_hash() -> str:
-    """sha256 of uv.lock, or "unlocked" when there is no lock to read.
+    """Hash of the RESOLVED THIRD-PARTY ARTIFACTS, or "unlocked".
+
+    Hashes `requirements.txt` — the rendered export — not `uv.lock` itself.
+    That is deliberate and was learned the hard way.
+
+    `uv.lock` records the project's OWN version alongside its dependencies, so
+    hashing the whole file made a cosmetic `0.2.0 -> 0.3.0` bump change the
+    stamp, and the strict tier refused every committed baseline over it: same
+    interpreter, same numpy, nothing about the installed artifacts different.
+    A gate that fails on noise teaches people to ignore the gate — the same
+    reason a FAIL here requires sign-stability.
+
+    The export is generated with `--no-emit-project`, so it contains exactly
+    the third-party pins and their hashes and nothing about this project's
+    version. That IS the claim the stamp makes: these artifacts, not this
+    release number.
 
     Absence is recorded rather than raising: the library has to work from a
     source checkout, a wheel, or a vendored copy. An artifact stamped
@@ -62,9 +80,10 @@ def _lock_hash() -> str:
     """
     here = Path(__file__).resolve()
     for parent in here.parents:
-        candidate = parent / LOCK_FILENAME
-        if candidate.is_file():
-            return hashlib.sha256(candidate.read_bytes()).hexdigest()[:16]
+        for filename in (EXPORT_FILENAME, LOCK_FILENAME):
+            candidate = parent / filename
+            if candidate.is_file():
+                return hashlib.sha256(candidate.read_bytes()).hexdigest()[:16]
     return "unlocked"
 
 
