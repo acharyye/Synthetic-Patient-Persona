@@ -90,8 +90,8 @@ class GraphClient:
         )
         return {
             "live": True,
-            "nodes": sum(row["n"] for row in nodes),  # int-sum: neo4j count() rows
-            "relationships": sum(row["n"] for row in rels),  # int-sum: neo4j count() rows
+            "nodes": sum(row["n"] for row in nodes),  # int-sum: no schema — neo4j count() driver rows
+            "relationships": sum(row["n"] for row in rels),  # int-sum: no schema — neo4j count() driver rows
             "by_kind": {row["kind"]: row["n"] for row in nodes},
             "by_relationship": {row["rel"]: row["n"] for row in rels},
         }

@@ -116,10 +116,10 @@ class ComplianceReport(BaseModel):
         first. High concentration is the signal to enable seeded fact-order
         permutation in the prompt builder.
         """
-        total = sum(self.position_histogram.values())  # int-sum: histogram counts
+        total = sum(self.position_histogram.values())  # int-sum: ComplianceReport.position_histogram
         if not total:
             return 0.0
-        top = sum(count for pos, count in self.position_histogram.items()  # int-sum: histogram counts
+        top = sum(count for pos, count in self.position_histogram.items()  # int-sum: ComplianceReport.position_histogram
                   if int(pos) < 2)
         return round(top / total, 4)
 
@@ -261,8 +261,8 @@ def score(
         ))
 
     n = len(results) or 1
-    total_factual = sum(r.factual_segments for r in results)  # int-sum: segment counts
-    cited_factual = sum(r.cited_factual_segments for r in results)  # int-sum: segment counts
+    total_factual = sum(r.factual_segments for r in results)  # int-sum: CaseResult.factual_segments
+    cited_factual = sum(r.cited_factual_segments for r in results)  # int-sum: CaseResult.cited_factual_segments
 
     # RECALL, not precision. Precision (|cited & expected| / |cited|) stays at
     # 1.0 for a model that cites a single safe fact, so it cannot distinguish a
@@ -309,8 +309,8 @@ def score(
         retry_rate=round(sum(1 for r in results if r.attempts > 1) / n, 4),
         hard_failure_rate=round(sum(1 for r in results if not r.grounded) / n, 4),
         parse_failure_rate=round(sum(1 for r in results if r.parse_failed) / n, 4),
-        mean_segments_per_take=round(sum(r.total_segments for r in results) / n, 2),  # int-sum: segment counts
-        mean_response_chars=round(sum(r.response_chars for r in results) / n, 1),  # int-sum: character counts
+        mean_segments_per_take=round(sum(r.total_segments for r in results) / n, 2),  # int-sum: CaseResult.total_segments
+        mean_response_chars=round(sum(r.response_chars for r in results) / n, 1),  # int-sum: CaseResult.response_chars
         single_segment_rate=round(
             sum(1 for r in results if r.total_segments == 1) / n, 4
         ),

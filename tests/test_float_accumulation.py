@@ -30,9 +30,15 @@ reviewer sees it.
 from __future__ import annotations
 
 import ast
+import importlib
+import pkgutil
+import re
+import sys
 from pathlib import Path
+from typing import get_args, get_origin
 
 import pytest
+from pydantic import BaseModel
 
 CORE = Path(__file__).resolve().parents[1] / "src" / "spp"
 
@@ -91,6 +97,115 @@ def test_no_unmarked_bare_sum(path: Path) -> None:
         + "\n".join(offenders)
         + f"\n\n{RULE}"
     )
+
+
+def _model_registry() -> dict[str, type[BaseModel]]:
+    """Every pydantic model reachable under `spp`, by class name."""
+    package = importlib.import_module("spp")
+    for info in pkgutil.walk_packages(package.__path__, prefix="spp."):
+        try:
+            importlib.import_module(info.name)
+        except Exception:  # optional backends need not import to be introspected
+            continue
+
+    registry: dict[str, type[BaseModel]] = {}
+    for module in list(sys.modules.values()):
+        if not getattr(module, "__name__", "").startswith("spp"):
+            continue
+        for name, obj in vars(module).items():
+            if isinstance(obj, type) and issubclass(obj, BaseModel) and obj is not BaseModel:
+                registry.setdefault(obj.__name__, obj)
+    return registry
+
+
+def _annotation_is_integer(annotation: object) -> bool:
+    """int, or a container of ints — dict[str, int], list[int]."""
+    if annotation is int:
+        return True
+    args = get_args(annotation)
+    if get_origin(annotation) in (dict, list, tuple) and args:
+        return _annotation_is_integer(args[-1])
+    return False
+
+
+def _markers() -> list[tuple[Path, int, str]]:
+    out = []
+    for path in _source_files():
+        for number, line in enumerate(path.read_text().splitlines(), start=1):
+            if MARKER in line:
+                out.append((path, number, line.split(MARKER, 1)[1].strip()))
+    return out
+
+
+def test_int_sum_markers_resolve_to_int_typed_schema_fields() -> None:
+    """A marker must name the declaration it depends on, and be checked against it.
+
+    The guard above proves the operand types were *stated*. It cannot prove the
+    statement is true — so a field migrating from int to float would turn a
+    marker into a lie the guard believes. Full type inference is a real project;
+    schema introspection is not. Naming `Model.field` and resolving it through
+    pydantic means the annotation changing is exactly when this breaks.
+
+    Same move as reading tolerances from the pack rather than transcribing them:
+    check the assertion against the declaration it is about.
+
+    Markers that genuinely cannot name a schema field stay trusted-by-review —
+    that is the honest boundary — but they are enumerated here rather than
+    remembered, and the split is printed so the guard's reach is visible.
+    """
+    registry = _model_registry()
+    verified: list[str] = []
+    by_review: list[str] = []
+    broken: list[str] = []
+
+    for path, number, target in _markers():
+        where = f"{path.name}:{number}"
+        if not re.fullmatch(r"[A-Z]\w*\.\w+", target):
+            by_review.append(f"{where}: {target}")
+            continue
+
+        class_name, field_name = target.split(".")
+        model = registry.get(class_name)
+        if model is None:
+            broken.append(f"{where}: no pydantic model named {class_name!r}")
+            continue
+        field = model.model_fields.get(field_name)
+        if field is None:
+            broken.append(f"{where}: {class_name} has no field {field_name!r}")
+            continue
+        if not _annotation_is_integer(field.annotation):
+            broken.append(
+                f"{where}: {target} is annotated {field.annotation!r}, not int — "
+                "this sum is now float accumulation and must use math.fsum"
+            )
+            continue
+        verified.append(f"{where}: {target}")
+
+    print(
+        f"\nint-sum markers: {len(verified)} verified against schema, "
+        f"{len(by_review)} trusted-by-review"
+    )
+    for entry in by_review:
+        print(f"  trusted-by-review  {entry}")
+
+    assert not broken, "markers that no longer match their declaration:\n  " + "\n  ".join(broken)
+    # The boundary is allowed to exist, not to grow silently.
+    assert len(by_review) <= 2, (
+        f"{len(by_review)} unverifiable markers; every new one widens what this "
+        "guard cannot prove:\n  " + "\n  ".join(by_review)
+    )
+
+
+def test_marker_verification_can_actually_fail() -> None:
+    """The resolver must reject a float field, not merely accept int ones."""
+    assert _annotation_is_integer(int)
+    assert _annotation_is_integer(dict[str, int])
+    assert _annotation_is_integer(list[int])
+    assert not _annotation_is_integer(float)
+    assert not _annotation_is_integer(dict[str, float])
+
+    registry = _model_registry()
+    assert "CaseResult" in registry, "registry must actually find models"
 
 
 def test_the_guard_can_actually_fail(tmp_path: Path) -> None:

@@ -63,8 +63,8 @@ def retention_summary(logs: dict[str, EventLog]) -> dict:
             reasons[reason] = reasons.get(reason, 0) + 1
             dropout_days.append(events[-1].t)
 
-    attended = sum(s.visits_completed for s in states.values())  # int-sum: visit counts
-    missed = sum(s.visits_missed for s in states.values())  # int-sum: visit counts
+    attended = sum(s.visits_completed for s in states.values())  # int-sum: PersonaState.visits_completed
+    missed = sum(s.visits_missed for s in states.values())  # int-sum: PersonaState.visits_missed
     rates = [s.attendance_rate for s in states.values() if s.attendance_rate is not None]
 
     return {

@@ -1,6 +1,6 @@
 [project]
 name = "synthetic-patient-persona"
-version = "0.2.0"   # v0.2 — see RELEASE.md
+version = "0.3.0"   # v0.3 — see RELEASE.md
 description = "GraphRAG-grounded conversational patient digital twin for trial design & patient-journey work"
 # ">=3.11" is a real claim, not a floor nobody checks: the goldens are
 # byte-identical on 3.11 and 3.13, and tests/test_float_accumulation.py is what
