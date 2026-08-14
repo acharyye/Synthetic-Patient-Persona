@@ -1,11 +1,22 @@
 name: Tests
 
-# The three test surfaces, run the way the docs claim they are run. RELEASE.md
-# said the E2E specs were gated by CI before this existed; the fix for a false
-# claim is either to delete it or to make it true, and this is the second.
+# The three test surfaces, run the way the docs claim they are run.
 #
-# One job on purpose. The E2E specs need the Python API as well as the SPA, so
-# splitting by language would install Python twice to save nothing.
+# Shape: the Python suite runs on every supported interpreter; the Node work
+# runs once. Typecheck, component tests and the SPA bundle are
+# interpreter-invariant by construction — nothing in them can vary with CPython
+# — so running Playwright three times would re-verify an already-verified
+# surface at the price of tripling the slowest component. The one thing that
+# does cross the boundary, E2E booting the Python API, is exactly what the
+# per-leg Python suite already asserts.
+#
+# The single full leg runs on 3.11, the OLDEST supported interpreter, not the
+# newest. Development happens on 3.13, so 3.13 coverage is abundant and free;
+# the environment nothing exercises by default is the old one. Every
+# environment bug this repo has hit — an undeclared networkx, dash exiting on a
+# failed `.`, CPython 3.12's Neumaier sum() — was a guarantee that held only in
+# the environment that happened to exist. So point the expensive leg at the one
+# that doesn't.
 
 on:
   push:
@@ -16,37 +27,24 @@ on:
 permissions:
   contents: read
 
-# A superseded push is not worth the minutes.
 concurrency:
   group: tests-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  tests:
+  # requirements.txt is a rendering of uv.lock. Staleness is detected by
+  # construction — regenerate and diff the bytes — not by an mtime heuristic.
+  # Everything else needs this, so a stale lock stops the run rather than
+  # quietly installing something nobody declared.
+  deps:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
-
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
-          cache: pip
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: npm
-          cache-dependency-path: ui/package-lock.json
-
-      # requirements.txt is a rendering of uv.lock, so staleness is detected by
-      # construction rather than by convention: regenerate it here and diff
-      # against what was committed. No heuristic about file mtimes, no trust
-      # that the author remembered. This lives in the main workflow so it can
-      # never be green while the suite is red.
       - uses: astral-sh/setup-uv@v6
-
       - name: Dependencies are in sync
         run: |
           uv lock --check
@@ -55,9 +53,64 @@ jobs:
           diff "$RUNNER_TEMP/requirements.committed" requirements.txt \
             || { echo "::error::requirements.txt is stale. Run scripts/sync_deps.sh and commit."; exit 1; }
 
-      # Hash-checked, because requirements.txt carries --hash lines. pip refuses
-      # anything not listed, so a missing transitive dependency fails here
-      # rather than surfacing later as an import error.
+  # Goldens run on every leg, deliberately. They are byte-identical across
+  # interpreters because float accumulation goes through math.fsum, and
+  # tests/test_float_accumulation.py excludes the mechanism that made them
+  # diverge. This matrix is the canary for that guard: the guard mechanically
+  # excludes the ONE mechanism we found, the matrix asserts the CONCLUSION.
+  #
+  # So if a golden ever diverges on one interpreter while the guard is green,
+  # that is not flake to retry. It is a new version-sensitive mechanism, a
+  # sibling of Neumaier summation, and finding it is the valuable part. Triage
+  # it as a discovery: name the mechanism, then decide whether it can be made
+  # version-stable or whether goldens finally need a blessed-environment split.
+  python:
+    needs: deps
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false      # one interpreter failing must not hide the others
+      matrix:
+        python: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+
+      # Hash-checked: requirements.txt carries --hash lines, so pip refuses
+      # anything unlisted and a missing transitive dep fails here rather than
+      # as an import error later. The file's environment markers are what let
+      # one export serve every leg (numpy 2.4.6 below 3.12, 2.5.2 above).
+      - name: Install
+        run: pip install -r requirements.txt
+
+      - name: Python tests
+        run: pytest -q
+
+  ui:
+    needs: deps
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      # 3.11 on purpose — see the header. The E2E webServer boots the API with
+      # the ambient python3, so this leg exercises the API on the oldest
+      # supported interpreter, which is where a bootstrap bug would hide.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: ui/package-lock.json
+
       - name: Install Python deps
         run: pip install -r requirements.txt
 
@@ -65,13 +118,8 @@ jobs:
         working-directory: ui
         run: npm ci
 
-      # 1. The deterministic core. Live-graph tests skip without Neo4j, which is
-      #    the point: the pipeline must be green with no external services.
-      - name: Python tests
-        run: pytest -q
-
-      # 2. Generated types are committed so schema drift is a visible diff.
-      #    tsc catches a stale artifacts.ts that a passing test suite would not.
+      # Generated types are committed so schema drift is a visible diff. tsc
+      # catches a stale artifacts.ts that a passing test suite would not.
       - name: SPA typecheck
         working-directory: ui
         run: npm run typecheck
@@ -80,8 +128,8 @@ jobs:
         working-directory: ui
         run: npm test
 
-      # 3. The three killer interactions. playwright.config.ts boots the API and
-      #    the dev server itself — no hand-started processes, here or locally.
+      # playwright.config.ts boots the API and the dev server itself — no
+      # hand-started processes, here or locally.
       - name: Install Playwright browser
         working-directory: ui
         run: npx playwright install --with-deps chromium
