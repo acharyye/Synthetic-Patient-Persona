@@ -12,6 +12,8 @@ all, the *difference between two designs* is what the tool is for.
 """
 from __future__ import annotations
 
+import math
+
 from ..foundation.events import EventLog, EventType, JourneyStage, fold
 
 
@@ -61,8 +63,8 @@ def retention_summary(logs: dict[str, EventLog]) -> dict:
             reasons[reason] = reasons.get(reason, 0) + 1
             dropout_days.append(events[-1].t)
 
-    attended = sum(s.visits_completed for s in states.values())
-    missed = sum(s.visits_missed for s in states.values())
+    attended = sum(s.visits_completed for s in states.values())  # int-sum: visit counts
+    missed = sum(s.visits_missed for s in states.values())  # int-sum: visit counts
     rates = [s.attendance_rate for s in states.values() if s.attendance_rate is not None]
 
     return {
@@ -79,11 +81,11 @@ def retention_summary(logs: dict[str, EventLog]) -> dict:
             round(attended / (attended + missed), 4) if attended + missed else None
         ),
         "mean_persona_attendance": (
-            round(sum(rates) / len(rates), 4) if rates else None
+            round(math.fsum(rates) / len(rates), 4) if rates else None
         ),
         "dropout_reasons": dict(sorted(reasons.items(), key=lambda kv: (-kv[1], kv[0]))),
         "mean_burden_at_exit": round(
-            sum(s.burden.total for s in states.values()) / total, 4
+            math.fsum(s.burden.total for s in states.values()) / total, 4
         ),
     }
 
@@ -100,7 +102,7 @@ def burden_breakdown(logs: dict[str, EventLog]) -> dict[str, float]:
     states = [fold(log) for log in logs.values()]
     fields = type(states[0].burden).model_fields
     return {
-        field: round(sum(getattr(s.burden, field) for s in states) / len(states), 4)
+        field: round(math.fsum(getattr(s.burden, field) for s in states) / len(states), 4)
         for field in fields
     }
 

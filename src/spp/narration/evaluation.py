@@ -26,6 +26,8 @@ and asserts the scores fall. An eval that cannot fail is not evidence.
 """
 from __future__ import annotations
 
+import math
+
 import json
 from pathlib import Path
 
@@ -114,10 +116,10 @@ class ComplianceReport(BaseModel):
         first. High concentration is the signal to enable seeded fact-order
         permutation in the prompt builder.
         """
-        total = sum(self.position_histogram.values())
+        total = sum(self.position_histogram.values())  # int-sum: histogram counts
         if not total:
             return 0.0
-        top = sum(count for pos, count in self.position_histogram.items()
+        top = sum(count for pos, count in self.position_histogram.items()  # int-sum: histogram counts
                   if int(pos) < 2)
         return round(top / total, 4)
 
@@ -259,8 +261,8 @@ def score(
         ))
 
     n = len(results) or 1
-    total_factual = sum(r.factual_segments for r in results)
-    cited_factual = sum(r.cited_factual_segments for r in results)
+    total_factual = sum(r.factual_segments for r in results)  # int-sum: segment counts
+    cited_factual = sum(r.cited_factual_segments for r in results)  # int-sum: segment counts
 
     # RECALL, not precision. Precision (|cited & expected| / |cited|) stays at
     # 1.0 for a model that cites a single safe fact, so it cannot distinguish a
@@ -307,14 +309,14 @@ def score(
         retry_rate=round(sum(1 for r in results if r.attempts > 1) / n, 4),
         hard_failure_rate=round(sum(1 for r in results if not r.grounded) / n, 4),
         parse_failure_rate=round(sum(1 for r in results if r.parse_failed) / n, 4),
-        mean_segments_per_take=round(sum(r.total_segments for r in results) / n, 2),
-        mean_response_chars=round(sum(r.response_chars for r in results) / n, 1),
+        mean_segments_per_take=round(sum(r.total_segments for r in results) / n, 2),  # int-sum: segment counts
+        mean_response_chars=round(sum(r.response_chars for r in results) / n, 1),  # int-sum: character counts
         single_segment_rate=round(
             sum(1 for r in results if r.total_segments == 1) / n, 4
         ),
         position_histogram=dict(sorted(positions.items(), key=lambda kv: int(kv[0]))),
         factual_fraction_by_tag={
-            tag: round(sum(values) / len(values), 4)
+            tag: round(math.fsum(values) / len(values), 4)
             for tag, values in sorted(by_tag.items())
         },
         results=results,

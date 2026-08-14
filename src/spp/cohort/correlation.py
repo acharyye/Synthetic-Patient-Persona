@@ -248,7 +248,7 @@ def uniform_to_choice(u: float, weights: dict[str, float]) -> str:
     Insertion order of `weights` defines the ordinal direction, so a trait axis
     correlates sensibly with the category it selects.
     """
-    total = sum(weights.values())
+    total = math.fsum(weights.values())
     if total <= 0:
         raise ValueError("weights must sum to a positive number")
 

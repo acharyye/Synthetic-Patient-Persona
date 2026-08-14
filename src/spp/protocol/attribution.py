@@ -23,6 +23,8 @@ quietly switch to sampling.
 """
 from __future__ import annotations
 
+import math
+
 from pydantic import BaseModel, Field
 
 from ..assumptions import DROPOUT_HAZARD
@@ -97,7 +99,7 @@ def attribute_eligibility(result: ScreeningResult) -> EligibilityAttribution:
         shapley.setdefault(impact.criterion, 0.0)
         screened_out.setdefault(impact.criterion, 0)
 
-    total = sum(shapley.values())
+    total = math.fsum(shapley.values())
     rules = [
         RuleAttribution(
             criterion=criterion,
@@ -144,7 +146,7 @@ class DropoutAttribution(BaseModel):
 
     def shares(self) -> dict[str, float]:
         """Share of the positive (risk-increasing) contribution, per term."""
-        total = sum(t.contribution for t in self.terms if t.contribution > 0)
+        total = math.fsum(t.contribution for t in self.terms if t.contribution > 0)
         if total <= 0:
             return {}
         return {
@@ -174,7 +176,7 @@ def attribute_dropout(
                    contribution=round(weight * value, 6))
         for name, weight, value in inputs
     ]
-    logit = weights["intercept"] + sum(term.contribution for term in terms)
+    logit = math.fsum([weights["intercept"], *(term.contribution for term in terms)])
 
     from ..simulation.hazard import _sigmoid
 

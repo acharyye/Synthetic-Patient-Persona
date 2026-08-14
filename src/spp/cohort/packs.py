@@ -25,6 +25,8 @@ generation.
 """
 from __future__ import annotations
 
+import math
+
 import json
 from datetime import date
 from pathlib import Path
@@ -95,7 +97,7 @@ class MarginalSpec(BaseModel):
                         f"{self.field}/{name}: {weight} is not a probability"
                     )
             if self.family == "categorical":
-                total = sum(float(w) for w in self.params.values())
+                total = math.fsum(float(w) for w in self.params.values())
                 if abs(total - 1.0) > 1e-6:
                     raise ValueError(
                         f"{self.field}: categorical weights sum to {total}, not 1"

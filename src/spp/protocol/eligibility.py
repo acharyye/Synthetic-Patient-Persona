@@ -30,6 +30,8 @@ Two deliberate design decisions:
 """
 from __future__ import annotations
 
+import math
+
 import operator
 import re
 from typing import Any, Callable, Literal
@@ -63,7 +65,7 @@ _DERIVED_FIELDS: dict[str, Callable[[PatientDNA], Any]] = {
     "n_comorbidities": lambda d: len(d.comorbidities),
     "n_medications": lambda d: len(d.medications),
     "mean_medication_adherence": lambda d: (
-        round(sum(m.adherence for m in d.medications) / len(d.medications), 3)
+        round(math.fsum(m.adherence for m in d.medications) / len(d.medications), 3)
         if d.medications
         else None
     ),

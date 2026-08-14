@@ -7,6 +7,8 @@ LLM cannot drift into clinically incoherent answers.
 """
 from __future__ import annotations
 
+import math
+
 from datetime import date
 from typing import Literal
 
@@ -89,7 +91,7 @@ class PatientDNA(BaseModel):
     @property
     def barrier_load(self) -> float:
         """Summed barrier severity — the hazard model's main persona input."""
-        return round(sum(b.severity for b in self.barriers), 4)
+        return round(math.fsum(b.severity for b in self.barriers), 4)
 
     def summary(self) -> str:
         """Compact human/LLM-readable digest used in prompts."""
