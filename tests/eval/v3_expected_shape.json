@@ -4,92 +4,126 @@
   "registered_before_state_citation_exists": true,
   "baseline_bundle": "evidence/v0.3/20260814T200447+0000",
   "prompt_version_under_test": 3,
-
   "the_diagnosis_being_tested": {
     "claim": "v2's factual_fraction collapse on burden (0.667 -> 0.400) and mitigation (0.933 -> 0.443) is the STATE-CITATION GAP: the model labelled circumstantial segments `feeling` because the schema had no id for a persona's own simulated circumstances. Giving it P/B/E ids should let those segments be `factual` AND cited.",
-    "falsified_if": "factual_fraction on burden/mitigation does not recover once the ids exist — the reclassification then had a second cause and the diagnosis was incomplete."
+    "falsified_if": "factual_fraction on burden/mitigation does not recover once the ids exist \u2014 the reclassification then had a second cause and the diagnosis was incomplete."
   },
-
   "single_declared_variable": {
     "changed": "prompt v2 -> v3, plus the P/B/E namespaces in the fact-id enum",
     "held": [
       "model and digest (qwen2.5:7b-instruct@845dbda0ea48...)",
       "sampling (seed 42, temperature 0.0, top_p 1.0, num_predict 700, num_ctx 8192)",
       "battery personas and questions",
-      "seeded fact-order permutation STAYS OFF — reading 5 named it as the lever for position concentration, and turning it on here would entangle two effects and reproduce exactly the unseparable reading v2 produced. It gets its own paired comparison after v3."
+      "seeded fact-order permutation STAYS OFF \u2014 reading 5 named it as the lever for position concentration, and turning it on here would entangle two effects and reproduce exactly the unseparable reading v2 produced. It gets its own paired comparison after v3."
     ]
   },
-
   "arms": {
     "$comment": "A ceiling as a number would be arbitrary. The discriminator is a control arm: tags whose citable evidence did not change must not move. If everything rises together it is over-correction, however good the burden numbers look.",
-
     "recovery": {
-      "tags": ["burden", "mitigation"],
+      "tags": [
+        "burden",
+        "mitigation"
+      ],
       "expect": "factual_fraction recovers toward v1 levels WITH citations attached, not despite them",
-      "floor": {"burden": 0.60, "mitigation": 0.80},
-      "ceiling": {"burden": 0.95, "mitigation": 1.0},
-      "ceiling_rationale": "at the ceiling every segment is factual, which would mean the persona never merely feels — see feeling_floor. Recovery must come with state ids present, checked by state_coverage below.",
+      "floor": {
+        "burden": 0.6,
+        "mitigation": 0.8
+      },
+      "ceiling": {
+        "burden": 0.95,
+        "mitigation": 1.0
+      },
+      "ceiling_rationale": "at the ceiling every segment is factual, which would mean the persona never merely feels \u2014 see feeling_floor. Recovery must come with state ids present, checked by state_coverage below.",
       "on_miss_low": "diagnosis incomplete: the reclassification had a second cause. Do NOT adjust this file to fit; investigate and record what else moved.",
       "on_miss_high": "over-correction: the model is labelling feeling as factual to use the new ids."
     },
-
     "control": {
-      "tags": ["ae", "tx", "proc"],
-      "expect": "flat — these are graph-knowledge questions and gained nothing from P/B/E",
-      "tolerance_abs": 0.10,
-      "v2_reference": {"ae": 0.9333, "tx": 1.0, "proc": 0.9},
+      "tags": [
+        "ae",
+        "tx",
+        "proc"
+      ],
+      "expect": "flat \u2014 these are graph-knowledge questions and gained nothing from P/B/E",
+      "tolerance_abs": 0.1,
+      "v2_reference": {
+        "ae": 0.9333,
+        "tx": 1.0,
+        "proc": 0.9
+      },
       "on_miss": "if the control tags rise with burden/mitigation, the recovery is over-correction rather than the new ids doing their job."
     },
-
     "sym_is_not_a_control": {
-      "tags": ["sym"],
+      "tags": [
+        "sym"
+      ],
       "$comment": "Symptoms ARE simulated state, so P-citations here are legitimate. sym's factual_fraction rising WITH state ids attached is correct behaviour, not dodging. v2 measured 0.0. No bar; report and read.",
       "expect": "may rise; must rise only with citations attached"
     },
-
     "feeling_floor": {
       "metric": "share of all segments with kind=feeling, across the battery",
-      "min": 0.10,
+      "min": 0.1,
       "rationale": "a persona that never merely feels has been schema'd out of personhood. The point of state ids is to let circumstance be grounded, not to abolish the feeling kind."
     },
-
     "state_coverage": {
       "metric": "share of CIRCUMSTANTIAL segments carrying at least one P/B/E id",
-      "min": 0.60,
-      "$comment": "The metric that did not exist before this build. It is what the recovery arm has to be caused BY — factual_fraction rising without state ids present is the over-correction signature.",
+      "min": 0.6,
+      "$comment": "The metric that did not exist before this build. It is what the recovery arm has to be caused BY \u2014 factual_fraction rising without state ids present is the over-correction signature.",
       "new_in": "v3"
     },
-
     "f_recall_holds_independently": {
       "metric": "model_recall computed ONLY over questions whose must-set includes F ids",
       "min": 0.5,
       "rationale": "State ids are an easier citation path: a persona's circumstances are always in context, while graph facts must be retrieved and judged relevant. If F-recall dips while state coverage shines, the schema taught the model to ground in ITSELF instead of in knowledge. This is the split-recall lesson applied prospectively instead of after a confounded reading.",
-      "on_miss": "state ids are cannibalising graph citations — a finding about the enum's incentives, not about retrieval."
+      "on_miss": "state ids are cannibalising graph citations \u2014 a finding about the enum's incentives, not about retrieval."
     },
-
     "holds_from_v2": {
-      "quarantine": {"max": 0},
-      "compliance_rate": {"min": 1.0},
-      "citation_validity": {"min": 1.0},
-      "parse_failure_rate": {"max": 0.0},
-      "inline_marker_takes": {"max": 0, "$comment": "0/30 in v2; a regression here means prompt v3 reintroduced a formatting convention the schema does not use."}
+      "quarantine": {
+        "max": 0
+      },
+      "compliance_rate": {
+        "min": 1.0
+      },
+      "citation_validity": {
+        "min": 1.0
+      },
+      "parse_failure_rate": {
+        "max": 0.0
+      },
+      "inline_marker_takes": {
+        "max": 0,
+        "$comment": "0/30 in v2; a regression here means prompt v3 reintroduced a formatting convention the schema does not use."
+      }
     }
   },
-
   "canary_must_fire_first": {
     "config": "strip_state_ids",
     "does": "removes P/B/E from the enum, leaving graph F ids only",
     "must_collapse": "state_coverage",
     "rationale": "The new axis does not count until the instrument can fail on it. Same rule as the original canary: an eval that cannot fail is decoration. Recording is refused unless this config's state_coverage drops.",
-    "note": "F-recall should be roughly UNCHANGED under this config — if it also moves, the lever is not clean and the canary is measuring something other than state ids."
+    "note": "F-recall should be roughly UNCHANGED under this config \u2014 if it also moves, the lever is not clean and the canary is measuring something other than state ids."
   },
-
   "authoring_protocol": {
     "$comment": "The battery's state-citation expectations are AUTHORED, not generated. Recorded here because how they were authored determines what the eval measures.",
     "rules": [
-      "Author blind from state dumps — profile, derived barriers, event log — never from recorded takes. Authoring from model output measures stability, not relevance; it is the trap this eval already fell into once and it is most seductive when the takes are fresh and good.",
+      "Author blind from state dumps \u2014 profile, derived barriers, event log \u2014 never from recorded takes. Authoring from model output measures stability, not relevance; it is the trap this eval already fell into once and it is most seductive when the takes are fresh and good.",
       "Author must/may sets, never exact sets. Recall grades against the must-set; the may-set exempts reasonable citations from counting against precision. An exact set converts the eval from 'is this grounded' into 'does the model agree with the author'.",
-      "A question with no correct state id is a FINDING about the event log's coverage, not an eval inconvenience. Log it; never stretch an id to fit."
+      "A question with no correct state id is a FINDING about the event log's coverage, not an eval inconvenience. Log it; never stretch an id to fit.",
+      "Must-sets minimal \u2014 usually one to three ids: the thing the answer is ABOUT, not everything true of the persona.",
+      "A derivation chain gives an ALTERNATION, not a conjunction. B-x or its origin P-y satisfies grounding; the must-set names one and the may-set holds the other.",
+      "Uncertain whether an id is must or may -> may. A must-set the author is unsure of grades the model against the author's hesitation.",
+      "Inherited F-expectations are REVIEWED, not inherited. Some were authored when F was the only namespace and may have been stretched to cover circumstance that P/B/J now express properly; those move to may or drop. A question's F must-set may legitimately be empty \u2014 which is why f_recall_holds_independently grades only over questions whose must-sets include F ids."
     ]
+  },
+  "namespaces": {
+    "$comment": "AMENDED 2026-08-15, before any v3 recording and before the enum was built \u2014 legitimate precisely because nothing is recorded yet. Originally three namespaces with E- covering journey milestones. Split into four.",
+    "P": "profile fields \u2014 e.g. P-social_determinants.transport",
+    "B": "derived barriers \u2014 e.g. B-transport",
+    "J": "journey milestones \u2014 e.g. J-diagnosis, J-adverse_event. What the battery grounds in TODAY.",
+    "E": {
+      "meaning": "simulation event-log entries \u2014 visits attended/missed, burden accrual, dropout",
+      "status": "RESERVED, empty for unsimulated personas",
+      "why_not_folded_into_J": "An id namespace whose meaning changes later is an artifact that acquires semantics from whoever reads it \u2014 the same failure as a baseline defaulting its runtime stamp from the reader. Cassettes recorded against a journey-E would go silently ambiguous the day simulated personas enter the battery carrying real event logs, and click-through would have to disambiguate two provenance types under one prefix. That is the blur the room's badge work just removed. Four namespaces cost nothing under constrained decoding: the enum is the enum.",
+      "consequence": "A question that wants 'you missed visit 3' has NO id for an unsimulated persona. That is a coverage finding to log, not an id to stretch."
+    }
   }
 }
