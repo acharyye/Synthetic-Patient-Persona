@@ -29,11 +29,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # 3.13, not 3.12. tests/test_golden.py pins byte-exact output, and byte
-      # exactness is a property of the whole numeric stack, not just this code:
-      # on 3.11 the same commit lands 0.526 where the committed golden says
-      # 0.525. The goldens were generated on 3.13, so that is the interpreter
-      # this suite is evidence about. Changing it is a golden regeneration.
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
@@ -45,6 +40,24 @@ jobs:
           cache: npm
           cache-dependency-path: ui/package-lock.json
 
+      # requirements.txt is a rendering of uv.lock, so staleness is detected by
+      # construction rather than by convention: regenerate it here and diff
+      # against what was committed. No heuristic about file mtimes, no trust
+      # that the author remembered. This lives in the main workflow so it can
+      # never be green while the suite is red.
+      - uses: astral-sh/setup-uv@v6
+
+      - name: Dependencies are in sync
+        run: |
+          uv lock --check
+          cp requirements.txt "$RUNNER_TEMP/requirements.committed"
+          ./scripts/sync_deps.sh
+          diff "$RUNNER_TEMP/requirements.committed" requirements.txt \
+            || { echo "::error::requirements.txt is stale. Run scripts/sync_deps.sh and commit."; exit 1; }
+
+      # Hash-checked, because requirements.txt carries --hash lines. pip refuses
+      # anything not listed, so a missing transitive dependency fails here
+      # rather than surfacing later as an import error.
       - name: Install Python deps
         run: pip install -r requirements.txt
 

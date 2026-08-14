@@ -2,7 +2,34 @@
 name = "synthetic-patient-persona"
 version = "0.2.0"   # v0.2 — see RELEASE.md
 description = "GraphRAG-grounded conversational patient digital twin for trial design & patient-journey work"
+# ">=3.11" is a real claim, not a floor nobody checks: the goldens are
+# byte-identical on 3.11 and 3.13, and tests/test_float_accumulation.py is what
+# keeps that true — see the fsum rule.
 requires-python = ">=3.11"
+
+# THE declaration. uv.lock resolves this, requirements*.txt render the lock.
+# Adding a dependency means editing here and running scripts/sync_deps.sh.
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "pydantic>=2.7",
+    "pydantic-settings>=2.3",
+    "python-dotenv>=1.0",
+    "anthropic>=0.39",
+    "neo4j>=5.22",
+    "numpy>=1.26",
+    "networkx>=3.3",          # knowledge/graph.py traversals
+    # ingest / data
+    "pandas>=2.2",
+    "pyarrow>=15.0",          # Parquet event-log store (analytics substrate)
+    "pyyaml>=6.0",            # YAML scenario files for Protocol CI (JSON always works)
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.2",
+    "hypothesis>=6.100",      # property tests for the simulation core
+]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
