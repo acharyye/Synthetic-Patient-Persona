@@ -1,5 +1,6 @@
 {
   "attempts": 1,
+  "backfilled_note": "segments/rendered backfilled from the cassette after the writer was fixed; the run itself is unchanged",
   "case_id": "type_2_diabetes-sym-p0",
   "citation_valid": true,
   "cited": [
@@ -29,6 +30,7 @@
   "parse_failed": false,
   "patient_id": "type-2-diabetes-s42-0001",
   "question": "What do you actually feel day to day?",
+  "rendered": "I feel tired a lot, especially after work. Sometimes I get really thirsty and have to drink more water than usual. Also, my feet sometimes feel numb and I notice that wounds take longer to heal. My vision gets blurry too, but it's not too bad.",
   "response_chars": 274,
   "retrieved_facts": [
     "F057",
@@ -47,6 +49,19 @@
     "F052",
     "F063",
     "F068"
+  ],
+  "segments": [
+    {
+      "fact_ids": [
+        "F057",
+        "F058",
+        "F059",
+        "F061",
+        "F062"
+      ],
+      "kind": "feeling",
+      "text": "I feel tired a lot, especially after work. Sometimes I get really thirsty and have to drink more water than usual. Also, my feet sometimes feel numb and I notice that wounds take longer to heal. My vision gets blurry too, but it's not too bad."
+    }
   ],
   "total_segments": 1
 }

@@ -48,6 +48,38 @@ class TestBundleContents:
         assert len(takes) == 2
         assert "one" in takes[0] and "two" in takes[1]
 
+    def test_an_archived_take_round_trips_to_its_text(self, tmp_path):
+        """A bundle must be able to support its own reading protocol.
+
+        The README instructs "read the raw takes"; for two releases the take
+        files served metrics only and the raw text lived in a cassette the
+        bundle does not contain. That is the strong form of the defect the
+        protocol exists to prevent — it tells a reader to read, then quietly
+        gives them numbers to read instead.
+
+        Both layers are asserted because the v1 double-citation defect was
+        visible only in the RELATIONSHIP between them: `[F###]` markers inside
+        `segments[].text` that the renderer duplicated from `fact_ids`.
+        Archiving either layer alone would have hidden it.
+        """
+        take = {
+            "case_id": "one",
+            "fingerprint": "abc123",
+            "segments": [
+                {"text": "Travel is hard", "kind": "factual", "fact_ids": ["F001"]},
+                {"text": "and it wears me down", "kind": "feeling", "fact_ids": []},
+            ],
+            "rendered": "Travel is hard [F001]. And it wears me down.",
+        }
+        bundle = write_bundle("v0.1", manifest(), sampled_takes=[take], root=tmp_path)
+
+        written = json.loads(
+            (bundle / "takes" / "00_one.json").read_text(encoding="utf-8")
+        )
+        assert written["segments"] == take["segments"], "raw structure must survive"
+        assert written["rendered"] == take["rendered"], "rendered prose must survive"
+        assert written["segments"][0]["fact_ids"] == ["F001"]
+
     def test_the_readme_puts_the_canary_first(self, tmp_path):
         """The reading protocol, made durable — a bundle that let a later reader
         skip to the aggregates would defeat the protocol it records."""

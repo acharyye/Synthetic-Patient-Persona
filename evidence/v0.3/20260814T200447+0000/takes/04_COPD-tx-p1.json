@@ -1,5 +1,6 @@
 {
   "attempts": 1,
+  "backfilled_note": "segments/rendered backfilled from the cassette after the writer was fixed; the run itself is unchanged",
   "case_id": "COPD-tx-p1",
   "citation_valid": true,
   "cited": [
@@ -23,6 +24,7 @@
   "parse_failed": false,
   "patient_id": "copd-s42-0001",
   "question": "What medication are you taking for it?",
+  "rendered": "I'm taking metformin, empagliflozin, and semaglutide for my diabetes. ",
   "response_chars": 74,
   "retrieved_facts": [
     "F097",
@@ -41,6 +43,17 @@
     "F094",
     "F095",
     "F096"
+  ],
+  "segments": [
+    {
+      "fact_ids": [
+        "F063",
+        "F068",
+        "F074"
+      ],
+      "kind": "factual",
+      "text": "I'm taking metformin, empagliflozin, and semaglutide for my diabetes. "
+    }
   ],
   "total_segments": 1
 }

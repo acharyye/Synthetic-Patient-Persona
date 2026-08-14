@@ -1,5 +1,6 @@
 {
   "attempts": 1,
+  "backfilled_note": "segments/rendered backfilled from the cassette after the writer was fixed; the run itself is unchanged",
   "case_id": "breast_cancer-ae-p1",
   "citation_valid": true,
   "cited": [
@@ -33,6 +34,7 @@
   "parse_failed": false,
   "patient_id": "breast-cancer-s42-0005",
   "question": "What side effects should I expect from treatment?",
+  "rendered": "For the salbutamol inhaler, you might get tremors or feel your heart beating faster. These can be a bit scary but usually go away after using it for a while. Tiotropium could give you a dry mouth or make your throat feel sore. It's like when you eat something really dry and it makes your tongue feel funny. Inhaled corticosteroid might cause oral thrush, which is like a little infection in your mouth. It can make your voice sound hoarse and you might get chest infections more often. Home oxygen could dry out your nose a bit, making it feel scratchy. It might also make you feel like you can't move around as much because of the equipment.",
   "response_chars": 364,
   "retrieved_facts": [
     "F155",
@@ -51,6 +53,41 @@
     "F160",
     "F165",
     "F172"
+  ],
+  "segments": [
+    {
+      "fact_ids": [
+        "F098",
+        "F099"
+      ],
+      "kind": "factual",
+      "text": "For the salbutamol inhaler, you might get tremors or feel your heart beating faster. These can be a bit scary but usually go away after using it for a while."
+    },
+    {
+      "fact_ids": [
+        "F102",
+        "F103"
+      ],
+      "kind": "factual",
+      "text": "Tiotropium could give you a dry mouth or make your throat feel sore. It's like when you eat something really dry and it makes your tongue feel funny."
+    },
+    {
+      "fact_ids": [
+        "F106",
+        "F107",
+        "F108"
+      ],
+      "kind": "factual",
+      "text": "Inhaled corticosteroid might cause oral thrush, which is like a little infection in your mouth. It can make your voice sound hoarse and you might get chest infections more often."
+    },
+    {
+      "fact_ids": [
+        "F112",
+        "F113"
+      ],
+      "kind": "factual",
+      "text": "Home oxygen could dry out your nose a bit, making it feel scratchy. It might also make you feel like you can't move around as much because of the equipment."
+    }
   ],
   "total_segments": 1
 }

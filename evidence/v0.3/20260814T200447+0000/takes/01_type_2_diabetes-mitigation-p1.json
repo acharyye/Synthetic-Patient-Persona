@@ -1,5 +1,6 @@
 {
   "attempts": 1,
+  "backfilled_note": "segments/rendered backfilled from the cassette after the writer was fixed; the run itself is unchanged",
   "case_id": "type_2_diabetes-mitigation-p1",
   "citation_valid": true,
   "cited": [
@@ -31,6 +32,7 @@
   "parse_failed": false,
   "patient_id": "type-2-diabetes-s42-0005",
   "question": "What support would make taking part possible?",
+  "rendered": "I think evening and weekend clinic slots could help. I work during the day on weekdays, so having appointments in the evenings or on weekends would be great. Also, remote visits by video might work for me. It's hard to get to the clinic because of my journey and public transport issues. I struggle with scheduling, so a simplified visit schedule would be really helpful. Less appointments might make it easier for me to keep track of everything.",
   "response_chars": 485,
   "retrieved_facts": [
     "F042",
@@ -49,6 +51,32 @@
     "F041",
     "F045",
     "F046"
+  ],
+  "segments": [
+    {
+      "fact_ids": [
+        "F042",
+        "F043"
+      ],
+      "kind": "factual",
+      "text": "I think evening and weekend clinic slots could help. I work during the day on weekdays, so having appointments in the evenings or on weekends would be great."
+    },
+    {
+      "fact_ids": [
+        "F036",
+        "F039"
+      ],
+      "kind": "factual",
+      "text": "Also, remote visits by video might work for me. It's hard to get to the clinic because of my journey and public transport issues."
+    },
+    {
+      "fact_ids": [
+        "F051",
+        "F052"
+      ],
+      "kind": "feeling",
+      "text": "I struggle with scheduling, so a simplified visit schedule would be really helpful. Less appointments might make it easier for me to keep track of everything."
+    }
   ],
   "total_segments": 3
 }

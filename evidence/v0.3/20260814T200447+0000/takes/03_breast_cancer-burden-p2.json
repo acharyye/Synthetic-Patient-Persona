@@ -1,5 +1,6 @@
 {
   "attempts": 1,
+  "backfilled_note": "segments/rendered backfilled from the cassette after the writer was fixed; the run itself is unchanged",
   "case_id": "breast_cancer-burden-p2",
   "citation_valid": true,
   "cited": [
@@ -23,6 +24,7 @@
   "parse_failed": false,
   "patient_id": "breast-cancer-s42-0002",
   "question": "Could you get to the site twice a month?",
+  "rendered": "I think it would be tough. I rely on public transport, and sometimes buses don't run when they're supposed to. Also, I have to take time off work, but that costs money, and I can't always afford it. The site is quite far away too, so even if the bus runs on time, it might still be a long journey. And with my COPD, traveling and waiting are already hard for me.",
   "response_chars": 378,
   "retrieved_facts": [
     "F011",
@@ -41,6 +43,22 @@
     "F024",
     "F030",
     "F031"
+  ],
+  "segments": [
+    {
+      "fact_ids": [],
+      "kind": "feeling",
+      "text": "I think it would be tough. I rely on public transport, and sometimes buses don't run when they're supposed to. Also, I have to take time off work, but that costs money, and I can't always afford it."
+    },
+    {
+      "fact_ids": [
+        "F014",
+        "F013",
+        "F012"
+      ],
+      "kind": "factual",
+      "text": "The site is quite far away too, so even if the bus runs on time, it might still be a long journey. And with my COPD, traveling and waiting are already hard for me."
+    }
   ],
   "total_segments": 2
 }

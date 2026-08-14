@@ -66,6 +66,14 @@ class CaseResult(BaseModel):
     parse_failed: bool = False
     response_chars: int = 0
     failure: str = ""
+    # BOTH layers, archived per take. The bundle's reading protocol says read
+    # the raw takes; metrics are not a read. And the v1 double-citation defect
+    # was only visible in the RELATIONSHIP between the two — markers inside
+    # `segments[].text` that the renderer then duplicated from `fact_ids` — so
+    # archiving either one alone would have hidden it.
+    fingerprint: str = ""
+    segments: list[dict] = Field(default_factory=list)   # as the model emitted
+    rendered: str = ""                                   # as a reader would see
 
     @property
     def question_tag(self) -> str:
@@ -255,6 +263,9 @@ def score(
             grounded=bool(check and check.ok),
             parse_failed=answer is None,
             response_chars=len(answer.render()) if answer else 0,
+            fingerprint=prompt.fingerprint,
+            segments=[seg.model_dump() for seg in segments],
+            rendered=answer.render() if answer else "",
             failure="" if (check and check.ok) else (
                 check.summary if check else "unparseable response"
             ),

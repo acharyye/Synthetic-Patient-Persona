@@ -299,9 +299,9 @@ def main(argv: list[str] | None = None) -> int:
         print(f"\n[{case.case_id}] {case.question}")
         print(f"  segments={case.total_segments} factual={case.factual_segments} "
               f"cited={case.cited} grounded={case.grounded}")
-        take = recorder.cassette.takes.get(
-            next((f for f, tk in recorder.cassette.takes.items()), ""), None
-        )
+        for seg in case.segments:
+            print(f"    [{seg['kind']:8}] {seg['text']}")
+            print(f"               -> {seg['fact_ids']}")
     print(f"\n  quarantine entries to read in full: {recorder.rejected}")
     if paths["quarantine"]:
         print(f"  {paths['quarantine']}")

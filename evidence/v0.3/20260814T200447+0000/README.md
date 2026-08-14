@@ -22,6 +22,19 @@ Recorded 2026-08-14T20:04:47+00:00 against **qwen2.5:7b-instruct@845dbda0ea48ed7
 3. `quarantine.json` — every rejected response, with its reason.
 4. `compliance.json` — aggregates and the pre-registered pass-bar verdicts.
 
+## Caveat on this bundle's 100% compliance
+
+Quarantine 0 and compliance 1.000 are real, and they are **schema conformance**,
+not full grounding. Part of what v1 quarantined did not disappear — it moved
+inside the `feeling` label, where the citation gate cannot see it. The model is
+behaving correctly against the schema: the bus segment genuinely has nothing
+citable, because the schema cannot express personal circumstance.
+
+So quote the compliance number with its companion. The expressiveness gap is
+measured separately by `factual_fraction_by_tag`, which fell 0.933 → 0.443 on
+mitigation for exactly that reason. The diagnostic with no bar did its job; do
+not let eight green bars talk over it.
+
 ## Caveat
 
 Compliance measured against a fixed battery under a pre-registered set of pass bars. This is evidence about one (prompt, model, sampling) configuration, not a validation of the model in general.
