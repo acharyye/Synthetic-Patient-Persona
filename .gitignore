@@ -36,6 +36,7 @@ protocol_ci_plan.md
 # Write-ups about the project are not the project. Drafts live locally; the
 # claims they make are only as good as RELEASE.md and the evidence bundles.
 linkedin_article.md
+state_dumps_for_authoring.md
 
 # Protocol CI working output (verdicts are artifacts, not source)
 ci/out/
