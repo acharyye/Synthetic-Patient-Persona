@@ -19,10 +19,17 @@ export default defineConfig({
   use: { baseURL: "http://localhost:5173", trace: "on-first-retry" },
   webServer: [
     {
-      // Prefers an activated venv, falls back to the repo's .venv, and uses
-      // `python3` either way because a bare `python` is not guaranteed to exist.
+      // Uses the repo's .venv when there is one (local dev) and the ambient
+      // interpreter when there is not (CI). `python3` either way, because a
+      // bare `python` is not guaranteed to exist on a stock macOS shell.
+      //
+      // The guard is an `if`, not `. .venv/bin/activate 2>/dev/null`. Sourcing
+      // a missing file is a special-builtin failure, which makes a POSIX sh
+      // (dash, i.e. every Ubuntu runner) exit on the spot instead of falling
+      // through — so the API never started in CI while the local box, which has
+      // a .venv and a bash /bin/sh, sailed through and hid it.
       command:
-        "sh -c '. .venv/bin/activate 2>/dev/null; exec python3 -m uvicorn spp.api.main:app --port 8000 --app-dir src'",
+        "sh -c 'if [ -f .venv/bin/activate ]; then . .venv/bin/activate; fi; exec python3 -m uvicorn spp.api.main:app --port 8000 --app-dir src'",
       cwd: "..",
       url: "http://localhost:8000/health",
       reuseExistingServer: true,
