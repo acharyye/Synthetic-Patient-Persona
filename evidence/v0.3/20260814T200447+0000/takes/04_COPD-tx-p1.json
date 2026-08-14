@@ -1,0 +1,46 @@
+{
+  "attempts": 1,
+  "case_id": "COPD-tx-p1",
+  "citation_valid": true,
+  "cited": [
+    "F097",
+    "F101"
+  ],
+  "cited_factual_segments": 1,
+  "cited_positions": [
+    0,
+    1
+  ],
+  "expected_facts": [
+    "F097",
+    "F101",
+    "F105",
+    "F111"
+  ],
+  "factual_segments": 1,
+  "failure": "",
+  "grounded": true,
+  "parse_failed": false,
+  "patient_id": "copd-s42-0001",
+  "question": "What medication are you taking for it?",
+  "response_chars": 74,
+  "retrieved_facts": [
+    "F097",
+    "F101",
+    "F105",
+    "F111",
+    "F014",
+    "F025",
+    "F038",
+    "F039",
+    "F045",
+    "F046",
+    "F091",
+    "F092",
+    "F093",
+    "F094",
+    "F095",
+    "F096"
+  ],
+  "total_segments": 1
+}

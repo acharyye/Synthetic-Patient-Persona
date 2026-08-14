@@ -25,6 +25,7 @@ doubles as the compliance dataset the eval scores.
 from __future__ import annotations
 
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 
 from pydantic import BaseModel, Field
@@ -318,3 +319,47 @@ GatedRecorder.reason_counts = lambda self: _reason_counts(self.quarantine)
 # Distinct reason so a truncated-context refusal is never mistaken for the model
 # failing to ground — they have identical downstream symptoms otherwise.
 CONTEXT_OVERFLOW_REASON = "context_overflow"
+
+
+def archive_cassette(name: str, directory: Path = CASSETTE_DIR) -> Path | None:
+    """Move an existing cassette aside, timestamped. Archive, never delete.
+
+    A PROMPT_VERSION bump invalidates recordings and `GatedRecorder` refuses to
+    append to them — correctly, because a recording made under a different
+    prompt measured a different configuration. But refusing left the operator
+    hand-moving files, so the deliberate step was improvised rather than
+    supported.
+
+    Preservation does not live here. The evidence bundle holds the sampled
+    takes, the full quarantine and the aggregates, and git holds the file; this
+    archive is a convenience for the person mid-re-record, not the record of
+    what was measured.
+    """
+    path = cassette_path(name, directory)
+    if not path.exists():
+        return None
+
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    target = directory / "archive" / f"{name}.{stamp}"
+    target.mkdir(parents=True, exist_ok=True)
+
+    moved = []
+    for suffix in ("", ".quarantine", ".compliance"):
+        source = directory / f"{name}{suffix}.json"
+        if source.exists():
+            source.rename(target / source.name)
+            moved.append(source.name)
+
+    (target / "README.md").write_text(
+        f"# Archived cassette: {name}\n\n"
+        f"Archived {stamp} by `record_narration.py --rerecord`.\n\n"
+        "These recordings measured a configuration that is no longer current —\n"
+        "usually a PROMPT_VERSION bump. They are kept for convenience during a\n"
+        "re-record, not as evidence.\n\n"
+        "**The record of what was measured is the evidence bundle**\n"
+        "(`evidence/<release>/<timestamp>/`): sampled takes, the full quarantine,\n"
+        "aggregates and the pass-bar verdicts. Git holds the file history.\n\n"
+        f"Files: {', '.join(moved)}\n",
+        encoding="utf-8",
+    )
+    return target

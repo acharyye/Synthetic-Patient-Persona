@@ -1,0 +1,52 @@
+{
+  "attempts": 1,
+  "case_id": "type_2_diabetes-sym-p0",
+  "citation_valid": true,
+  "cited": [
+    "F057",
+    "F058",
+    "F059",
+    "F061",
+    "F062"
+  ],
+  "cited_factual_segments": 0,
+  "cited_positions": [
+    0,
+    1,
+    2,
+    4,
+    5
+  ],
+  "expected_facts": [
+    "F057",
+    "F058",
+    "F059",
+    "F060"
+  ],
+  "factual_segments": 0,
+  "failure": "",
+  "grounded": true,
+  "parse_failed": false,
+  "patient_id": "type-2-diabetes-s42-0001",
+  "question": "What do you actually feel day to day?",
+  "response_chars": 274,
+  "retrieved_facts": [
+    "F057",
+    "F058",
+    "F059",
+    "F060",
+    "F061",
+    "F062",
+    "F009",
+    "F025",
+    "F026",
+    "F027",
+    "F020",
+    "F030",
+    "F051",
+    "F052",
+    "F063",
+    "F068"
+  ],
+  "total_segments": 1
+}

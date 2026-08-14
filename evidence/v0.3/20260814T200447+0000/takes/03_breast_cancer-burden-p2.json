@@ -1,0 +1,46 @@
+{
+  "attempts": 1,
+  "case_id": "breast_cancer-burden-p2",
+  "citation_valid": true,
+  "cited": [
+    "F013",
+    "F020"
+  ],
+  "cited_factual_segments": 1,
+  "cited_positions": [
+    4,
+    11
+  ],
+  "expected_facts": [
+    "F011",
+    "F019",
+    "F012",
+    "F015"
+  ],
+  "factual_segments": 1,
+  "failure": "",
+  "grounded": true,
+  "parse_failed": false,
+  "patient_id": "breast-cancer-s42-0002",
+  "question": "Could you get to the site twice a month?",
+  "response_chars": 378,
+  "retrieved_facts": [
+    "F011",
+    "F019",
+    "F012",
+    "F015",
+    "F013",
+    "F014",
+    "F017",
+    "F021",
+    "F023",
+    "F016",
+    "F018",
+    "F020",
+    "F022",
+    "F024",
+    "F030",
+    "F031"
+  ],
+  "total_segments": 2
+}

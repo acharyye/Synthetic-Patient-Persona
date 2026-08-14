@@ -67,6 +67,11 @@ class Evidence(BaseModel):
             return f"recorded take — {identity}, prompt v{self.prompt_version}"
         if self.kind == "live":
             return f"live — {self.model}, prompt v{self.prompt_version}"
+        # The skeleton badge carries its reason. "No recording exists" and
+        # "recordings exist but no longer apply" are different truths, and a
+        # badge that renders both as the same absence blurs them.
+        if self.detail:
+            return f"citation skeleton — no model ({self.detail})"
         return "citation skeleton — no model"
 
     @property
@@ -158,7 +163,12 @@ def ask(
     """
     graph = graph if graph is not None else load_graph()
     prompt, retrieval = _prompt_for(dna, question, graph)
-    take = cassette.get(prompt.fingerprint) if cassette else None
+
+    # Stamp check BEFORE the key lookup, so the two honest states stay distinct:
+    # "these recordings no longer apply" and "nothing recorded this question".
+    # Absence and invalidation are different truths.
+    stale = cassette_status(cassette)
+    take = cassette.get(prompt.fingerprint) if cassette and not stale else None
 
     if take is not None:
         answer: StructuredAnswer | None = parse_structured(take.response)
@@ -188,7 +198,7 @@ def ask(
         grounded=check_citations(text, prompt.allowed_fact_ids).ok,
         evidence=Evidence(
             kind="citation_skeleton",
-            detail="no recorded take can answer this question",
+            detail=stale or "no recorded take can answer this question",
         ),
         offered_fact_ids=sorted(prompt.allowed_fact_ids),
     )
@@ -206,6 +216,28 @@ def free_text_state(cassette: Cassette | None, live: bool) -> dict:
             "scripts/record_narration.py against a live backend."
         ),
     }
+
+
+def cassette_status(cassette: Cassette | None) -> str:
+    """Why this cassette cannot be replayed, or "" when it can.
+
+    The room CANNOT learn this from a fingerprint miss. A miss looks identical
+    whether the recording is stale, the question is novel, or retrieval moved —
+    `prompt_version` is inside the fingerprint, so an invalidated take is
+    unreachable rather than wrong. Correctness is safe either way; honesty is
+    not. The reason has to come from comparing the stamped version against the
+    current one BEFORE the key lookup, which is the `require_compatible` check
+    the load path never ran.
+    """
+    if cassette is None:
+        return ""
+    if cassette.prompt_version not in (0, PROMPT_VERSION):
+        return (
+            f"recorded at prompt v{cassette.prompt_version}, current is "
+            f"v{PROMPT_VERSION} — recordings invalidated, re-record with "
+            "scripts/record_narration.py --rerecord"
+        )
+    return ""
 
 
 def load_room_cassette(name: str = "narration_battery") -> Cassette | None:

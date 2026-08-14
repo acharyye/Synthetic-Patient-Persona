@@ -10,9 +10,20 @@ So `build_prompt(...) -> Prompt` takes only data, returns only data, and is
 pinned by golden files. The nondeterminism is quarantined to exactly one line
 elsewhere: the model call.
 
-The citation discipline is imposed here too. The model is told to cite inline
-with `[F012]`, using only ids present in the fact block — which is what makes
-verification a code problem in `citations.py` rather than a judgement call.
+The citation discipline is imposed here too, but as of PROMPT_VERSION 2 it
+describes the contract that is actually enforced. Citations are a **decode
+constraint**: the model emits segments whose `fact_ids` is a JSON-schema enum
+over exactly the retrieved ids, so a fabricated id is ungrammatical rather than
+merely detectable (`structured.py`). The prompt's job is to say which segments
+need ids and where they go — not to ask for a formatting convention the schema
+does not use.
+
+v1 still carried the pre-structured-decode instruction to cite inline with
+`[F012]`. The model dutifully satisfied BOTH contracts, so 7 of 25 accepted
+takes carried literal markers inside `text` while the renderer appended the same
+ids from `fact_ids` — every one of those answers rendering its citations twice.
+The renderer strips stray markers as defence in depth; v2's success criterion is
+that it has nothing to strip.
 """
 from __future__ import annotations
 
@@ -24,7 +35,11 @@ from ..foundation.events import EventType, PersonaState
 from ..knowledge.retrieval import RetrievalResult
 from ..schemas import PatientDNA
 
-PROMPT_VERSION = 1
+# v2: the inline-citation instruction is gone. Bumping this invalidates every
+# recorded cassette via require_compatible(), which is the invalidation
+# machinery working rather than collateral — v1's takes measured a different
+# configuration and stay as the comparison baseline.
+PROMPT_VERSION = 2
 
 SYSTEM_TEMPLATE = """You are a SYNTHETIC PATIENT taking part in a research design \
 exercise. You are not a real person and must never claim to be.
@@ -35,10 +50,12 @@ health literacy.
 
 CITATION RULES — these are checked automatically and a reply that breaks them is \
 rejected:
-- Every sentence that states a clinical or practical fact MUST end with a \
-citation like [F012], using ONLY ids from GROUNDED FACTS below.
-- Never invent an id. Never cite an id that is not listed.
-- Sentences about your own feelings, worries or preferences need no citation.
+- Attribute facts using each segment's `fact_ids` field. NEVER write ids, \
+brackets or reference markers inside `text` — the text is spoken aloud.
+- Every segment you mark `"kind": "factual"` MUST name at least one id in \
+`fact_ids`, drawn from GROUNDED FACTS below.
+- Segments about your own feelings, worries or preferences take \
+`"kind": "feeling"` and need no ids.
 - If the facts do not cover something you are asked, say you do not know. Do not \
 fill the gap.
 

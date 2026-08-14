@@ -8,6 +8,7 @@ from fastapi.testclient import TestClient
 from spp.api.main import app
 from spp.cohort import generate_cohort
 from spp.narration.cassette import Cassette, Take
+from spp.narration.prompt import PROMPT_VERSION
 from spp.narration.evaluation import load_battery
 from spp.narration.room import (
     MEMORY_SEMANTICS,
@@ -33,7 +34,7 @@ def recorded_cassette(dna, questions, graph=None) -> Cassette:
 
     graph = graph or load_graph()
     cassette = Cassette(name="t", backend="ollama", model="qwen2.5:7b-instruct",
-                        prompt_version=1)
+                        prompt_version=PROMPT_VERSION)
     for question in questions:
         result = retrieve(graph, dna.condition, question,
                           limit=REPLAY_RETRIEVAL_LIMIT,
@@ -41,7 +42,7 @@ def recorded_cassette(dna, questions, graph=None) -> Cassette:
         prompt = build_prompt(dna, result, question)
         first = sorted(prompt.allowed_fact_ids)[:1]
         cassette.put(Take(
-            fingerprint=prompt.fingerprint, prompt_version=1,
+            fingerprint=prompt.fingerprint, prompt_version=PROMPT_VERSION,
             system=prompt.system, user=prompt.user,
             model="qwen2.5:7b-instruct", model_digest="sha256:abc123def456",
             response=json.dumps({"segments": [
@@ -100,7 +101,7 @@ class TestEvidenceIsNamed:
         assert answer.evidence.kind == "recorded_take"
         assert "qwen2.5:7b-instruct" in answer.evidence.label()
         assert "sha256" in answer.evidence.label()
-        assert "prompt v1" in answer.evidence.label()
+        assert f"prompt v{PROMPT_VERSION}" in answer.evidence.label()
 
     def test_an_unrecorded_question_falls_to_the_skeleton_honestly(self, dna):
         """Never fabricated prose, never a generic 'loading'."""
@@ -228,3 +229,51 @@ class TestRoomEndpoints:
         response = client.post("/room/session", json={
             "condition": "COPD", "seed": 42, "n": 3, "persona_index": 99})
         assert response.status_code == 400
+
+
+class TestStaleRecordingsAreNamed:
+    """Absence and invalidation are different truths; the badge must say which.
+
+    `prompt_version` is inside the prompt fingerprint, so a take recorded under
+    an older prompt is UNREACHABLE rather than wrong — correctness was never at
+    risk, and that is the same "make it unrepresentable" move as the fact-id
+    enum. What was at risk is honesty: a fingerprint miss looks identical
+    whether the recording is stale, the question is novel, or retrieval moved,
+    so the room reported "no recorded take" for a cassette that was really
+    invalidated by a prompt bump.
+
+    The stamp check therefore has to run BEFORE the key lookup. Both states are
+    asserted here because the second one — plain absence — is what existed
+    before and silently absorbed the first.
+    """
+
+    def test_a_stale_cassette_degrades_to_skeleton_naming_the_reason(self, dna):
+        questions = ["What side effects should I expect?"]
+        cassette = recorded_cassette(dna, questions)
+        stale = cassette.model_copy(update={"prompt_version": PROMPT_VERSION - 1})
+
+        answer = ask(dna, questions[0], cassette=stale)
+
+        assert answer.evidence.kind == "citation_skeleton"
+        assert f"prompt v{PROMPT_VERSION - 1}" in answer.evidence.detail
+        assert "invalidated" in answer.evidence.detail
+        assert "invalidated" in answer.evidence.label()
+        # Degrade, never crash: the recorder refuses to WRITE incompatible
+        # evidence; the room's job is to DISPLAY honestly what exists.
+        assert answer.answer
+
+    def test_a_novel_question_says_absence_not_invalidation(self, dna):
+        """The other honest state, and the one that used to absorb both."""
+        cassette = recorded_cassette(dna, ["What side effects should I expect?"])
+
+        answer = ask(dna, "A question nobody ever recorded?", cassette=cassette)
+
+        assert answer.evidence.kind == "citation_skeleton"
+        assert answer.evidence.detail == "no recorded take can answer this question"
+        assert "invalidated" not in answer.evidence.detail
+
+    def test_a_current_cassette_still_replays(self, dna):
+        """The check must not reject what it should accept."""
+        questions = ["What side effects should I expect?"]
+        answer = ask(dna, questions[0], cassette=recorded_cassette(dna, questions))
+        assert answer.evidence.kind == "recorded_take"

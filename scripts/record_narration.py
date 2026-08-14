@@ -49,6 +49,7 @@ from spp.narration.cassette import (
     CASSETTE_DIR,
     CONTEXT_OVERFLOW_REASON,
     GatedRecorder,
+    archive_cassette,
 )
 from spp.narration.bundle import BundleManifest, write_bundle
 from spp.narration.evaluation import grade, load_battery, run_canary, score
@@ -142,6 +143,12 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--canary", action="store_true",
                         help="verify the eval can detect degradation, then stop")
+    parser.add_argument("--rerecord", action="store_true",
+                        help="archive the existing cassette, then record fresh. "
+                             "REQUIRED after a PROMPT_VERSION bump: the recorder "
+                             "refuses to append to recordings made under a different "
+                             "prompt, and archiving keeps that refusal deliberate "
+                             "instead of improvised.")
     parser.add_argument("--record", action="store_true",
                         help="run the battery live and write gated cassettes")
     parser.add_argument("--name", default="narration_battery")
@@ -204,6 +211,13 @@ def main(argv: list[str] | None = None) -> int:
             print("\nRefusing to record.")
             return 1
         return 0
+
+    if args.rerecord:
+        archived = archive_cassette(args.name)
+        if archived:
+            print(f"archived previous cassette -> {archived}")
+        else:
+            print("no previous cassette to archive")
 
     print(f"\nrecording {len(battery)} cases...")
     recorder = GatedRecorder(args.name, backend=settings.llm_backend, model=model,

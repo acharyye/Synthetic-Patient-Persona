@@ -1,0 +1,29 @@
+{
+  "accepted_takes": 30,
+  "backend": "ollama",
+  "bars_passed": true,
+  "battery_cases": 30,
+  "bundle_version": 1,
+  "canary_sensitive": null,
+  "caveat": "Compliance measured against a fixed battery under a pre-registered set of pass bars. This is evidence about one (prompt, model, sampling) configuration, not a validation of the model in general.",
+  "compliance_rate": 1.0,
+  "ledger_schema_version": 1,
+  "model": "qwen2.5:7b-instruct",
+  "model_digest": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e",
+  "prompt_version": 2,
+  "quarantined_takes": 0,
+  "recorded_at": "2026-08-14T20:04:47+00:00",
+  "release": "v0.3",
+  "runtime": {
+    "lock_hash": "0c9031359dfa45f4",
+    "numpy_version": "2.5.2",
+    "python_version": "3.13.0"
+  },
+  "sampling": {
+    "num_ctx": 8192,
+    "num_predict": 700,
+    "seed": 42,
+    "temperature": 0.0,
+    "top_p": 1.0
+  }
+}

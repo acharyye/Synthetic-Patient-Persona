@@ -4,6 +4,7 @@ Everything here runs offline. The only untested part of the pipeline is the word
 a model would put between the citations — which is the correct boundary.
 """
 import json
+import re
 from datetime import date
 from pathlib import Path
 
@@ -93,9 +94,32 @@ class TestPromptIsPure:
 
     def test_prompt_carries_the_citation_rules(self, graph, dna):
         prompt = build_prompt(dna, retrieve(graph, dna.condition, limit=4), "q")
-        assert "[F012]" in prompt.system
         assert "checked automatically" in prompt.system
         assert "say you do not know" in prompt.system
+        # The prompt must describe the contract the schema actually enforces.
+        assert "fact_ids" in prompt.system
+        assert '"kind": "factual"' in prompt.system
+
+    def test_the_instructions_do_not_ask_for_inline_markers(self, graph, dna):
+        """v1 asked for `[F012]` inline AND supplied a fact_ids field.
+
+        The model satisfied both, so 7 of 25 takes rendered their citations
+        twice. Asking for a formatting convention the schema does not use is
+        what produced that, so no marker example may reappear in the
+        INSTRUCTIONS — including in a well-meant illustration of what not to do.
+
+        Scoped to the instruction section on purpose. The GROUNDED FACTS block
+        still labels each fact `[F012]`, because the model has to see the ids it
+        is choosing between. That labelling is the remaining candidate source of
+        imitation, and v2 deliberately does not change it: one variable at a
+        time. If markers survive v2 anyway, the fact block is the finding.
+        """
+        prompt = build_prompt(dna, retrieve(graph, dna.condition, limit=4), "q")
+        instructions = prompt.system.split("GROUNDED FACTS:")[0]
+        assert not re.search(r"\[F\d+\]", instructions), (
+            "instructions contain an inline citation marker example; the model "
+            "will reproduce it in `text` alongside the structured fact_ids"
+        )
 
     def test_golden_prompt(self, graph, dna):
         """Pins the prompt. Most narration bugs live here and cost nothing to catch."""
