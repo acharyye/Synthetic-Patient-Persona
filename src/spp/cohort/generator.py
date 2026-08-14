@@ -26,6 +26,7 @@ personas or 10,000 — and can be re-simulated alone.
 """
 from __future__ import annotations
 
+import math
 from datetime import date, timedelta
 
 import numpy as np
@@ -393,14 +394,21 @@ def cohort_summary(cohort: list[PatientDNA]) -> dict:
     comorbidities = [c for p in cohort for c in p.comorbidities]
     barriers = [b.name for p in cohort for b in p.barriers]
 
+    # math.fsum, not sum, for every float accumulation below. CPython 3.12
+    # switched sum() over floats to Neumaier compensated summation, so the same
+    # inputs in the same order accumulate differently on 3.11 than on 3.12+:
+    # 110.88000000000005 against 110.88. Rounded to 3dp that surfaced as a
+    # golden diff (0.526 vs 0.525) with no code change and identical draws.
+    # fsum is exactly rounded on every version, so the aggregate is a property
+    # of the cohort rather than of the interpreter that summed it.
     return {
         "n": n,
-        "age_mean": round(sum(ages) / n, 1),
+        "age_mean": round(math.fsum(ages) / n, 1),
         "age_range": [min(ages), max(ages)],
         "sex": _tally([p.sex for p in cohort]),
         "stage": _tally([p.stage for p in cohort if p.stage]),
         "health_literacy": _tally([p.health_literacy for p in cohort]),
-        "adherence_mean": round(sum(adherence) / n, 2),
+        "adherence_mean": round(math.fsum(adherence) / n, 2),
         "adherence_below_50pct": sum(1 for a in adherence if a < 0.5),
         "comorbidity_prevalence": {
             name: round(count / n, 2) for name, count in _tally(comorbidities).items()
@@ -409,5 +417,5 @@ def cohort_summary(cohort: list[PatientDNA]) -> dict:
         "barrier_prevalence": {
             name: round(count / n, 2) for name, count in _tally(barriers).items()
         },
-        "mean_barrier_load": round(sum(p.barrier_load for p in cohort) / n, 3),
+        "mean_barrier_load": round(math.fsum(p.barrier_load for p in cohort) / n, 3),
     }
