@@ -224,3 +224,33 @@ def test_the_guard_can_actually_fail(tmp_path: Path) -> None:
     assert _is_integer_count(_bare_sum_calls(counted)[0])
 
     assert not _bare_sum_calls(ast.parse("total = math.fsum(xs)\n"))
+
+
+def test_the_package_version_matches_pyproject() -> None:
+    """A stamp that lies is worse than no stamp.
+
+    `spp.__version__` and the FastAPI app both hardcoded 0.1.0 while pyproject
+    said 0.3.0, so `GET /openapi.json` reported a version two releases stale —
+    in a project whose argument is that artifacts carry honest stamps. Same
+    shape as the uv.lock drift: a value copied is a value that diverges.
+
+    This lives beside the float-accumulation guard because it is the same kind
+    of assertion — check the claim against the declaration it is about, rather
+    than against anyone's memory of having set it.
+    """
+    import tomllib
+
+    import spp
+
+    root = Path(__file__).resolve().parents[1]
+    declared = tomllib.loads((root / "pyproject.toml").read_text())["project"]["version"]
+
+    assert spp.__version__ == declared, (
+        f"spp.__version__ is {spp.__version__!r} but pyproject declares "
+        f"{declared!r} — the version is resolved, so this means the resolver "
+        "found installed metadata from a different build."
+    )
+
+    from spp.api.main import app
+
+    assert app.version == declared, "the API advertises a version it did not resolve"

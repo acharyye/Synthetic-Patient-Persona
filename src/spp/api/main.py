@@ -53,7 +53,9 @@ from ..simulation import (
     survival_curve,
 )
 
-app = FastAPI(title="Synthetic Patient Persona", version="0.1.0")
+from .. import __version__
+
+app = FastAPI(title="Synthetic Patient Persona", version=__version__)
 _engine = PersonaEngine()
 
 DISCLAIMER = (
