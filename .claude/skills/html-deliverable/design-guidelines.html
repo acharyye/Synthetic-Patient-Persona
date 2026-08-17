@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light" xmlns:mso="urn:schemas-microsoft-com:office:office" xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Projekt-Tracker — Design-Richtlinien</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;450;500;550;600;650;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================================
+   DESIGN-TOKENS — 1:1 aus "Projekt Tracker.html" übernommen. Nicht ändern
+   ohne den Tracker gleich mitzuziehen. Single Source of Truth = der Tracker.
+   ========================================================================== */
+:root {
+  --bg:            #F5F4F2;
+  --surface:       #FFFFFF;
+  --surface-2:     #F1EFEB;
+  --border:        #E6E3DF;
+  --border-strong: #C9C6C2;
+  --ink:           #1A1A1A;
+  --ink-soft:      #6B6B6B;
+  --ink-muted:     #8A8A8A;
+  --grid:          #ECEAE6;
+
+  --accent:        #5B7DB8;
+  --accent-soft:   #EDF1F7;
+  --accent-hover:  #4A6A9E;
+
+  --done:    #6F8F7A;  --done-soft:    #F0F5F1;
+  --active:  #5B7DB8;  --active-soft:  #EDF1F7;
+  --blocked: #B45A4E;  --blocked-soft: #FAF0EF;
+  --ready:   #D4883A;  --ready-soft:   #FEF6EE;
+  --warn:    #B8862A;  --warn-soft:    #FDF6E3;
+
+  --radius:    18px;
+  --radius-sm: 11px;
+  --shadow-sm: 0 1px 2px rgba(31,31,31,.03), 0 1px 1px rgba(31,31,31,.02);
+  --shadow:    0 4px 20px rgba(31,31,31,.05), 0 1px 3px rgba(31,31,31,.04);
+  --shadow-lg: 0 32px 80px rgba(31,31,31,.16), 0 8px 24px rgba(31,31,31,.08);
+
+  --display: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+  --font:    "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+  --mono:    "IBM Plex Mono", ui-monospace, "SF Mono", monospace;
+}
+[data-theme="dark"] {
+  --bg:            #1B1A18;
+  --surface:       #232220;
+  --surface-2:     #2C2A27;
+  --border:        #383530;
+  --border-strong: #4A4641;
+  --ink:           #F0EEEA;
+  --ink-soft:      #A8A39B;
+  --ink-muted:     #7C766E;
+  --grid:          #2C2A27;
+  --accent:        #88A6D8;
+  --accent-soft:   #2A3340;
+  --accent-hover:  #A0BCE8;
+  --done:    #8AAE97;  --done-soft:    #1F2C24;
+  --active:  #88A6D8;  --active-soft:  #2A3340;
+  --blocked: #D08376;  --blocked-soft: #33231F;
+  --ready:   #E0A05A;  --ready-soft:   #332617;
+  --warn:    #D9B765;  --warn-soft:    #2F2916;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.3);
+  --shadow:    0 2px 8px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.3);
+  --shadow-lg: 0 28px 64px rgba(0,0,0,.6), 0 6px 16px rgba(0,0,0,.4);
+}
+
+* { box-sizing: border-box; }
+body {
+  margin:0; font-family: var(--font); color: var(--ink);
+  background:
+    radial-gradient(1100px 520px at 75% -8%, color-mix(in srgb, var(--accent) 5%, transparent), transparent 65%),
+    var(--bg);
+  -webkit-font-smoothing:antialiased; letter-spacing:-.003em;
+}
+.wrap { max-width: 1080px; margin: 0 auto; padding: 40px 28px 96px; }
+
+/* Kopf */
+.doc-head { display:flex; justify-content:space-between; align-items:flex-end; gap:22px; flex-wrap:wrap; margin-bottom: 34px; }
+.eyebrow { font: 600 10px var(--mono); text-transform:uppercase; letter-spacing:.16em; color: var(--ink-muted); }
+h1.h1 { margin:6px 0 0; font: 650 34px/1.1 var(--display); letter-spacing:-.028em; }
+.subtitle { margin:9px 0 0; font-size:13.5px; color: var(--ink-soft); }
+.subtitle .mono { font: 500 11.5px var(--mono); color: var(--ink-muted); }
+
+/* Section */
+section { margin: 46px 0 0; }
+.sec-title { font: 600 10px var(--mono); text-transform:uppercase; letter-spacing:.16em; color: var(--ink-muted); margin: 0 0 4px; }
+.sec-h { font: 600 21px var(--display); letter-spacing:-.02em; margin: 0 0 18px; }
+.card {
+  background: var(--surface); border:1px solid var(--border);
+  border-radius: var(--radius); padding: 22px 24px; box-shadow: var(--shadow-sm); margin-bottom: 16px;
+}
+.note { font-size:12.5px; color: var(--ink-soft); margin: 10px 0 0; }
+.mono { font-family: var(--mono); }
+code { font: 500 12px var(--mono); background: var(--surface-2); padding: 1px 6px; border-radius: 5px; color: var(--ink); }
+
+/* Farb-Swatches */
+.swatches { display:grid; grid-template-columns: repeat(auto-fill, minmax(150px,1fr)); gap: 12px; }
+.sw { border:1px solid var(--border); border-radius: var(--radius-sm); overflow:hidden; background: var(--surface); }
+.sw-chip { height: 58px; }
+.sw-meta { padding: 8px 10px; }
+.sw-name { font: 500 11px var(--mono); }
+.sw-hex { font: 500 10.5px var(--mono); color: var(--ink-muted); text-transform:uppercase; }
+
+/* Typo-Specimen */
+.spec-row { display:flex; align-items:baseline; gap:16px; padding: 11px 0; border-bottom: 1px solid var(--border); }
+.spec-row:last-child { border-bottom:none; }
+.spec-tag { font: 500 10px var(--mono); color: var(--ink-muted); width: 210px; flex:none; }
+
+/* Komponenten */
+.badge { display:inline-block; padding: 3px 10px; border-radius:999px; font: 550 11px var(--font); letter-spacing:-.005em; }
+.badge-done    { background: var(--done-soft);    color: var(--done); }
+.badge-active  { background: var(--active-soft);  color: var(--active); }
+.badge-blocked { background: var(--blocked-soft); color: var(--blocked); }
+.badge-ready   { background: var(--ready-soft);   color: var(--ready); }
+.badge-warn    { background: var(--warn-soft);    color: var(--warn); }
+
+.chip { padding: 7px 12px; border-radius: 999px; border:1px solid var(--border-strong); background: var(--surface);
+  font: 550 11.5px var(--font); color: var(--ink-soft); letter-spacing:-.005em; cursor:pointer; }
+.chip.on { background: var(--accent); border-color: var(--accent); color:#fff; }
+.chip.on.c-done { background: var(--done); border-color: var(--done); }
+.chip.on.c-blocked { background: var(--blocked); border-color: var(--blocked); }
+.chip.on.c-ready { background: var(--ready); border-color: var(--ready); }
+
+.btn { display:inline-flex; align-items:center; gap:7px; padding: 9px 15px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong); background: var(--surface); color: var(--ink);
+  font: 550 12.5px var(--font); letter-spacing:-.01em; cursor:pointer; }
+.btn-primary { background: var(--accent); border-color: var(--accent); color:#fff;
+  box-shadow: 0 1px 2.5px rgba(31,31,31,.18), inset 0 1px 0 rgba(255,255,255,.16); }
+.btn-ghost { border-color: transparent; background:transparent; color: var(--ink-soft); }
+.btn-sm { padding: 6px 10px; font-size: 11.5px; }
+
+.kpi { background: var(--surface); border:1px solid var(--border); border-radius: var(--radius); padding: 20px 22px 18px; box-shadow: var(--shadow-sm); }
+.kpi-num { font: 600 38px/1 var(--display); letter-spacing:-.028em; }
+.kpi-num small { font: 500 13px var(--mono); color: var(--ink-muted); margin-left:3px; }
+.kpi-label { font-size:12px; color: var(--ink-soft); margin-top:9px; }
+.k-done .kpi-num { color: var(--done); } .k-active .kpi-num { color: var(--active); }
+.k-blocked .kpi-num { color: var(--blocked); } .k-ready .kpi-num { color: var(--ready); }
+.kpi-row { display:grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+
+.progress-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+.progress-pct { font: 600 16px var(--mono); letter-spacing:-.02em; }
+.progress-bar { height: 8px; background: var(--surface-2); border-radius: 5px; overflow:hidden; margin-bottom:12px; }
+.progress-bar-fill { height:100%; background: var(--accent); border-radius:5px; }
+
+/* Statusband (Segmente) */
+.statusband { display:flex; gap:5px; height: 36px; margin: 4px 0 6px; }
+.sb-seg { flex:1; border-radius:6px; position:relative; overflow:hidden; }
+.sb-done { background: var(--done-soft); } .sb-active { background: var(--active-soft); }
+.sb-blocked { background: var(--blocked-soft); } .sb-ready { background: var(--ready-soft); }
+.sb-seg i { position:absolute; inset:0; }
+.sb-done i { background: var(--done); } .sb-active i { background: var(--active); width:60%; }
+.sb-blocked i { background: var(--blocked); } .sb-ready i { background: var(--ready); }
+.statusband-title { font: 500 10px var(--mono); text-transform:uppercase; letter-spacing:.16em; color: var(--ink-muted); }
+
+/* Gantt-Bars */
+.g-bar { position:relative; height: 22px; border-radius: 7px; overflow:hidden; margin: 7px 0; }
+.g-bar .fill { position:absolute; left:0; top:0; bottom:0; opacity:.94; }
+.g-bar.b-done { background: var(--done-soft); } .g-bar.b-done .fill { background: var(--done); }
+.g-bar.b-active { background: var(--active-soft); } .g-bar.b-active .fill { background: var(--active); }
+.g-bar.b-blocked { background: var(--blocked-soft); } .g-bar.b-blocked .fill { background: var(--blocked); }
+.g-lab { position:absolute; left:9px; top:50%; transform:translateY(-50%); font: 600 10.5px var(--mono); color: var(--ink); }
+
+/* Chart-Legende + Donut */
+.chart-legend-row { display:flex; align-items:center; gap:10px; font-size:12.5px; color: var(--ink-soft); padding: 5px 0; }
+.chart-legend-dot { width:9px; height:9px; border-radius:3px; flex:none; }
+.chart-legend-val { font: 600 12.5px var(--mono); color: var(--ink); margin-left:auto; }
+.donut-total { text-anchor:middle; font: 600 34px var(--display); fill: var(--ink); letter-spacing:-.028em; }
+.donut-cap { text-anchor:middle; font: 500 9px var(--mono); fill: var(--ink-muted); text-transform:uppercase; letter-spacing:.16em; }
+
+/* Tabelle */
+table.ref { width:100%; border-collapse:collapse; }
+table.ref th { text-align:left; font: 500 10px var(--mono); text-transform:uppercase; letter-spacing:.12em; color: var(--ink-muted); padding: 7px 10px; border-bottom: 1.5px solid var(--border-strong); }
+table.ref td { padding: 8px 10px; border-bottom: 1px solid var(--border); font-size:12.5px; }
+table.ref td.mono { font: 500 11.5px var(--mono); }
+
+/* Tokens grid */
+.tok { display:grid; grid-template-columns: 210px 1fr; gap: 6px 16px; align-items:center; }
+.tok dt { font: 500 11px var(--mono); color: var(--ink-soft); }
+.tok dd { margin:0; }
+.demo-radius { display:inline-block; width:66px; height:44px; background: var(--accent-soft); border:1px solid var(--accent); }
+.demo-shadow { display:inline-block; width:120px; height:44px; background: var(--surface); border:1px solid var(--border); border-radius: var(--radius-sm); }
+.row { display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+
+.theme-toggle { position:fixed; top:16px; right:16px; z-index:5; }
+.dodont { display:grid; grid-template-columns: 1fr 1fr; gap:16px; }
+.do   { border-left: 3px solid var(--done); padding-left: 14px; }
+.dont { border-left: 3px solid var(--blocked); padding-left: 14px; }
+.dodont h4 { margin:0 0 8px; font: 600 12px var(--mono); text-transform:uppercase; letter-spacing:.08em; }
+.dodont .do h4 { color: var(--done); } .dodont .dont h4 { color: var(--blocked); }
+.dodont ul { margin:0; padding-left: 18px; font-size:12.5px; color: var(--ink-soft); line-height:1.7; }
+@media (max-width:640px){ .kpi-row{grid-template-columns:repeat(2,1fr)} .dodont{grid-template-columns:1fr} .spec-tag{width:130px} }
+</style>
+
+<!--[if gte mso 9]><xml>
+<mso:CustomDocumentProperties>
+<mso:TaxCatchAll msdt:dt="string">4;#5.2 Car Development findings|35ca5892-0995-47ba-8421-f13a707bb03a</mso:TaxCatchAll>
+<mso:i0f84bba906045b4af568ee102a52dcb msdt:dt="string">5.2 Car Development findings|35ca5892-0995-47ba-8421-f13a707bb03a</mso:i0f84bba906045b4af568ee102a52dcb>
+<mso:RevIMComments msdt:dt="string"></mso:RevIMComments>
+<mso:RevIMExtends msdt:dt="string">{&quot;Locked&quot;:null,&quot;LockedBy&quot;:null,&quot;UnLocked&quot;:null,&quot;UnLockedBy&quot;:null,&quot;Classified&quot;:&quot;2026-08-04T08:17:00.118Z&quot;,&quot;KSUClass&quot;:&quot;35ca5892-0995-47ba-8421-f13a707bb03a&quot;,&quot;Reclassified&quot;:null,&quot;ReclassifiedBy&quot;:null,&quot;EDReclassified&quot;:null,&quot;EDReclassifiedBy&quot;:null,&quot;EventCreated&quot;:null,&quot;EventModified&quot;:null,&quot;EventDeleted&quot;:null,&quot;EventCreatedBy&quot;:null,&quot;EventModifiedBy&quot;:null,&quot;EventDeletedBy&quot;:null,&quot;Moved&quot;:null,&quot;MovedBy&quot;:null,&quot;MovedFrom&quot;:null,&quot;IsMoving&quot;:null,&quot;MoveStartTime&quot;:null}</mso:RevIMExtends>
+<mso:LegalHoldTag msdt:dt="string"></mso:LegalHoldTag>
+<mso:gdc01f8fe96e42d4864c20132ba54d95 msdt:dt="string"></mso:gdc01f8fe96e42d4864c20132ba54d95>
+<mso:RevIMDeletionDate msdt:dt="string">2036-08-04T10:10:58Z</mso:RevIMDeletionDate>
+<mso:RevIMBCS msdt:dt="string">4;#5.2 Car Development findings|35ca5892-0995-47ba-8421-f13a707bb03a</mso:RevIMBCS>
+</mso:CustomDocumentProperties>
+</xml><![endif]-->
+</head>
+<body>
+<button class="btn btn-sm theme-toggle" onclick="document.documentElement.dataset.theme = document.documentElement.dataset.theme==='dark'?'light':'dark'">◐ Theme</button>
+
+<div class="wrap">
+  <div class="doc-head">
+    <div>
+      <div class="eyebrow">&lt;Projektname&gt; · Design-Referenz (Vorlage)</div>
+      <h1 class="h1">Projekt-Tracker — Design-Richtlinien</h1>
+      <p class="subtitle">Verbindliches Design-System für alle Tracker-nahen Oberflächen und Exporte.
+        <span class="mono">Quelle: 06_Implementation/Projekt Tracker.html · Stand 03.07.2026</span></p>
+    </div>
+  </div>
+
+  <div class="card" style="border-left:3px solid var(--accent)">
+    <strong>Grundprinzip.</strong> Ruhig, flach, papierhaft — helle warme Grautöne, ein einziger blau-grauer Akzent,
+    Statusfarben nur funktional. <strong>IBM Plex Sans</strong> für Fließtext/Zahlen, <strong>IBM Plex Mono</strong>
+    für Labels/Codes/Meta (oft VERSALIEN mit Sperrung). Keine bunten Verläufe, keine harten Schatten, keine
+    Fremdfarben. Die Datei ist die <em>Single Source of Truth</em> — Tokens 1:1 aus dem Tracker.
+  </div>
+
+  <!-- FARBEN -->
+  <section>
+    <div class="sec-title">01 · Farbe</div>
+    <div class="sec-h">Farbpalette (Light)</div>
+    <div class="card">
+      <div class="swatches" id="sw-base"></div>
+    </div>
+    <div class="sec-h">Akzent &amp; Status</div>
+    <div class="card">
+      <div class="swatches" id="sw-status"></div>
+      <p class="note">Jede Statusfarbe hat eine <em>-soft</em>-Variante (Badge-/Balken-Hintergrund). Statusfarben
+        <strong>nur</strong> für Status verwenden — nie dekorativ. Der Akzent <code>--accent</code> ist die einzige
+        Marken-/Interaktionsfarbe (Buttons, Links, aktive Zustände, Fortschritt).</p>
+    </div>
+  </section>
+
+  <!-- TYPOGRAFIE -->
+  <section>
+    <div class="sec-title">02 · Typografie</div>
+    <div class="sec-h">Schrift-Specimen</div>
+    <div class="card" id="typo"></div>
+    <p class="note"><strong>Zwei Familien:</strong> <code>--display</code>/<code>--font</code> = IBM Plex Sans (Gewichte 400–700),
+      <code>--mono</code> = IBM Plex Mono (400–600). Mono immer für Kennzahlen-Einheiten, Meta-Labels, IDs, Prozentwerte
+      und VERSAL-Eyebrows (Sperrung <code>letter-spacing: .12–.16em</code>). Überschriften mit negativer Sperrung
+      (<code>-.02 … -.028em</code>).</p>
+  </section>
+
+  <!-- TOKENS -->
+  <section>
+    <div class="sec-title">03 · Radius · Schatten · Fläche</div>
+    <div class="sec-h">Form-Tokens</div>
+    <div class="card">
+      <div class="tok">
+        <dt>--radius (18px)</dt><dd><span class="demo-radius" style="border-radius:18px"></span></dd>
+        <dt>--radius-sm (11px)</dt><dd><span class="demo-radius" style="border-radius:11px"></span></dd>
+        <dt>--shadow-sm</dt><dd><span class="demo-shadow" style="box-shadow:var(--shadow-sm)"></span></dd>
+        <dt>--shadow</dt><dd><span class="demo-shadow" style="box-shadow:var(--shadow)"></span></dd>
+        <dt>--shadow-lg</dt><dd><span class="demo-shadow" style="box-shadow:var(--shadow-lg)"></span></dd>
+      </div>
+      <p class="note">Karten = <code>--surface</code> + 1px <code>--border</code> + <code>--radius</code> + <code>--shadow-sm</code>.
+        Hover hebt auf <code>--border-strong</code> + <code>--shadow</code> + <code>translateY(-2px)</code>. Modals/Popover: <code>--shadow-lg</code>.</p>
+    </div>
+  </section>
+
+  <!-- STATUS-SYSTEM -->
+  <section>
+    <div class="sec-title">04 · Status-System</div>
+    <div class="sec-h">Zustände &amp; Badges</div>
+    <div class="card">
+      <table class="ref">
+        <thead><tr><th>Status</th><th>Label (DE)</th><th>Token</th><th>Badge</th><th>Chip (aktiv)</th></tr></thead>
+        <tbody id="status-tbl"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- KOMPONENTEN -->
+  <section>
+    <div class="sec-title">05 · Komponenten</div>
+    <div class="sec-h">Buttons</div>
+    <div class="card"><div class="row">
+      <button class="btn btn-primary">Primär-Aktion</button>
+      <button class="btn">Sekundär</button>
+      <button class="btn btn-ghost">Ghost</button>
+      <button class="btn btn-sm">Klein</button>
+    </div>
+    <p class="note">Padding <code>9px 15px</code> (sm: <code>6px 10px</code>), <code>--radius-sm</code>, <code>font: 550 12.5px</code>.
+      Genau <strong>eine</strong> Primär-Aktion pro Kontext.</p></div>
+
+    <div class="sec-h">KPI-Kacheln</div>
+    <div class="card"><div class="kpi-row">
+      <div class="kpi k-active"><div class="kpi-num">31,7<small>%</small></div><div class="kpi-label">remote-heilbar</div></div>
+      <div class="kpi k-done"><div class="kpi-num">7<small>/10</small></div><div class="kpi-label">mit Telemetrie</div></div>
+      <div class="kpi k-blocked"><div class="kpi-num">3</div><div class="kpi-label">ohne Telemetrie</div></div>
+      <div class="kpi k-ready"><div class="kpi-num">255</div><div class="kpi-label">HCP3-Reset (max)</div></div>
+    </div>
+    <p class="note">Zahl <code>600 38px</code> Display (Einheit als <code>&lt;small&gt;</code> in Mono, gedämpft), Label <code>12px</code> soft.
+      Farbklasse <code>k-done/k-active/k-blocked/k-ready</code> nur wenn der Wert semantisch einen Status trägt.</p></div>
+
+    <div class="sec-h">Fortschritt</div>
+    <div class="card">
+      <div class="progress-row"><span style="font-size:12.5px;color:var(--ink-soft)">Strang H — Diagnose 2.0</span><span class="progress-pct">92%</span></div>
+      <div class="progress-bar"><div class="progress-bar-fill" style="width:92%"></div></div>
+      <div class="progress-row"><span style="font-size:12.5px;color:var(--ink-soft)">KR3.6 — CL8-Crash-Loop</span><span class="progress-pct">60%</span></div>
+      <div class="progress-bar"><div class="progress-bar-fill" style="width:60%"></div></div>
+      <p class="note">Track <code>8px</code> auf <code>--surface-2</code>, Füllung <code>--accent</code>, <code>border-radius: 5px</code>. Prozent in Mono.</p>
+    </div>
+  </section>
+
+  <!-- VISUALISIERUNGEN -->
+  <section>
+    <div class="sec-title">06 · Visualisierungen</div>
+    <div class="sec-h">Statusband (Segment-Reihe)</div>
+    <div class="card">
+      <div class="statusband-title">Fortschritt je Aufgabe</div>
+      <div class="statusband">
+        <div class="sb-seg sb-done"><i></i></div>
+        <div class="sb-seg sb-done"><i></i></div>
+        <div class="sb-seg sb-active"><i></i></div>
+        <div class="sb-seg sb-ready"><i></i></div>
+        <div class="sb-seg sb-blocked"><i></i></div>
+        <div class="sb-seg sb-done"><i></i></div>
+      </div>
+      <p class="note">Segmente <code>gap:5px</code>, <code>border-radius:6px</code>, Höhe <code>36px</code>. Voll = -soft-Fläche, Füllung = Vollfarbe (aktiv teilgefüllt).</p>
+    </div>
+
+    <div class="sec-h">Gantt-/Balken</div>
+    <div class="card">
+      <div class="g-bar b-done"><div class="fill" style="width:100%"></div><span class="g-lab">Import · fertig</span></div>
+      <div class="g-bar b-active"><div class="fill" style="width:62%"></div><span class="g-lab">Analyse · 62%</span></div>
+      <div class="g-bar b-blocked"><div class="fill" style="width:20%"></div><span class="g-lab">Übergabe · blockiert</span></div>
+    </div>
+
+    <div class="sec-h">Donut + Legende</div>
+    <div class="card">
+      <div class="row" style="gap:28px">
+        <svg width="150" height="150" viewBox="0 0 150 150">
+          <circle cx="75" cy="75" r="58" fill="none" stroke="var(--surface-2)" stroke-width="18"/>
+          <circle cx="75" cy="75" r="58" fill="none" stroke="var(--done)"    stroke-width="18" stroke-dasharray="182 182" transform="rotate(-90 75 75)"/>
+          <circle cx="75" cy="75" r="58" fill="none" stroke="var(--active)"  stroke-width="18" stroke-dasharray="73 291" stroke-dashoffset="-182" transform="rotate(-90 75 75)"/>
+          <circle cx="75" cy="75" r="58" fill="none" stroke="var(--blocked)" stroke-width="18" stroke-dasharray="36 328" stroke-dashoffset="-255" transform="rotate(-90 75 75)"/>
+          <text class="donut-total" x="75" y="80">10</text>
+          <text class="donut-cap" x="75" y="98">Fahrzeuge</text>
+        </svg>
+        <div style="min-width:200px;flex:1">
+          <div class="chart-legend-row"><span class="chart-legend-dot" style="background:var(--done)"></span>Mit Telemetrie<span class="chart-legend-val">7</span></div>
+          <div class="chart-legend-row"><span class="chart-legend-dot" style="background:var(--active)"></span>Teil-Coverage<span class="chart-legend-val">2</span></div>
+          <div class="chart-legend-row"><span class="chart-legend-dot" style="background:var(--blocked)"></span>Ohne Telemetrie<span class="chart-legend-val">3</span></div>
+        </div>
+      </div>
+      <p class="note">Donut: Track <code>--surface-2</code>, Segmente in Statusfarben, Mitte = Total (Display 34px) + Kappe (Mono, VERSAL).
+        Legende: Punkt <code>9px</code> radius 3, Wert rechtsbündig in Mono.</p>
+    </div>
+
+    <div class="sec-h">Flächen-/Liniendiagramm</div>
+    <div class="card">
+      <svg width="100%" height="120" viewBox="0 0 600 120" preserveAspectRatio="none">
+        <line x1="0" y1="30" x2="600" y2="30" stroke="var(--grid)"/><line x1="0" y1="60" x2="600" y2="60" stroke="var(--grid)"/><line x1="0" y1="90" x2="600" y2="90" stroke="var(--grid)"/>
+        <path d="M0,90 L120,70 L240,74 L360,40 L480,52 L600,26 L600,120 L0,120 Z" fill="color-mix(in srgb, var(--accent) 12%, transparent)"/>
+        <path d="M0,90 L120,70 L240,74 L360,40 L480,52 L600,26" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linejoin="round"/>
+        <line x1="480" y1="0" x2="480" y2="120" stroke="var(--ink-muted)" stroke-width="1" stroke-dasharray="3 3" opacity=".7"/>
+        <circle cx="600" cy="26" r="3.5" fill="var(--accent)" stroke="var(--surface)" stroke-width="2.5"/>
+      </svg>
+      <p class="note">Gitter <code>--grid</code>, Linie <code>--accent</code> <code>2.2px</code> (round), Fläche = 12% Akzent, „Heute"-Marker gestrichelt <code>--ink-muted</code>.</p>
+    </div>
+
+    <p class="note"><strong>Diagramm-Farbregel:</strong> Sequenz/Kategorie zuerst über die Statusfarben
+      (done→active→ready→blocked→warn), danach neutrale Grautöne (<code>--ink-soft</code>, <code>--ink-muted</code>).
+      Für qualitative Serien niemals neue Fremdfarben einführen.</p>
+  </section>
+
+  <!-- DO / DON'T -->
+  <section>
+    <div class="sec-title">07 · Anwendung</div>
+    <div class="sec-h">Do &amp; Don't</div>
+    <div class="card dodont">
+      <div class="do">
+        <h4>✓ Do</h4>
+        <ul>
+          <li>Nur <code>var(--token)</code> verwenden — nie Hex direkt.</li>
+          <li>Mono für Labels/IDs/Zahlen-Einheiten, VERSAL + Sperrung für Eyebrows.</li>
+          <li>Genau ein Akzent; Statusfarbe nur für Status.</li>
+          <li>Flache Karten, weiche <code>--shadow-sm</code>, großzügige Radien.</li>
+          <li>Light + Dark testen (beide Token-Sets sind gepflegt).</li>
+        </ul>
+      </div>
+      <div class="dont">
+        <h4>✕ Don't</h4>
+        <ul>
+          <li>Keine bunten Verläufe, Neon- oder Markenfremdfarben.</li>
+          <li>Keine harten/dunklen Schatten, keine 90°-Ecken auf Karten.</li>
+          <li>Statusfarben nicht dekorativ oder gemischt einsetzen.</li>
+          <li>Nicht mehr als eine Primär-Aktion pro Ansicht.</li>
+          <li>Fonts nicht ersetzen (IBM Plex Sans/Mono sind gesetzt).</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <p class="note" style="margin-top:40px">Änderungen an diesem System immer <strong>zuerst im Tracker</strong>
+    (<code>Projekt Tracker.html</code> <code>:root</code>) vornehmen und dieses Dokument nachziehen — nie umgekehrt.</p>
+</div>
+
+<script>
+const BASE = [
+  ['--bg','#F5F4F2','Seiten-Hintergrund'],['--surface','#FFFFFF','Karten-/Panel-Fläche'],
+  ['--surface-2','#F1EFEB','Sekundärfläche / Track'],['--border','#E6E3DF','Standard-Rahmen'],
+  ['--border-strong','#C9C6C2','Betonter Rahmen / Inputs'],['--grid','#ECEAE6','Diagramm-Gitter'],
+  ['--ink','#1A1A1A','Haupttext'],['--ink-soft','#6B6B6B','Sekundärtext'],['--ink-muted','#8A8A8A','Meta / gedämpft'],
+];
+const STATUS = [
+  ['--accent','#5B7DB8','Akzent / Interaktion','accent'],['--accent-soft','#EDF1F7','Akzent-Fläche','accent'],['--accent-hover','#4A6A9E','Akzent Hover','accent'],
+  ['--done','#6F8F7A','Fertig','done'],['--active','#5B7DB8','In Arbeit','active'],['--blocked','#B45A4E','Blockiert','blocked'],
+  ['--ready','#D4883A','Startbar','ready'],['--warn','#B8862A','Warnung','warn'],
+];
+function swatch(name,hex,desc){
+  return `<div class="sw"><div class="sw-chip" style="background:var(${name})"></div>
+    <div class="sw-meta"><div class="sw-name">${name}</div><div class="sw-hex">${hex}</div>
+    <div class="sw-hex" style="text-transform:none;color:var(--ink-soft)">${desc}</div></div></div>`;
+}
+document.getElementById('sw-base').innerHTML = BASE.map(s=>swatch(...s)).join('');
+document.getElementById('sw-status').innerHTML = STATUS.map(s=>swatch(s[0],s[1],s[2])).join('');
+
+const TYPO = [
+  ['Display · 650 34px','h1 Seitentitel','font:650 34px/1.1 var(--display);letter-spacing:-.028em'],
+  ['Display · 600 21px','Section-Überschrift','font:600 21px var(--display);letter-spacing:-.02em'],
+  ['Display · 600 16px','Card-Titel','font:600 16px var(--display)'],
+  ['Display · 600 38px','KPI-Zahl','font:600 38px var(--display);letter-spacing:-.028em'],
+  ['Sans · 450 13.5px','Fließtext / Subtitle','font:450 13.5px var(--font)'],
+  ['Sans · 550 12.5px','Button / Chip','font:550 12.5px var(--font)'],
+  ['Sans · 550 11px','Badge','font:550 11px var(--font)'],
+  ['Mono · 600 10px  ✳ VERSAL','Eyebrow / Section-Tag','font:600 10px var(--mono);text-transform:uppercase;letter-spacing:.16em'],
+  ['Mono · 500 11.5px','Meta / Subtitle-Mono','font:500 11.5px var(--mono)'],
+  ['Mono · 600 16px','Prozent / Kennzahl','font:600 16px var(--mono)'],
+];
+document.getElementById('typo').innerHTML = TYPO.map(t=>
+  `<div class="spec-row"><span class="spec-tag">${t[0]}</span><span style="${t[2]}">${t[1]}</span></div>`).join('');
+
+const ST = [
+  ['done','Fertig','--done','badge-done','c-done'],['active','In Arbeit','--active','badge-active',''],
+  ['blocked','Blockiert','--blocked','badge-blocked','c-blocked'],['ready','Startbar','--ready','badge-ready','c-ready'],
+  ['warn','Warnung','--warn','badge-warn',''],['pending','Pending (Freigabe)','--ink-muted','',''],['backlog','Backlog','--ink-muted','',''],
+];
+document.getElementById('status-tbl').innerHTML = ST.map(s=>
+  `<tr><td><span style="display:inline-block;width:11px;height:11px;border-radius:4px;background:var(${s[2]});vertical-align:-1px;margin-right:8px"></span>${s[0]}</td>
+   <td>${s[1]}</td><td class="mono">${s[2]}</td>
+   <td>${s[3]?`<span class="badge ${s[3]}">${s[1]}</span>`:'—'}</td>
+   <td>${s[4]?`<span class="chip on ${s[4]}">${s[1]}</span>`:'<span class="chip">'+s[1]+'</span>'}</td></tr>`).join('');
+</script>
+</body>
+</html>

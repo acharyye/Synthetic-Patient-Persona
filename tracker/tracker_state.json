@@ -1,0 +1,417 @@
+{
+  "version": 2,
+  "project": "Synthetic Patient Persona (SPP)",
+  "startWeek": 31,
+  "endWeek": 44,
+  "year": 2026,
+  "todayWeek": 34,
+  "lastModified": "2026-08-17",
+  "stages": [
+    {
+      "id": "S1",
+      "title": "v0.1–v0.3 — Deterministic core & reproducible environment",
+      "desc": "The simulate-with-models / narrate-with-LLMs core, the knowledge graph, and the environment moving from assumed to stamped and checked.",
+      "tasks": [
+        {
+          "id": "A",
+          "title": "v0.1 — simulation-driven design review",
+          "status": "done",
+          "progress": 100,
+          "startWeek": 31,
+          "endWeek": 31,
+          "aufgabe": "Establish the deterministic core (rng, events, ledger, versioning) and the first evidence bundle.",
+          "ziel": "A seeded, replayable simulation core with zero LLM calls on the decision path.",
+          "stand": "Released 2026-08-02. Bundle archived at evidence/v0.1/20260802T150651+0000 and kept untouched as the comparison baseline.",
+          "meetingNotes": "",
+          "achievements": [
+            { "date": "2026-08-02", "text": "v0.1 released — simulation-driven design review." }
+          ],
+          "validations": [],
+          "decisions": [
+            { "date": "2026-08-02", "text": "Architectural rule fixed: the deterministic core decides what happens, the narration layer only verbalises it and never makes a decision." }
+          ],
+          "links": ["KR2.3"],
+          "deps": [],
+          "assignees": ["akm"],
+          "knowledge": []
+        },
+        {
+          "id": "B",
+          "title": "Knowledge graph + GraphRAG retrieval (build order 2 & 3)",
+          "status": "done",
+          "progress": 100,
+          "startWeek": 31,
+          "endWeek": 32,
+          "aufgabe": "Load Hetionet via kg_loader, wire graph/client.py, and build the NL->Cypher retriever with allowlist validation.",
+          "ziel": "The persona grounds on retrieved subgraph facts with citations instead of drifting.",
+          "stand": "Done. Persona-relevant metaedge slice loads 47,031 nodes / 277,997 edges, idempotent on re-run. graph/schema.py is the single source of truth for labels, rel types and metaedge codes.",
+          "meetingNotes": "",
+          "achievements": [
+            { "date": "2026-08-13", "text": "cypher_guard validates LLM-written Cypher before execution." }
+          ],
+          "validations": [],
+          "decisions": [
+            { "date": "2026-08-13", "text": "Hetionet has only 137 diseases; heart failure is deliberately NOT aliased to a near neighbour — resolve() returns None and the persona grounds on nothing. Grounding on the wrong disease is worse than grounding on none." }
+          ],
+          "links": ["KR1.1"],
+          "deps": ["A"],
+          "assignees": ["akm"],
+          "knowledge": []
+        },
+        {
+          "id": "C",
+          "title": "Cohort generator + protocol stress-test surface (build order 4 & 5)",
+          "status": "done",
+          "progress": 100,
+          "startWeek": 32,
+          "endWeek": 32,
+          "aufgabe": "Sample N personas across a subpopulation with copula-coupled trait axes; expose real eligibility evaluation and per-patient burden reporting via the API.",
+          "ziel": "Cohort generation and scenario stress-testing usable end to end, offline.",
+          "stand": "Done. Build-order items 2–5 are all closed; only ingest/synthea_loader.py remains open.",
+          "meetingNotes": "",
+          "achievements": [],
+          "validations": [],
+          "decisions": [],
+          "links": ["KR3.2"],
+          "deps": ["B"],
+          "assignees": ["akm"],
+          "knowledge": []
+        },
+        {
+          "id": "D",
+          "title": "v0.3 — the environment release",
+          "status": "done",
+          "progress": 100,
+          "startWeek": 33,
+          "endWeek": 33,
+          "aufgabe": "Declare dependencies in pyproject, resolve with uv.lock, render requirements.txt, enforce sync in CI, close the float-accumulation class, and stamp the environment into every artifact.",
+          "ziel": "Every guarantee holds outside the author's machine — environment stamped and checked, not assumed.",
+          "stand": "Released 2026-08-14. 859 Python tests across 3.11/3.12/3.13, 27 SPA tests, 3 E2E specs, all green per push.",
+          "meetingNotes": "",
+          "achievements": [
+            { "date": "2026-08-14", "text": "Four bugs (networkx undeclared, dash venv sourcing, Neumaier sum drift, venv drift) closed as one construction rather than four patches." },
+            { "date": "2026-08-14", "text": "CI matrix: Python on 3.11/3.12/3.13, Node once, full leg on the oldest." }
+          ],
+          "validations": [
+            { "date": "2026-08-14", "text": "Guard fires: tests/test_float_accumulation.py walks the core AST and fails on any bare sum() whose operands are not stated. 8 of 10 int-sum markers verify against a schema; the 2 that cannot (Neo4j driver rows) are enumerated by the test rather than remembered." }
+          ],
+          "decisions": [
+            { "date": "2026-08-14", "text": "Environment enforcement in tiers: refuse on lock-hash mismatch, warn on interpreter difference inside the supported range, refuse outside it. The warn tier is only honest while the matrix keeps running goldens on every interpreter." }
+          ],
+          "links": ["KR2.1", "KR2.2"],
+          "deps": ["A"],
+          "assignees": ["akm"],
+          "knowledge": []
+        },
+        {
+          "id": "E",
+          "title": "Prompt v2 re-record",
+          "status": "done",
+          "progress": 100,
+          "startWeek": 33,
+          "endWeek": 33,
+          "aufgabe": "Re-record the narration battery with exactly one declared variable changed — the prompt — against the same weights, sampling and pre-registered bars.",
+          "ziel": "Kill the doubled-citation defect at source rather than in the renderer, and close the model_recall margin.",
+          "stand": "Done 2026-08-14 (commit 168a686). A second measurement, not a repair; v0.1's bundle stays untouched as the comparison baseline.",
+          "meetingNotes": "",
+          "achievements": [
+            { "date": "2026-08-14", "text": "Double-citation dead at source: 0 of 30 raw responses contain an inline [F###] marker (v1: 7 of 25). Renderer stripping stays as defence in depth and now has nothing to strip." },
+            { "date": "2026-08-14", "text": "Bundles archive both layers — segments as the model emitted them, plus the rendered text. Dead-and-wrong take-fetching code replaced." }
+          ],
+          "validations": [
+            { "date": "2026-08-14", "text": "model_recall 0.525 against the 0.5 bar on the full battery, up from v1's exactly-on-the-bar 0.500 — two independent readings above the bar." },
+            { "date": "2026-08-14", "text": "Friction hypothesis supported but CONFOUNDED: quarantine 5/30 -> 0/30, retries 6.7% -> 0%, but some of that is attributable to a separate finding and the two causes are not yet separated." }
+          ],
+          "decisions": [],
+          "links": ["KR1.2", "KR1.3"],
+          "deps": ["D"],
+          "assignees": ["akm"],
+          "knowledge": []
+        }
+      ]
+    },
+    {
+      "id": "S2",
+      "title": "v0.4 — State-citation (P/B/J/E namespaces)",
+      "desc": "The active workstream. v2's factual_fraction collapse on burden and mitigation is claimed to be a state-citation gap; the pre-registered shape says what would falsify that.",
+      "tasks": [
+        {
+          "id": "F",
+          "title": "Pre-register the v3 expected shape + control arm",
+          "status": "done",
+          "progress": 100,
+          "startWeek": 33,
+          "endWeek": 34,
+          "aufgabe": "Write the expected v3 shape and its falsifier BEFORE the namespaces are built and before any v3 recording.",
+          "ziel": "A prediction that is a prediction — committed before the numbers exist, same rule as pass_bars.json.",
+          "stand": "Done (1e0ce63), amended to four namespaces (c98cb19). Amendment legitimate only because nothing is recorded yet, and stated rather than slipped in.",
+          "meetingNotes": "",
+          "achievements": [],
+          "validations": [],
+          "decisions": [
+            { "date": "2026-08-14", "text": "The escape clause is a CONTROL ARM, not a ceiling number. Graph-knowledge tags (ae, tx, proc) gained nothing from P/B/E and must stay flat within 0.10. sym is explicitly NOT a control — symptoms are simulated state, so P-citations there are legitimate." },
+            { "date": "2026-08-15", "text": "Four namespaces, not three: P- profile, B- derived barriers, J- journey milestones, E- RESERVED for simulation event-log entries. An id namespace whose meaning changes later makes every v3 recording silently ambiguous." }
+          ],
+          "links": ["KR1.1"],
+          "deps": ["E"],
+          "assignees": ["akm"],
+          "knowledge": []
+        },
+        {
+          "id": "G",
+          "title": "Build the P/B/J/E id namespaces",
+          "status": "active",
+          "progress": 20,
+          "startWeek": 34,
+          "endWeek": 36,
+          "aufgabe": "Implement the four state-citation namespaces under constrained decoding: P- profile, B- derived barriers, J- journey milestones, E- reserved and empty for unsimulated personas.",
+          "ziel": "The persona can cite its own declared state, not only graph knowledge.",
+          "stand": "Shape is pre-registered and amended; implementation not started. E- stays empty until simulated personas enter the battery.",
+          "meetingNotes": "",
+          "achievements": [],
+          "validations": [],
+          "decisions": [],
+          "links": ["KR1.1"],
+          "deps": ["F"],
+          "assignees": ["akm"],
+          "knowledge": []
+        },
+        {
+          "id": "H",
+          "title": "Record the v3 battery against the pre-registered bars",
+          "status": "backlog",
+          "progress": 0,
+          "startWeek": 36,
+          "endWeek": 37,
+          "aufgabe": "Run the battery with the namespaces live, changing exactly one declared variable, and write the bundle beside v0.1 and v0.3.",
+          "ziel": "A third reading comparable to the first two.",
+          "stand": "",
+          "meetingNotes": "",
+          "achievements": [],
+          "validations": [],
+          "decisions": [],
+          "links": ["KR1.1"],
+          "deps": ["G"],
+          "assignees": [],
+          "knowledge": []
+        },
+        {
+          "id": "I",
+          "title": "Adjudicate: recovery or over-correction?",
+          "status": "backlog",
+          "progress": 0,
+          "startWeek": 37,
+          "endWeek": 37,
+          "aufgabe": "Check burden and mitigation factual_fraction against the controls. If burden and mitigation recover while ae/tx/proc hold flat within 0.10, the new ids did the work. If everything rises together it is over-correction, however good the burden numbers look.",
+          "ziel": "A verdict the pre-registration can actually adjudicate, not a number chosen after the fact.",
+          "stand": "",
+          "meetingNotes": "",
+          "achievements": [],
+          "validations": [],
+          "decisions": [],
+          "links": ["KR1.1"],
+          "deps": ["H"],
+          "assignees": [],
+          "knowledge": []
+        }
+      ]
+    },
+    {
+      "id": "S3",
+      "title": "Grounding in real data",
+      "desc": "Retire the literature ballparks. The last open build-order item is the gate for everything in this stage.",
+      "tasks": [
+        {
+          "id": "J",
+          "title": "ingest/synthea_loader.py — real Synthea CSV joins -> PatientDNA",
+          "status": "backlog",
+          "progress": 0,
+          "startWeek": 36,
+          "endWeek": 39,
+          "aufgabe": "Join real Synthea CSV exports into the PatientDNA schema. Search TODO(claude-code) markers for the exact insertion points.",
+          "ziel": "Persona generation draws on real distributions instead of condition-based priors alone.",
+          "stand": "The one open build-order item (items 2–5 are done).",
+          "meetingNotes": "",
+          "achievements": [],
+          "validations": [],
+          "decisions": [],
+          "links": ["KR3.1"],
+          "deps": [],
+          "assignees": [],
+          "knowledge": []
+        },
+        {
+          "id": "K",
+          "title": "Re-derive epidemiology priors from loaded data",
+          "status": "backlog",
+          "progress": 0,
+          "startWeek": 39,
+          "endWeek": 41,
+          "aufgabe": "Replace cohort/epidemiology.py literature ballparks with priors derived from ingested data, and lift the do-not-quote caveat once they are sourced.",
+          "ziel": "A number from cohort/epidemiology.py can be quoted as a finding.",
+          "stand": "Blocked on synthea_loader. Until then: never quote a number from that module as a finding.",
+          "meetingNotes": "",
+          "achievements": [],
+          "validations": [],
+          "decisions": [],
+          "links": ["KR3.2"],
+          "deps": ["J"],
+          "assignees": [],
+          "knowledge": []
+        }
+      ]
+    },
+    {
+      "id": "S4",
+      "title": "Identifiability & product surface",
+      "desc": "Close the one knowingly unidentifiable parameter, then widen the surface from demo to usable tool.",
+      "tasks": [
+        {
+          "id": "L",
+          "title": "Third anchor for cumulative_burden_weight",
+          "status": "backlog",
+          "progress": 0,
+          "startWeek": 38,
+          "endWeek": 40,
+          "aufgabe": "Design an anchor that varies per-visit burden at a fixed visit count, so cumulative_burden_weight separates from burden_increment_weight.",
+          "ziel": "The parameter is estimated rather than frozen at zero.",
+          "stand": "Ships frozen at zero — unidentifiable from two anchors. Known and declared, not hidden.",
+          "meetingNotes": "",
+          "achievements": [],
+          "validations": [],
+          "decisions": [],
+          "links": ["KR3.3"],
+          "deps": [],
+          "assignees": [],
+          "knowledge": []
+        },
+        {
+          "id": "M",
+          "title": "Scenario comparison views + exportable reports",
+          "status": "backlog",
+          "progress": 0,
+          "startWeek": 41,
+          "endWeek": 44,
+          "aufgabe": "Add scenario comparison output and exportable reports on top of Scenario Lab, Interview Room and Cohort Studio.",
+          "ziel": "A stakeholder can run a comparison and take an artifact away without the author present.",
+          "stand": "PLAN.md milestone 4. Not started.",
+          "meetingNotes": "",
+          "achievements": [],
+          "validations": [],
+          "decisions": [],
+          "links": [],
+          "deps": ["I"],
+          "assignees": [],
+          "knowledge": []
+        }
+      ]
+    }
+  ],
+  "okrs": [
+    {
+      "id": "O1",
+      "title": "A persona cannot claim anything it cannot cite",
+      "desc": "Every statement traces to declared state (P/B/J/E) or retrieved graph knowledge — verified by measurement against pre-registered bars, not by inspection.",
+      "refs": ["S2"],
+      "krs": [
+        {
+          "id": "KR1.1",
+          "text": "burden & mitigation factual_fraction recover under P/B/J/E while controls (ae, tx, proc) stay flat within 0.10",
+          "base": 0,
+          "target": 100,
+          "unit": "%",
+          "type": "Commit",
+          "grade": 0.15
+        },
+        {
+          "id": "KR1.2",
+          "text": "Inline [F###] markers in raw responses stay at 0 of 30 (v1: 7 of 25)",
+          "base": 7,
+          "target": 0,
+          "unit": "of 30",
+          "type": "Commit",
+          "grade": 1.0
+        },
+        {
+          "id": "KR1.3",
+          "text": "model_recall above the 0.5 bar on two independent readings",
+          "base": 0.5,
+          "target": 0.55,
+          "unit": "recall",
+          "type": "Commit",
+          "grade": 0.8
+        }
+      ]
+    },
+    {
+      "id": "O2",
+      "title": "A result reproduces without the author's machine",
+      "desc": "Environment declared, locked, verified across every supported interpreter, and stamped into every artifact that claims reproducibility.",
+      "refs": ["S1"],
+      "krs": [
+        {
+          "id": "KR2.1",
+          "text": "Full suite green on 3.11, 3.12 and 3.13 on every push",
+          "base": 1,
+          "target": 3,
+          "unit": "interpreters",
+          "type": "Commit",
+          "grade": 1.0
+        },
+        {
+          "id": "KR2.2",
+          "text": "Every baseline, verdict and bundle stamps python + numpy + lock hash; mismatch refuses",
+          "base": 0,
+          "target": 100,
+          "unit": "%",
+          "type": "Commit",
+          "grade": 1.0
+        },
+        {
+          "id": "KR2.3",
+          "text": "An evidence bundle supports its own reading protocol without external files",
+          "base": 0,
+          "target": 100,
+          "unit": "%",
+          "type": "Commit",
+          "grade": 1.0
+        }
+      ]
+    },
+    {
+      "id": "O3",
+      "title": "Realism comes from data, not from ballparks",
+      "desc": "Retire the caveats that currently block quoting the model's own numbers as findings.",
+      "refs": ["S3", "S4"],
+      "krs": [
+        {
+          "id": "KR3.1",
+          "text": "synthea_loader produces PatientDNA from real Synthea joins (last open build-order item)",
+          "base": 0,
+          "target": 100,
+          "unit": "%",
+          "type": "Commit",
+          "grade": 0.0
+        },
+        {
+          "id": "KR3.2",
+          "text": "A number from cohort/epidemiology.py is quotable as a finding (do-not-quote caveat lifted)",
+          "base": 0,
+          "target": 100,
+          "unit": "%",
+          "type": "Stretch",
+          "grade": 0.0
+        },
+        {
+          "id": "KR3.3",
+          "text": "cumulative_burden_weight estimated from a third anchor instead of frozen at zero",
+          "base": 0,
+          "target": 1,
+          "unit": "anchor",
+          "type": "Stretch",
+          "grade": 0.0
+        }
+      ]
+    }
+  ]
+}

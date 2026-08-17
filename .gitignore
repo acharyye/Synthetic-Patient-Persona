@@ -33,6 +33,17 @@ spp_vision_and_roadmap.md
 Brief.txt
 protocol_ci_plan.md
 
+# The OKF knowledge base indexes the same invariants, so it follows the same
+# rule as CLAUDE.md: agent context, kept local. The tracker does NOT — steering
+# is a claim about the project and belongs where a reader can check it.
+docs/okf/
+
+# tracker.html is GENERATED (build_tracker.py embeds state + the full OKF text
+# into it). Committing it would publish the knowledge base the line above keeps
+# local, and a rendering is not a source. Source is tracker_state.json; run
+# `python3 tracker/build_tracker.py` to rebuild the view.
+tracker/tracker.html
+
 # Write-ups about the project are not the project. Drafts live locally; the
 # claims they make are only as good as RELEASE.md and the evidence bundles.
 linkedin_article.md
