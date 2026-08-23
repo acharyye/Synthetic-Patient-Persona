@@ -102,7 +102,9 @@ class OllamaBackend:
             data=body,
             headers={"Content-Type": "application/json"},
         )
-        with urllib.request.urlopen(request, timeout=120) as response:  # noqa: S310
+        with urllib.request.urlopen(  # noqa: S310
+            request, timeout=settings.ollama_timeout
+        ) as response:
             payload = json.loads(response.read())
         return LLMResult(
             text=payload.get("response", "").strip(),
