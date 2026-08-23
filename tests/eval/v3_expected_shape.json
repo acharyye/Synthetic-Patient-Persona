@@ -14,6 +14,15 @@
       "what": "state_coverage gained an explicit denominator; the P/B/E shorthand left over from the three-namespace draft now reads P/B/J in the arms and canary sections. The header keeps its original wording as the historical record of what was committed on 2026-08-14.",
       "why": "the namespaces were built today (tracker task G) and the metric had to be implemented. A denominator chosen while looking at results is not a pre-registration, so it is fixed now, before any v3 recording exists. The shorthand fix is clerical: the 2026-08-15 amendment already moved journey milestones from E- to J- and the arm text was not updated with it.",
       "still_unrecorded": true
+    },
+    {
+      "on": "2026-08-23",
+      "what": "two properties of the live configuration measured before recording: the model-server LOAD STATE is a hidden variable, and the strip_state_ids lever is not clean in the registered sense",
+      "why": "both were found by running the canary and then failing to reproduce its baseline. Recorded here because a reader who meets them in the results would otherwise have to guess whether they were known.",
+      "load_state": "A cold model load and a warm one produce DIFFERENT output for identical inputs: same battery, same digest, same (seed, temperature, top_p, num_predict, num_ctx), system_recall 0.5862 / state_coverage 0.5641 cold against 0.6034 / 0.5897 warm. Each state is internally exact \u2014 two warm runs matched to 4dp, and a deliberate unload reproduced the cold figures exactly \u2014 so it is a variable, not noise. Every run now warms the model first (scripts/record_narration.py), which makes bundles comparable rather than merely annotated. Comparisons WITHIN one process, which is how the canary works, were never affected.",
+      "lever_not_clean": "f_recall moves 0.5306 -> 0.6939 when the state ids are removed, against a registered note saying it should be roughly unchanged. f_recall_exclusive \u2014 over the 39 must-groups no state id can satisfy \u2014 moves with it, 0.4615 -> 0.6154, so this is NOT a mixed alternation being grounded through its profile member instead of its graph one. State ids DISPLACE graph citations for claims with no other citation path. This is the enum-incentive effect f_recall_holds_independently was registered to catch, arriving in the canary rather than in the run. It is a property of the v3 configuration, not a fault in the lever, and the arm's floor is NOT moved to accommodate it.",
+      "implementation_bug_fixed": "the clean-lever check was implemented on model_recall, not f_recall as registered. model_recall moves for a second reason \u2014 dropping the state ids makes state-only must-groups unreachable, shrinking the denominator without any citation changing \u2014 so it was the wrong reading. Corrected to f_recall, which still fires.",
+      "still_unrecorded": true
     }
   ],
   "baseline_bundle": "evidence/v0.3/20260814T200447+0000",
@@ -28,7 +37,8 @@
       "model and digest (qwen2.5:7b-instruct@845dbda0ea48...)",
       "sampling (seed 42, temperature 0.0, top_p 1.0, num_predict 700, num_ctx 8192)",
       "battery personas and questions",
-      "seeded fact-order permutation STAYS OFF \u2014 reading 5 named it as the lever for position concentration, and turning it on here would entangle two effects and reproduce exactly the unseparable reading v2 produced. It gets its own paired comparison after v3."
+      "seeded fact-order permutation STAYS OFF \u2014 reading 5 named it as the lever for position concentration, and turning it on here would entangle two effects and reproduce exactly the unseparable reading v2 produced. It gets its own paired comparison after v3.",
+      "model-server load state: WARM. Measured 2026-08-23 as a hidden variable worth ~2 points of system_recall and state_coverage; the recorder now warms the model before scoring so every bundle shares the condition."
     ]
   },
   "arms": {
@@ -96,7 +106,8 @@
       "metric": "model_recall computed ONLY over questions whose must-set includes F ids",
       "min": 0.5,
       "rationale": "State ids are an easier citation path: a persona's circumstances are always in context, while graph facts must be retrieved and judged relevant. If F-recall dips while state coverage shines, the schema taught the model to ground in ITSELF instead of in knowledge. This is the split-recall lesson applied prospectively instead of after a confounded reading.",
-      "on_miss": "state ids are cannibalising graph citations \u2014 a finding about the enum's incentives, not about retrieval."
+      "on_miss": "state ids are cannibalising graph citations \u2014 a finding about the enum's incentives, not about retrieval.",
+      "canary_reading_2026_08_23": "The canary already shows the effect this arm watches for: removing the state ids raises f_recall 0.5306 -> 0.6939 and f_recall_exclusive 0.4615 -> 0.6154. Baseline f_recall is 0.5306 against this arm's floor of 0.5000 \u2014 it clears, with thin margin, and the margin is the finding. The floor stays where it was registered."
     },
     "holds_from_v2": {
       "quarantine": {

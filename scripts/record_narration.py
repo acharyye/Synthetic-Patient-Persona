@@ -58,7 +58,9 @@ from spp.narration.sampling import (
     DEFAULT_SAMPLING,
     context_fits,
     model_identity,
+    model_is_resident,
     resolve_model_digest,
+    warm_up,
 )
 from spp.narration.structured import check_structured, parse_structured
 
@@ -177,6 +179,21 @@ def main(argv: list[str] | None = None) -> int:
     print(f"prompt_version={PROMPT_VERSION} live={settings.spp_live}")
     print(f"sampling={sampling.as_options()}")
 
+    # Every run starts WARM. A cold load and a warm one produce different output
+    # for identical inputs (see sampling.model_is_resident), each state exact in
+    # itself — so the load state is a hidden variable, and two bundles that
+    # disagree on it are not comparable. Forcing it beats stamping it: stamping
+    # would only tell a reader the comparison is invalid.
+    was_resident = model_is_resident(model)
+    if was_resident is False:
+        print("model not resident — warming up so this run is comparable to the "
+              "others...")
+    if not warm_up(model, sampling):
+        print("could not warm the model; refusing to run against an unknown "
+              "load state.")
+        return 1
+    print(f"load_state=warm (was_resident={was_resident})")
+
     graph = load_graph()
     cohort = build_cohort()
     battery = load_battery()
@@ -197,10 +214,22 @@ def main(argv: list[str] | None = None) -> int:
             # Pre-registered note: F-recall should be roughly unchanged when the
             # state ids are removed. If it moves too, the lever is changing more
             # than one thing and its collapse is not evidence about state ids.
+            stripped = result["degraded"]["strip_state_ids"]
             print("\nWARNING: the strip_state_ids lever is NOT clean — "
-                  f"model_recall moved from {baseline.model_recall:.0%} to "
-                  f"{result['degraded']['strip_state_ids'].model_recall:.0%}. "
-                  "Investigate before reading state_coverage as a state result.")
+                  f"f_recall moved from {baseline.f_recall:.0%} to "
+                  f"{stripped.f_recall:.0%}, and f_recall_exclusive (groups no "
+                  "state id can satisfy) moved "
+                  f"{baseline.f_recall_exclusive:.0%} -> "
+                  f"{stripped.f_recall_exclusive:.0%}, drift "
+                  f"{result['f_recall_exclusive_drift']:.2f}.")
+            if result["f_recall_exclusive_drift"] > 0.05:
+                print("  The exclusive figure moves too, so this is NOT a mixed "
+                      "alternation being grounded through its profile member "
+                      "instead of its graph one. State ids are DISPLACING graph "
+                      "citations for claims with no other citation path — the "
+                      "enum-incentive finding f_recall_holds_independently was "
+                      "registered to catch. Record it as a finding; do not read "
+                      "state_coverage as free of it.")
 
         if not result["sensitive"]:
             if not result["detected"]["strip_state_ids"]:
