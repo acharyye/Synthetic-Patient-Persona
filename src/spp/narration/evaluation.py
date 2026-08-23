@@ -194,6 +194,14 @@ class ComplianceReport(BaseModel):
     # averaged into a figure the new ids can carry on their own.
     f_recall: float = 0.0
     f_recall_cases: int = 0
+    # f_recall over must-groups that NO state id can satisfy. The difference
+    # between the two separates redirection from displacement: a mixed
+    # alternation like ["P-medications.metformin", "F063"] is satisfied by either
+    # id, so f_recall can fall while the claim stays perfectly grounded. Only a
+    # fall in THIS figure means graph facts went uncited for claims that had no
+    # other citation path.
+    f_recall_exclusive: float = 0.0
+    f_recall_exclusive_groups: int = 0
     # Pre-registered floor 0.1. A persona that never merely feels has been
     # schema'd out of personhood.
     feeling_fraction: float = 0.0
@@ -434,6 +442,7 @@ def score(
     # integer accumulation needs no marker to be exact.
     total_citations = state_citations = 0
     f_hits = f_total = f_cases = 0
+    exclusive_hits = exclusive_total = 0
     positions: dict[str, int] = {}
     by_tag: dict[str, list[float]] = {}
 
@@ -470,6 +479,12 @@ def score(
                 f_total += 1
                 if cited & f_ids:
                     f_hits += 1
+                # Exclusive: no state id could have satisfied this group, so a
+                # miss here is a graph fact genuinely left uncited.
+                if len(f_ids) == len(group):
+                    exclusive_total += 1
+                    if cited & f_ids:
+                        exclusive_hits += 1
 
         for position in result.cited_positions:
             key = str(position)
@@ -500,6 +515,10 @@ def score(
         ),
         f_recall=round(f_hits / f_total, 4) if f_total else 0.0,
         f_recall_cases=f_cases,
+        f_recall_exclusive=(
+            round(exclusive_hits / exclusive_total, 4) if exclusive_total else 0.0
+        ),
+        f_recall_exclusive_groups=exclusive_total,
         feeling_fraction=(
             round(feeling_total / total_segments, 4) if total_segments else 0.0
         ),
@@ -564,10 +583,24 @@ def run_canary(
 
     # The state lever must be CLEAN as well as effective: removing the P/B/J ids
     # should collapse state_coverage and leave graph recall roughly where it was.
-    # If F-recall moves too, the lever is changing more than one thing and the
-    # canary is measuring something other than state citation.
+    # Read on f_recall, as the pre-registration words it — this was implemented on
+    # model_recall until 2026-08-23, which moves for a second reason entirely:
+    # dropping the state ids makes state-only must-groups unreachable, shrinking
+    # the denominator without any citation changing.
+    #
+    # MEASURED, and it fires: f_recall 0.5306 -> 0.6939 on qwen2.5:7b-instruct.
+    # f_recall_exclusive — over must-groups no state id can satisfy — moves with
+    # it, 0.4615 -> 0.6154, so this is not the benign reading where a mixed
+    # alternation is simply grounded through its profile member instead of its
+    # graph one. State ids DISPLACE graph citations for claims that have no other
+    # citation path. That is a property of the v3 configuration, not a fault in
+    # the lever, and it is what f_recall_holds_independently was registered to
+    # catch. Reported, never silently reinterpreted.
     state_report = degraded["strip_state_ids"]
-    lever_clean = abs(state_report.model_recall - baseline.model_recall) <= 0.1
+    lever_clean = abs(state_report.f_recall - baseline.f_recall) <= 0.1
+    exclusive_drift = abs(
+        state_report.f_recall_exclusive - baseline.f_recall_exclusive
+    )
 
     # A lever cannot be shown to fire on an axis nothing exercised. With no
     # circumstantial segments anywhere, state_coverage is 0.0 on both sides for
@@ -582,6 +615,10 @@ def run_canary(
         "detected": detected,
         "lever_metric": dict(LEVER_METRIC),
         "state_lever_clean": lever_clean,
+        # How much of the f_recall movement survives when mixed alternations are
+        # excluded. Near zero would mean redirection within a claim; anything
+        # else is displacement between claims.
+        "f_recall_exclusive_drift": round(exclusive_drift, 4),
         "state_axis_exercised": axis_exercised,
         # `unconstrained_ids` only bites a model that would actually fabricate an
         # id — the null backend never does — so it is reported, not required.

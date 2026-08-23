@@ -137,3 +137,55 @@ def resolve_model_digest(model: str, host: str | None = None) -> str | None:
 def model_identity(model: str, digest: str | None) -> str:
     """The identity that goes on a take. Digest when known, tag otherwise."""
     return f"{model}@{digest[:19]}" if digest else model
+
+
+def model_is_resident(model: str, host: str | None = None) -> bool | None:
+    """Is the model already loaded in the server, or would this call load it?
+
+    Returns None when the server cannot be reached.
+
+    This is not housekeeping. A cold load and a warm one produce **different
+    output for identical inputs**, measured on 2026-08-23: the same battery,
+    same digest, same (seed, temperature, top_p, num_predict, num_ctx), scored
+    system_recall 0.5862 / state_coverage 0.5641 from a cold load and 0.6034 /
+    0.5897 warm. Each state is internally exact — two warm runs matched to four
+    decimal places, and a deliberate unload reproduced the cold figures exactly —
+    so this is a hidden VARIABLE, not noise.
+
+    That is the environment-declaration rule with a hole in it. The digest pins
+    the weights and the sampling stamp pins the decode, but neither says whether
+    the server had to load the model, and two bundles that disagree on it are not
+    comparable.
+    """
+    from ..config import settings
+
+    base = (host or settings.ollama_host).rstrip("/")
+    try:
+        with urllib.request.urlopen(f"{base}/api/ps", timeout=15) as response:  # noqa: S310
+            payload = json.loads(response.read())
+    except Exception:
+        return None
+    return any(entry.get("name") == model for entry in payload.get("models", []))
+
+
+def warm_up(model: str, config: SamplingConfig = DEFAULT_SAMPLING) -> bool:
+    """Force the model resident before a run, so every run starts warm.
+
+    Stamping the load state would only let a reader know two bundles are
+    incomparable. Making the state the same every time lets them BE comparable,
+    which is the better fix — so this is called before scoring rather than merely
+    recorded alongside it.
+
+    The request is fixed and its output discarded; `num_ctx` matters because
+    Ollama reloads the model when it changes, which would undo the warm-up.
+    """
+    from ..foundation.llm import generate as llm_generate
+
+    if model_is_resident(model):
+        return True
+    try:
+        llm_generate("You are a warm-up request. Reply with the word ok.", "ok",
+                     max_tokens=1, options=config.as_options())
+    except Exception:
+        return False
+    return bool(model_is_resident(model))
