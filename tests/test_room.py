@@ -10,6 +10,7 @@ from spp.cohort import generate_cohort
 from spp.narration.cassette import Cassette, Take
 from spp.narration.prompt import PROMPT_VERSION
 from spp.narration.evaluation import load_battery
+from spp.narration.state_facts import is_state_id
 from spp.narration.room import (
     MEMORY_SEMANTICS,
     REPLAY_RETRIEVAL_LIMIT,
@@ -147,9 +148,12 @@ class TestPickerNotChat:
 
 
 class TestCitationClickThrough:
-    def test_a_fact_expands_to_its_provenance(self, dna):
+    def test_a_graph_fact_expands_to_its_provenance(self, dna):
         answer = ask(dna, "Could you get to the site twice a month?")
-        fact_id = answer.cited_fact_ids[0]
+        # An answer now cites BOTH namespaces, and the two expand differently —
+        # picking whichever id happened to come first would test whichever
+        # ordering the skeleton happens to use.
+        fact_id = next(f for f in answer.cited_fact_ids if not is_state_id(f))
 
         payload = client.post(f"/room/fact/{fact_id}", json={
             "condition": dna.condition, "seed": 42, "n": 6, "persona_index": 0,
@@ -160,6 +164,40 @@ class TestCitationClickThrough:
         assert payload["confidence"]
         assert "quotable" in payload
         assert payload["subject"]["kind"] and payload["object"]["kind"]
+
+    def test_a_state_citation_expands_to_the_persona_field(self, dna):
+        """The same endpoint, the other provenance — labelled as such."""
+        answer = ask(dna, "Could you get to the site twice a month?")
+        state_id = next(f for f in answer.cited_fact_ids if is_state_id(f))
+
+        payload = client.post(f"/room/fact/{state_id}", json={
+            "condition": dna.condition, "seed": 42, "n": 6, "persona_index": 0,
+        }).json()
+
+        assert payload["id"] == state_id
+        assert payload["kind"] == "persona_state"
+        assert payload["persona_id"] == dna.patient_id
+        assert payload["namespace"] in {"P", "B", "J"}
+        assert payload["namespace_meaning"]
+        assert payload["origin"], "must name where in the persona it came from"
+
+    def test_a_barrier_state_id_closes_the_loop_to_the_simulation(self, dna):
+        """B- id -> the derived barrier -> the profile field it came from."""
+        barrier = max(dna.barriers, key=lambda b: b.severity)
+        payload = client.post(f"/room/fact/B-{barrier.name}", json={
+            "condition": dna.condition, "seed": 42, "n": 6, "persona_index": 0,
+        }).json()
+
+        link = payload["simulation_link"]
+        assert link["kind"] == "derived_barrier"
+        assert link["barrier"] == barrier.name
+        assert link["origin"] == barrier.origin
+
+    def test_a_state_id_this_persona_lacks_is_a_404(self, dna):
+        """The state half must not fabricate a field either."""
+        response = client.post("/room/fact/P-nothing_like_this", json={
+            "condition": dna.condition, "seed": 42, "n": 6, "persona_index": 0})
+        assert response.status_code == 404
 
     def test_a_barrier_fact_links_back_to_the_simulation(self):
         """The loop closing: spoken fact -> provenance -> the persona's DERIVED

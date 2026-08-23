@@ -39,8 +39,26 @@ from .panel import (
 )
 from .interview import InterviewTurn, citation_skeleton, interview
 from .prompt import Prompt, build_prompt, prior_turns, render_state
+from .state_facts import (
+    NAMESPACE_MEANING,
+    PROFILE_FIELDS,
+    RESERVED_NAMESPACES,
+    StateCitations,
+    StateDetail,
+    StateFact,
+    derive_state_facts,
+    is_state_id,
+    namespace_of,
+    state_detail,
+)
 
 __all__ = [
+    "NAMESPACE_MEANING",
+    "PROFILE_FIELDS",
+    "RESERVED_NAMESPACES",
+    "StateCitations",
+    "StateDetail",
+    "StateFact",
     "Cassette",
     "ComplianceReport",
     "GatedRecorder",
@@ -60,6 +78,10 @@ __all__ = [
     "answer_schema",
     "build_prompt",
     "check_citations",
+    "derive_state_facts",
+    "is_state_id",
+    "namespace_of",
+    "state_detail",
     "check_structured",
     "citation_skeleton",
     "extract_citations",

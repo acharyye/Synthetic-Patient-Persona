@@ -30,8 +30,12 @@ import re
 
 from pydantic import BaseModel, Field
 
-# [F012] or [F012, F031]
-CITATION_RE = re.compile(r"\[(F\d+(?:\s*,\s*F\d+)*)\]")
+from .state_facts import STATE_ID_PATTERN
+
+# [F012], [F012, F031], [B-transport] — graph ids and state ids alike, since
+# both are citation handles and both may show up in a text-path answer.
+_ANY_ID = rf"(?:F\d+|{STATE_ID_PATTERN})"
+CITATION_RE = re.compile(rf"\[({_ANY_ID}(?:\s*,\s*{_ANY_ID})*)\]")
 _SENTENCE_RE = re.compile(r"(?<=[.!?])\s+")
 
 # Sentences that are clearly about the speaker's inner life need no citation.
@@ -45,7 +49,9 @@ _EXEMPT_OPENERS = (
 )
 
 # Words that mark an assertion about the world rather than about a feeling.
-_FACTUAL_MARKERS = (
+# Public because the compliance eval reuses this vocabulary to decide which
+# segments are CIRCUMSTANTIAL; two copies of it would drift.
+FACTUAL_MARKERS = (
     "medication", "tablet", "drug", "dose", "treatment", "side effect",
     "symptom", "diagnos", "condition", "clinic", "appointment", "visit",
     "blood", "scan", "test", "study", "trial", "nurse", "doctor",
@@ -117,7 +123,7 @@ def is_factual(sentence: str) -> bool:
         return False
     if lowered.endswith("?"):
         return False
-    return any(marker in lowered for marker in _FACTUAL_MARKERS)
+    return any(marker in lowered for marker in FACTUAL_MARKERS)
 
 
 def strip_citations(text: str) -> str:
@@ -162,8 +168,8 @@ def repair_instruction(check: CitationCheck) -> str:
     parts = ["Your previous answer broke the citation rules."]
     if check.unknown_citations:
         parts.append(
-            f"These ids were not in GROUNDED FACTS and must not appear: "
-            f"{', '.join(check.unknown_citations)}."
+            f"These ids were in neither GROUNDED FACTS nor ABOUT YOU and must "
+            f"not appear: {', '.join(check.unknown_citations)}."
         )
     if check.uncited_sentences:
         example = check.uncited_sentences[0]

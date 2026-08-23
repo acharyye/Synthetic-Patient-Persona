@@ -22,6 +22,7 @@ from spp.narration import (
     Take,
     build_prompt,
     check_citations,
+    derive_state_facts,
     citation_skeleton,
     extract_citations,
     interview,
@@ -68,9 +69,25 @@ class TestPromptIsPure:
         """The checker must verify against exactly what the model was shown."""
         result = retrieve(graph, dna.condition, "q", limit=7)
         prompt = build_prompt(dna, result, "q")
-        assert prompt.allowed_fact_ids == result.fact_ids
+        state = derive_state_facts(dna)
+
+        assert prompt.allowed_fact_ids == result.fact_ids | state.fact_ids
+        assert prompt.allowed_state_ids == state.fact_ids
+        # The two halves must not overlap, or "was this grounded in the persona
+        # or in the graph?" stops being answerable by set membership.
+        assert not (result.fact_ids & state.fact_ids)
         for fact_id in prompt.allowed_fact_ids:
             assert f"[{fact_id}]" in prompt.system
+
+    def test_the_canary_lever_builds_the_v2_configuration(self, graph, dna):
+        """`strip_state_ids` must remove the ids, not merely hide the block."""
+        result = retrieve(graph, dna.condition, "q", limit=7)
+        stripped = build_prompt(dna, result, "q", include_state_facts=False)
+
+        assert stripped.allowed_state_ids == frozenset()
+        assert stripped.allowed_fact_ids == result.fact_ids
+        for state_id in derive_state_facts(dna).fact_ids:
+            assert f"[{state_id}]" not in stripped.system
 
     def test_state_slice_reflects_the_simulation(self, dna):
         from spp.foundation.events import BurdenVector, JourneyStage
@@ -116,7 +133,7 @@ class TestPromptIsPure:
         """
         prompt = build_prompt(dna, retrieve(graph, dna.condition, limit=4), "q")
         instructions = prompt.system.split("GROUNDED FACTS:")[0]
-        assert not re.search(r"\[F\d+\]", instructions), (
+        assert not re.search(r"\[(F\d+|[PBJE]-[\w.\-]+)\]", instructions), (
             "instructions contain an inline citation marker example; the model "
             "will reproduce it in `text` alongside the structured fact_ids"
         )
@@ -130,7 +147,8 @@ class TestPromptIsPure:
 
         payload = {"system": prompt.system, "user": prompt.user,
                    "fingerprint": prompt.fingerprint,
-                   "allowed": sorted(prompt.allowed_fact_ids)}
+                   "allowed": sorted(prompt.allowed_fact_ids),
+                   "allowed_state": sorted(prompt.allowed_state_ids)}
         if not path.exists():
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")

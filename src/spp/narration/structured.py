@@ -34,9 +34,14 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
+from .state_facts import STATE_ID_PATTERN
+
 # Literal citation markers a model may write into `text` despite the
-# structured contract carrying ids separately.
-_INLINE_MARKER = re.compile(r"\s*\[F\d+(?:\s*,\s*F\d+)*\]")
+# structured contract carrying ids separately. Covers the state namespaces too:
+# the v1 defect was the model imitating a marker convention, and it has no reason
+# to imitate it only for graph ids.
+_ANY_ID = rf"(?:F\d+|{STATE_ID_PATTERN})"
+_INLINE_MARKER = re.compile(rf"\s*\[{_ANY_ID}(?:\s*,\s*{_ANY_ID})*\]")
 
 SegmentKind = Literal["factual", "feeling"]
 
