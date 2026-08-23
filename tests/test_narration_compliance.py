@@ -340,6 +340,49 @@ class TestBatteryExpectations:
         )
 
 
+class TestFRecallReadsGraphCitationsOnly:
+    """The arm's whole point, and the thing most likely to be mistaken for a bug.
+
+    `tx` must-groups are mixed alternations: `["P-medications.metformin", "F063"]`
+    — citing either grounds "I take metformin". A model that satisfies the group
+    through its own profile satisfies model_recall and MISSES f_recall, on
+    purpose. State ids are the easier citation path (a persona's circumstances are
+    always in context), so a run where the graph fact goes uncited while the
+    profile carries the claim is exactly the cannibalisation this arm watches for.
+    """
+
+    def test_grounding_a_mixed_group_in_state_misses_f_recall(self, cohort, graph):
+        def state_only(prompt, schema, repair):
+            state = sorted(prompt.allowed_state_ids)
+            ids = state or sorted(prompt.allowed_fact_ids)
+            return json.dumps({"segments": [
+                {"text": "I live with this and I take what I am given",
+                 "kind": "factual", "fact_ids": ids[:3]},
+            ]})
+
+        report = score(cohort, state_only, graph=graph, model="stub-state-only")
+        assert report.f_recall_cases >= 20, "the arm must have cases to grade"
+        assert report.f_recall == 0.0, (
+            "a model citing only state ids must not score graph recall"
+        )
+        assert report.state_citation_share == 1.0
+
+    def test_grounding_the_same_group_in_the_graph_scores_it(self, cohort, graph):
+        def graph_only(prompt, schema, repair):
+            offered = [
+                line.split("]")[0].lstrip("[")
+                for line in prompt.system.splitlines() if line.startswith("[F")
+            ]
+            return json.dumps({"segments": [
+                {"text": "That is what I have been told about it",
+                 "kind": "factual", "fact_ids": offered[:4]},
+            ]})
+
+        report = score(cohort, graph_only, graph=graph, model="stub-graph-only")
+        assert report.f_recall > 0.0
+        assert report.state_citation_share == 0.0
+
+
 class TestCanary:
     """Prove the instrument can fail before believing what it says."""
 
