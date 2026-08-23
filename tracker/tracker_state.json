@@ -192,17 +192,28 @@
         {
           "id": "H",
           "title": "Record the v3 battery against the pre-registered bars",
-          "status": "backlog",
-          "progress": 0,
+          "status": "active",
+          "progress": 50,
           "startWeek": 36,
           "endWeek": 37,
           "aufgabe": "Run the battery with the namespaces live, changing exactly one declared variable, and write the bundle beside v0.1 and v0.3.",
           "ziel": "A third reading comparable to the first two.",
-          "stand": "",
+          "stand": "2026-08-23: expectations authored and the three missing arms implemented; live canary running against qwen2.5:7b-instruct@845dbda0ea48. Recording is refused until it fires.",
           "meetingNotes": "",
-          "achievements": [],
-          "validations": [],
-          "decisions": [],
+          "achievements": [
+            { "date": "2026-08-23", "text": "Battery re-authored: expect_facts (retrieval's own top ranks) replaced by authored must/may sets with alternation groups. Every inherited id reviewed against the persona it names." },
+            { "date": "2026-08-23", "text": "Three pre-registered arms had no metric and now do: feeling_floor, inline_marker_takes and f_recall_holds_independently." },
+            { "date": "2026-08-23", "text": "scripts/state_dumps.py regenerates the authoring worksheet from inputs only — it reads no cassette, by design." }
+          ],
+          "validations": [
+            { "date": "2026-08-23", "text": "Expectation contract tests generated from battery contents: every expected id must exist in the graph or be derivable for that persona; must-sets stay 1-3 groups; both the F arm and the state axis have enough cases to grade." },
+            { "date": "2026-08-23", "text": "f_recall semantics pinned by two stubs: satisfying a mixed alternation through the profile clears model_recall and misses f_recall, which is the arm working rather than a bug." }
+          ],
+          "decisions": [
+            { "date": "2026-08-23", "text": "COVERAGE FINDING: copd-s42-0005 has no derived barriers, so every mitigation fact retrieval offers is about a barrier it does not have. Its must-set is its own circumstances — a question with no correct answer before these ids existed." },
+            { "date": "2026-08-23", "text": "Several inherited F-expectations contradicted their persona (a persona with a car expected to cite \"no reliable way to get to the site\"; a persona on metformin expected to cite insulin glargine). Dropped, not inherited." },
+            { "date": "2026-08-23", "text": "Recall is NOT comparable to v0.1/v0.3 under re-authored expectations, and the battery says so in its own description. f_recall carries the pre-registered floor for graph recall instead." }
+          ],
           "links": ["KR1.1"],
           "deps": ["G"],
           "assignees": [],
@@ -217,11 +228,19 @@
           "endWeek": 37,
           "aufgabe": "Check burden and mitigation factual_fraction against the controls. If burden and mitigation recover while ae/tx/proc hold flat within 0.10, the new ids did the work. If everything rises together it is over-correction, however good the burden numbers look.",
           "ziel": "A verdict the pre-registration can actually adjudicate, not a number chosen after the fact.",
-          "stand": "",
+          "stand": "2026-08-23: the decision procedure is built and tested ahead of the run (narration/adjudication.py). It reads thresholds out of the shape file and follows the registered tree; nothing to read until H records.",
           "meetingNotes": "",
-          "achievements": [],
-          "validations": [],
-          "decisions": [],
+          "achievements": [
+            { "date": "2026-08-23", "text": "adjudication.py reads the arms from v3_expected_shape.json, transcribes no threshold, and carries the amendment trail into the verdict." }
+          ],
+          "validations": [
+            { "date": "2026-08-23", "text": "Every branch of the reading tree is reachable against a synthesised report (tests/test_adjudication.py) — the TestGateCanActuallyFail move. The branch that matters is OVER-CORRECTION: burden excellent while the controls rose with it." }
+          ],
+          "decisions": [
+            { "date": "2026-08-23", "text": "A tag below its floor outranks another above its ceiling: a tag that did not recover falsifies the diagnosis whatever a second tag did." },
+            { "date": "2026-08-23", "text": "Recovery with state_coverage under its floor is NOT recovery — that is relabelling, the over-correction signature in its purest form." },
+            { "date": "2026-08-23", "text": "Caveats travel with the numbers rather than being remembered: recall comparability, the 64% enum asymmetry, a thin circumstantial denominator, and degeneracy sending the reader to the raw takes." }
+          ],
           "links": ["KR1.1"],
           "deps": ["H"],
           "assignees": [],
