@@ -4,6 +4,7 @@ Prompt building is pure and golden-tested. Model calls go through record/replay
 cassettes. Citation verification is code, never a model judging a model. The
 null backend keeps the whole pipeline runnable — and CI-tested — offline.
 """
+from .adjudication import Adjudication, ArmResult, adjudicate
 from .cassette import (
     Cassette,
     CassetteAdapter,
@@ -53,6 +54,8 @@ from .state_facts import (
 )
 
 __all__ = [
+    "Adjudication",
+    "ArmResult",
     "NAMESPACE_MEANING",
     "PROFILE_FIELDS",
     "RESERVED_NAMESPACES",
@@ -75,6 +78,7 @@ __all__ = [
     "Theme",
     "Prompt",
     "Take",
+    "adjudicate",
     "answer_schema",
     "build_prompt",
     "check_citations",
