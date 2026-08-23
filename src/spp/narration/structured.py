@@ -46,6 +46,16 @@ _INLINE_MARKER = re.compile(rf"\s*\[{_ANY_ID}(?:\s*,\s*{_ANY_ID})*\]")
 SegmentKind = Literal["factual", "feeling"]
 
 
+def has_inline_marker(text: str) -> bool:
+    """Did the model write a citation marker INTO the spoken text?
+
+    The v1 defect, and a pre-registered hold-from-v2 (`inline_marker_takes`
+    max 0). The renderer strips these, so by the time anyone reads rendered prose
+    the evidence is gone — it has to be counted on the raw segment text.
+    """
+    return bool(_INLINE_MARKER.search(text or ""))
+
+
 class Segment(BaseModel):
     """One clause of an answer, typed by whether it asserts anything."""
 

@@ -1,5 +1,5 @@
 {
-  "description": "Narration compliance battery. Fixed questions across conditions and barrier profiles, scored per (prompt_version, model, adapter_version). Cases are keyed by (condition, patient_id): patient_id alone was unique only within a cohort, which silently scored one condition's personas against another's expected facts. `expect_facts` are the top-ranked retrieved facts for the query, so citing a valid-but-irrelevant id passes the gate and fails recall.",
+  "description": "Narration compliance battery. Fixed questions across conditions and barrier profiles, scored per (prompt_version, model, adapter_version). Cases are keyed by (condition, patient_id): patient_id alone was unique only within a cohort, which silently scored one condition's personas against another's expected facts. v3 REPLACES `expect_facts` with an AUTHORED `expect` of must/may sets. The old field held retrieval's own top-ranked ids, so recall measured agreement with the retriever rather than relevance — and several entries named barriers the persona does not have (a persona with a car expected to cite \"no reliable way to get to the site\"). Every inherited id was reviewed against the persona and dropped where it was stretched. A must entry that is a LIST is an ALTERNATION: any member grounds the claim, which is how \"B-transport or its origin P-social_determinants.transport\" is graded as the protocol describes it rather than against the author's pick. Recall grades the must-groups; the may-set marks citations that are reasonable without being required. COMPARABILITY: recall figures are NOT comparable to v0.1 or v0.3. Those graded flat sets of four retrieval-derived ids; these grade one to three authored groups. f_recall has its own pre-registered floor for that reason, and a rise over v2 is a change of instrument, not of model.",
   "cases": [
     {
       "id": "type_2_diabetes-sym-p0",
@@ -9,12 +9,25 @@
       "barrier_load": 0.15,
       "question": "What do you actually feel day to day?",
       "limit": 16,
-      "expect_facts": [
-        "F057",
-        "F058",
-        "F059",
-        "F060"
-      ]
+      "expect": {
+        "must": [
+          [
+            "F057",
+            "F058",
+            "F059",
+            "F060",
+            "F061",
+            "F062"
+          ]
+        ],
+        "may": [
+          "P-condition",
+          "P-stage",
+          "P-comorbidities.hypertension",
+          "P-comorbidities.obesity",
+          "P-comorbidities.cardiovascular-disease"
+        ]
+      }
     },
     {
       "id": "type_2_diabetes-proc-p0",
@@ -24,12 +37,27 @@
       "barrier_load": 0.15,
       "question": "What tests and monitoring are involved?",
       "limit": 16,
-      "expect_facts": [
-        "F067",
-        "F072",
-        "F073",
-        "F078"
-      ]
+      "expect": {
+        "must": [
+          [
+            "F067",
+            "F072"
+          ],
+          [
+            "F073"
+          ]
+        ],
+        "may": [
+          "F001",
+          "F002",
+          "F003",
+          "F004",
+          "F005",
+          "F006",
+          "P-medications.metformin",
+          "P-medications.empagliflozin"
+        ]
+      }
     },
     {
       "id": "type_2_diabetes-ae-p1",
@@ -39,12 +67,27 @@
       "barrier_load": 0.59,
       "question": "What side effects should I expect from treatment?",
       "limit": 16,
-      "expect_facts": [
-        "F064",
-        "F065",
-        "F066",
-        "F069"
-      ]
+      "expect": {
+        "must": [
+          [
+            "F064",
+            "F065",
+            "F066"
+          ],
+          [
+            "F069",
+            "F070",
+            "F071"
+          ]
+        ],
+        "may": [
+          "F063",
+          "F068",
+          "P-medications.metformin",
+          "P-medications.empagliflozin",
+          "J-adverse_event"
+        ]
+      }
     },
     {
       "id": "type_2_diabetes-mitigation-p1",
@@ -54,12 +97,29 @@
       "barrier_load": 0.59,
       "question": "What support would make taking part possible?",
       "limit": 16,
-      "expect_facts": [
-        "F042",
-        "F043",
-        "F051",
-        "F052"
-      ]
+      "expect": {
+        "must": [
+          [
+            "F042",
+            "F043"
+          ],
+          [
+            "F051",
+            "F052"
+          ],
+          [
+            "B-scheduling",
+            "P-constraints.works-shifts-so-weekday-daytime"
+          ]
+        ],
+        "may": [
+          "F044",
+          "B-unsupported",
+          "B-competing_care",
+          "P-social_determinants.caregiver",
+          "P-social_determinants.employment"
+        ]
+      }
     },
     {
       "id": "type_2_diabetes-tx-p2",
@@ -69,12 +129,27 @@
       "barrier_load": 0.81,
       "question": "What medication are you taking for it?",
       "limit": 16,
-      "expect_facts": [
-        "F063",
-        "F068",
-        "F074",
-        "F080"
-      ]
+      "expect": {
+        "must": [
+          [
+            "P-medications.metformin",
+            "F063"
+          ],
+          [
+            "P-medications.empagliflozin",
+            "F068"
+          ],
+          [
+            "P-medications.semaglutide",
+            "F074"
+          ]
+        ],
+        "may": [
+          "P-adherence_baseline",
+          "B-pill_burden",
+          "B-adherence"
+        ]
+      }
     },
     {
       "id": "type_2_diabetes-burden-p2",
@@ -84,12 +159,24 @@
       "barrier_load": 0.81,
       "question": "Could you get to the site twice a month?",
       "limit": 16,
-      "expect_facts": [
-        "F011",
-        "F019",
-        "F012",
-        "F013"
-      ]
+      "expect": {
+        "must": [
+          [
+            "F012"
+          ],
+          [
+            "B-mobility",
+            "P-constraints.limited-mobility-travel-is"
+          ]
+        ],
+        "may": [
+          "F020",
+          "F023",
+          "B-competing_care",
+          "P-social_determinants.transport",
+          "P-social_determinants.employment"
+        ]
+      }
     },
     {
       "id": "COPD-ae-p0",
@@ -99,12 +186,18 @@
       "barrier_load": 0,
       "question": "What side effects should I expect from treatment?",
       "limit": 16,
-      "expect_facts": [
-        "F098",
-        "F099",
-        "F102",
-        "F103"
-      ]
+      "expect": {
+        "must": [
+          [
+            "F098",
+            "F099"
+          ]
+        ],
+        "may": [
+          "F097",
+          "P-medications.salbutamol-prn"
+        ]
+      }
     },
     {
       "id": "COPD-mitigation-p0",
@@ -114,12 +207,19 @@
       "barrier_load": 0,
       "question": "What support would make taking part possible?",
       "limit": 16,
-      "expect_facts": [
-        "F032",
-        "F033",
-        "F034",
-        "F035"
-      ]
+      "expect": {
+        "must": [
+          [
+            "P-social_determinants.transport",
+            "P-social_determinants.employment",
+            "P-constraints.works-part-time"
+          ]
+        ],
+        "may": [
+          "F042",
+          "F043"
+        ]
+      }
     },
     {
       "id": "COPD-tx-p1",
@@ -129,12 +229,22 @@
       "barrier_load": 0.32,
       "question": "What medication are you taking for it?",
       "limit": 16,
-      "expect_facts": [
-        "F097",
-        "F101",
-        "F105",
-        "F111"
-      ]
+      "expect": {
+        "must": [
+          [
+            "P-medications.salbutamol-prn",
+            "F097"
+          ],
+          [
+            "P-medications.tiotropium",
+            "F101"
+          ]
+        ],
+        "may": [
+          "P-adherence_baseline",
+          "B-adherence"
+        ]
+      }
     },
     {
       "id": "COPD-burden-p1",
@@ -144,12 +254,24 @@
       "barrier_load": 0.32,
       "question": "Could you get to the site twice a month?",
       "limit": 16,
-      "expect_facts": [
-        "F011",
-        "F019",
-        "F014",
-        "F012"
-      ]
+      "expect": {
+        "must": [
+          [
+            "F014"
+          ],
+          [
+            "B-transport_fragile",
+            "P-constraints.depends-on-public-transport-to",
+            "P-social_determinants.transport"
+          ]
+        ],
+        "may": [
+          "F011",
+          "F019",
+          "B-adherence",
+          "P-social_determinants.employment"
+        ]
+      }
     },
     {
       "id": "COPD-sym-p2",
@@ -159,12 +281,23 @@
       "barrier_load": 1.44,
       "question": "What do you actually feel day to day?",
       "limit": 16,
-      "expect_facts": [
-        "F091",
-        "F092",
-        "F093",
-        "F094"
-      ]
+      "expect": {
+        "must": [
+          [
+            "F091",
+            "F092",
+            "F093",
+            "F094",
+            "F095",
+            "F096"
+          ]
+        ],
+        "may": [
+          "P-condition",
+          "P-stage",
+          "P-medications.home-oxygen"
+        ]
+      }
     },
     {
       "id": "COPD-proc-p2",
@@ -174,12 +307,33 @@
       "barrier_load": 1.44,
       "question": "What tests and monitoring are involved?",
       "limit": 16,
-      "expect_facts": [
-        "F104",
-        "F109",
-        "F114",
-        "F004"
-      ]
+      "expect": {
+        "must": [
+          [
+            "F104",
+            "F109",
+            "F114"
+          ],
+          [
+            "F100",
+            "F110"
+          ],
+          [
+            "F115"
+          ]
+        ],
+        "may": [
+          "F004",
+          "F005",
+          "F006",
+          "F007",
+          "F008",
+          "F009",
+          "F010",
+          "P-medications.tiotropium",
+          "P-medications.home-oxygen"
+        ]
+      }
     },
     {
       "id": "heart_failure-tx-p0",
@@ -189,12 +343,18 @@
       "barrier_load": 0.18,
       "question": "What medication are you taking for it?",
       "limit": 16,
-      "expect_facts": [
-        "F125",
-        "F131",
-        "F136",
-        "F140"
-      ]
+      "expect": {
+        "must": [
+          [
+            "P-medications.ramipril",
+            "F125"
+          ]
+        ],
+        "may": [
+          "P-condition",
+          "J-treatment_start"
+        ]
+      }
     },
     {
       "id": "heart_failure-burden-p0",
@@ -204,12 +364,22 @@
       "barrier_load": 0.18,
       "question": "Could you get to the site twice a month?",
       "limit": 16,
-      "expect_facts": [
-        "F011",
-        "F019",
-        "F012",
-        "F013"
-      ]
+      "expect": {
+        "must": [
+          [
+            "F012"
+          ],
+          [
+            "B-mobility",
+            "P-constraints.limited-mobility-travel-is"
+          ]
+        ],
+        "may": [
+          "F034",
+          "F035",
+          "P-social_determinants.transport"
+        ]
+      }
     },
     {
       "id": "heart_failure-sym-p1",
@@ -219,12 +389,21 @@
       "barrier_load": 0.75,
       "question": "What do you actually feel day to day?",
       "limit": 16,
-      "expect_facts": [
-        "F120",
-        "F121",
-        "F122",
-        "F123"
-      ]
+      "expect": {
+        "must": [
+          [
+            "F120",
+            "F121",
+            "F122",
+            "F123",
+            "F124"
+          ]
+        ],
+        "may": [
+          "P-condition",
+          "P-stage"
+        ]
+      }
     },
     {
       "id": "heart_failure-proc-p1",
@@ -234,12 +413,27 @@
       "barrier_load": 0.75,
       "question": "What tests and monitoring are involved?",
       "limit": 16,
-      "expect_facts": [
-        "F129",
-        "F130",
-        "F135",
-        "F139"
-      ]
+      "expect": {
+        "must": [
+          [
+            "F129"
+          ],
+          [
+            "F130",
+            "F135"
+          ]
+        ],
+        "may": [
+          "F001",
+          "F002",
+          "F003",
+          "F004",
+          "F005",
+          "F006",
+          "P-medications.ramipril",
+          "P-medications.bisoprolol"
+        ]
+      }
     },
     {
       "id": "heart_failure-ae-p2",
@@ -249,12 +443,33 @@
       "barrier_load": 1.25,
       "question": "What side effects should I expect from treatment?",
       "limit": 16,
-      "expect_facts": [
-        "F126",
-        "F127",
-        "F128",
-        "F132"
-      ]
+      "expect": {
+        "must": [
+          [
+            "F126",
+            "F127",
+            "F128"
+          ],
+          [
+            "F132",
+            "F133",
+            "F134",
+            "F137",
+            "F138",
+            "F141",
+            "F142",
+            "F143"
+          ]
+        ],
+        "may": [
+          "F125",
+          "F131",
+          "F136",
+          "F140",
+          "P-medications.ramipril",
+          "B-pill_burden"
+        ]
+      }
     },
     {
       "id": "heart_failure-mitigation-p2",
@@ -264,12 +479,33 @@
       "barrier_load": 1.25,
       "question": "What support would make taking part possible?",
       "limit": 16,
-      "expect_facts": [
-        "F034",
-        "F035",
-        "F038",
-        "F039"
-      ]
+      "expect": {
+        "must": [
+          [
+            "F034",
+            "F035"
+          ],
+          [
+            "F038",
+            "F039"
+          ],
+          [
+            "F040",
+            "F041"
+          ]
+        ],
+        "may": [
+          "F045",
+          "F046",
+          "F051",
+          "F052",
+          "B-mobility",
+          "B-cost",
+          "B-transport_fragile",
+          "P-constraints.depends-on-public-transport-to",
+          "P-constraints.cannot-absorb-out-of-pocket"
+        ]
+      }
     },
     {
       "id": "breast_cancer-sym-p0",
@@ -279,12 +515,21 @@
       "barrier_load": 0,
       "question": "What do you actually feel day to day?",
       "limit": 16,
-      "expect_facts": [
-        "F150",
-        "F151",
-        "F152",
-        "F153"
-      ]
+      "expect": {
+        "must": [
+          [
+            "F150",
+            "F151",
+            "F152",
+            "F153"
+          ]
+        ],
+        "may": [
+          "P-condition",
+          "P-stage",
+          "J-diagnosis"
+        ]
+      }
     },
     {
       "id": "breast_cancer-proc-p0",
@@ -294,12 +539,29 @@
       "barrier_load": 0,
       "question": "What tests and monitoring are involved?",
       "limit": 16,
-      "expect_facts": [
-        "F158",
-        "F164",
-        "F169",
-        "F170"
-      ]
+      "expect": {
+        "must": [
+          [
+            "F158",
+            "F164"
+          ],
+          [
+            "F159"
+          ]
+        ],
+        "may": [
+          "F001",
+          "F002",
+          "F003",
+          "F004",
+          "F005",
+          "F006",
+          "F007",
+          "F008",
+          "P-medications.anastrozole",
+          "P-medications.tamoxifen"
+        ]
+      }
     },
     {
       "id": "breast_cancer-ae-p1",
@@ -309,12 +571,36 @@
       "barrier_load": 0.49,
       "question": "What side effects should I expect from treatment?",
       "limit": 16,
-      "expect_facts": [
-        "F155",
-        "F156",
-        "F157",
-        "F161"
-      ]
+      "expect": {
+        "must": [
+          [
+            "F155",
+            "F156",
+            "F157"
+          ],
+          [
+            "F161",
+            "F162",
+            "F163"
+          ],
+          [
+            "F166",
+            "F167",
+            "F168",
+            "F173",
+            "F174",
+            "F175"
+          ]
+        ],
+        "may": [
+          "F154",
+          "F160",
+          "F165",
+          "F172",
+          "J-adverse_event",
+          "B-pill_burden"
+        ]
+      }
     },
     {
       "id": "breast_cancer-mitigation-p1",
@@ -324,12 +610,29 @@
       "barrier_load": 0.49,
       "question": "What support would make taking part possible?",
       "limit": 16,
-      "expect_facts": [
-        "F040",
-        "F041",
-        "F051",
-        "F052"
-      ]
+      "expect": {
+        "must": [
+          [
+            "F040",
+            "F041"
+          ],
+          [
+            "F051",
+            "F052"
+          ],
+          [
+            "B-cost",
+            "P-constraints.cannot-absorb-out-of-pocket"
+          ]
+        ],
+        "may": [
+          "F045",
+          "F046",
+          "B-competing_care",
+          "B-pill_burden",
+          "P-social_determinants.transport"
+        ]
+      }
     },
     {
       "id": "breast_cancer-tx-p2",
@@ -339,12 +642,26 @@
       "barrier_load": 0.82,
       "question": "What medication are you taking for it?",
       "limit": 16,
-      "expect_facts": [
-        "F154",
-        "F160",
-        "F165",
-        "F172"
-      ]
+      "expect": {
+        "must": [
+          [
+            "P-medications.anastrozole",
+            "F154"
+          ],
+          [
+            "P-medications.tamoxifen",
+            "F160"
+          ],
+          [
+            "P-medications.paclitaxel",
+            "F165"
+          ]
+        ],
+        "may": [
+          "P-adherence_baseline",
+          "B-pill_burden"
+        ]
+      }
     },
     {
       "id": "breast_cancer-burden-p2",
@@ -354,12 +671,29 @@
       "barrier_load": 0.82,
       "question": "Could you get to the site twice a month?",
       "limit": 16,
-      "expect_facts": [
-        "F011",
-        "F019",
-        "F012",
-        "F015"
-      ]
+      "expect": {
+        "must": [
+          [
+            "F011"
+          ],
+          [
+            "F012"
+          ],
+          [
+            "B-transport",
+            "P-constraints.no-car-and-no-reliable-lift-to",
+            "P-social_determinants.transport"
+          ]
+        ],
+        "may": [
+          "F015",
+          "F019",
+          "F023",
+          "B-cost",
+          "B-mobility",
+          "P-constraints.limited-mobility-travel-is"
+        ]
+      }
     },
     {
       "id": "rheumatoid_arthritis-ae-p0",
@@ -369,12 +703,20 @@
       "barrier_load": 0.24,
       "question": "What side effects should I expect from treatment?",
       "limit": 16,
-      "expect_facts": [
-        "F186",
-        "F187",
-        "F188",
-        "F189"
-      ]
+      "expect": {
+        "must": [
+          [
+            "F186",
+            "F187",
+            "F188",
+            "F189"
+          ]
+        ],
+        "may": [
+          "F185",
+          "P-medications.methotrexate"
+        ]
+      }
     },
     {
       "id": "rheumatoid_arthritis-mitigation-p0",
@@ -384,12 +726,22 @@
       "barrier_load": 0.24,
       "question": "What support would make taking part possible?",
       "limit": 16,
-      "expect_facts": [
-        "F042",
-        "F043",
-        "F032",
-        "F033"
-      ]
+      "expect": {
+        "must": [
+          [
+            "F042",
+            "F043"
+          ],
+          [
+            "B-scheduling",
+            "P-constraints.works-shifts-so-weekday-daytime"
+          ]
+        ],
+        "may": [
+          "P-social_determinants.employment",
+          "P-social_determinants.transport"
+        ]
+      }
     },
     {
       "id": "rheumatoid_arthritis-tx-p1",
@@ -399,12 +751,18 @@
       "barrier_load": 0.32,
       "question": "What medication are you taking for it?",
       "limit": 16,
-      "expect_facts": [
-        "F185",
-        "F192",
-        "F196",
-        "F201"
-      ]
+      "expect": {
+        "must": [
+          [
+            "P-medications.methotrexate",
+            "F185"
+          ]
+        ],
+        "may": [
+          "P-condition",
+          "J-treatment_start"
+        ]
+      }
     },
     {
       "id": "rheumatoid_arthritis-burden-p1",
@@ -414,12 +772,24 @@
       "barrier_load": 0.32,
       "question": "Could you get to the site twice a month?",
       "limit": 16,
-      "expect_facts": [
-        "F011",
-        "F019",
-        "F014",
-        "F012"
-      ]
+      "expect": {
+        "must": [
+          [
+            "F014"
+          ],
+          [
+            "B-transport_fragile",
+            "P-constraints.depends-on-public-transport-to",
+            "P-social_determinants.transport"
+          ]
+        ],
+        "may": [
+          "F011",
+          "F019",
+          "B-unsupported",
+          "P-constraints.no-one-at-home-to-help"
+        ]
+      }
     },
     {
       "id": "rheumatoid_arthritis-sym-p2",
@@ -429,12 +799,20 @@
       "barrier_load": 1.14,
       "question": "What do you actually feel day to day?",
       "limit": 16,
-      "expect_facts": [
-        "F181",
-        "F182",
-        "F183",
-        "F184"
-      ]
+      "expect": {
+        "must": [
+          [
+            "F181",
+            "F182",
+            "F183",
+            "F184"
+          ]
+        ],
+        "may": [
+          "P-condition",
+          "P-stage"
+        ]
+      }
     },
     {
       "id": "rheumatoid_arthritis-proc-p2",
@@ -444,12 +822,25 @@
       "barrier_load": 1.14,
       "question": "What tests and monitoring are involved?",
       "limit": 16,
-      "expect_facts": [
-        "F190",
-        "F191",
-        "F195",
-        "F199"
-      ]
+      "expect": {
+        "must": [
+          [
+            "F190"
+          ],
+          [
+            "F191"
+          ]
+        ],
+        "may": [
+          "F001",
+          "F002",
+          "F003",
+          "F004",
+          "F005",
+          "F006",
+          "P-medications.methotrexate"
+        ]
+      }
     }
   ]
 }

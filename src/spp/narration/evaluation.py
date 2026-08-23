@@ -50,6 +50,7 @@ from .structured import (
     StructuredAnswer,
     answer_schema,
     check_structured,
+    has_inline_marker,
     parse_structured,
 )
 
@@ -57,6 +58,38 @@ BATTERY_PATH = Path(__file__).resolve().parents[3] / "tests" / "eval" / "narrati
 
 
 _FIRST_PERSON = re.compile(r"\b(i|i'm|i've|i'd|my|mine|me|we|our|us)\b")
+
+
+MustGroup = tuple[str, ...]
+
+
+def expectations(case: dict) -> tuple[tuple[MustGroup, ...], tuple[str, ...]]:
+    """The must-groups and may-set for one battery case, from either shape.
+
+    A must entry may be a LIST, which is an **alternation**: a derivation chain
+    gives "B-transport or its origin P-social_determinants.transport", and either
+    one grounds the claim. Grading the alternation as a group is what makes that
+    true of the metric rather than only of the author's intent — under a flat
+    must-set, a model citing the origin instead of the barrier would be scored a
+    miss for a citation the protocol calls correct.
+
+    The pre-v3 shape (`expect_facts`, a flat list) reads as one single-member
+    group each, so an archived battery still scores rather than needing a second
+    code path. That shape was GENERATED from retrieval's top ranks, which is why
+    the v3 protocol re-authors it: expectations taken from system output measure
+    agreement with the system.
+    """
+    raw = case.get("expect")
+    if raw is None:
+        return tuple((fact_id,) for fact_id in case.get("expect_facts", [])), ()
+
+    must: list[MustGroup] = []
+    for entry in raw.get("must", []):
+        if isinstance(entry, str):
+            must.append((entry,))
+        else:
+            must.append(tuple(entry))
+    return tuple(must), tuple(raw.get("may", []))
 
 
 def is_circumstantial(text: str) -> bool:
@@ -91,7 +124,11 @@ class CaseResult(BaseModel):
     patient_id: str
     question: str
     cited: list[str] = Field(default_factory=list)
+    # Flattened must-set, kept under the old name so archived readers still find
+    # it. `expected_must` carries the alternation structure recall actually uses.
     expected_facts: list[str] = Field(default_factory=list)
+    expected_must: list[list[str]] = Field(default_factory=list)
+    expected_may: list[str] = Field(default_factory=list)
     retrieved_facts: list[str] = Field(default_factory=list)
     # The state ids this persona was OFFERED, so a state miss can be read as
     # "never had one to cite" rather than "declined to cite it".
@@ -105,6 +142,8 @@ class CaseResult(BaseModel):
     # against the denominator.
     circumstantial_segments: int = 0
     cited_circumstantial_segments: int = 0
+    feeling_segments: int = 0
+    inline_markers: int = 0
     # Rank positions (0-based) of the cited facts in the offered list — the
     # position-bias diagnostic.
     cited_positions: list[int] = Field(default_factory=list)
@@ -148,6 +187,18 @@ class ComplianceReport(BaseModel):
     # over-correction arm — a jump here with flat controls is the new ids doing
     # their job; a jump everywhere is the model reaching for whatever is nearest.
     state_citation_share: float = 0.0
+    # Pre-registered arm: model_recall over the F ids of questions whose must-set
+    # names any. State ids are the easier citation path — a persona's
+    # circumstances are always in context while graph facts must be retrieved and
+    # judged relevant — so graph recall gets its own reading rather than being
+    # averaged into a figure the new ids can carry on their own.
+    f_recall: float = 0.0
+    f_recall_cases: int = 0
+    # Pre-registered floor 0.1. A persona that never merely feels has been
+    # schema'd out of personhood.
+    feeling_fraction: float = 0.0
+    # Pre-registered max 0. The v1 defect: markers written into spoken text.
+    inline_marker_takes: int = 0
     retry_rate: float = 0.0
     hard_failure_rate: float = 0.0
     parse_failure_rate: float = 0.0
@@ -221,6 +272,8 @@ class ComplianceReport(BaseModel):
             f"system-recall {self.system_recall:.0%}, "
             f"model-recall {self.model_recall:.0%}, "
             f"state-coverage {self.state_coverage:.0%}, "
+            f"f-recall {self.f_recall:.0%}, "
+            f"feeling {self.feeling_fraction:.0%}, "
             f"retries {self.retry_rate:.0%}, "
             f"hard failures {self.hard_failure_rate:.0%}"
         )
@@ -318,18 +371,25 @@ def score(
         offered = [f.id for f in retrieval.facts]
         cited_ids = answer.cited_fact_ids if answer else []
         circumstantial = [s for s in segments if is_circumstantial(s.text)]
+        must, may = expectations(case)
         results.append(CaseResult(
             case_id=case["id"],
             patient_id=dna.patient_id,
             question=case["question"],
             cited=cited_ids,
-            expected_facts=case.get("expect_facts", []),
+            expected_facts=[fact_id for group in must for fact_id in group],
+            expected_must=[list(group) for group in must],
+            expected_may=list(may),
             retrieved_facts=offered,
             citation_valid=bool(check and not check.unknown_citations),
             factual_segments=len(factual),
             total_segments=len(segments),
             cited_factual_segments=sum(1 for s in factual if s.fact_ids),
             offered_state_ids=sorted(prompt.allowed_state_ids),
+            feeling_segments=len(segments) - len(factual),
+            inline_markers=sum(
+                1 for s in segments if has_inline_marker(s.text)
+            ),
             circumstantial_segments=len(circumstantial),
             cited_circumstantial_segments=sum(
                 1 for s in circumstantial
@@ -356,6 +416,8 @@ def score(
     # circumstantial segment would otherwise weigh as much as one with six.
     total_circumstantial = sum(r.circumstantial_segments for r in results)  # int-sum: CaseResult.circumstantial_segments
     cited_circumstantial = sum(r.cited_circumstantial_segments for r in results)  # int-sum: CaseResult.cited_circumstantial_segments
+    total_segments = sum(r.total_segments for r in results)  # int-sum: CaseResult.total_segments
+    feeling_total = sum(r.feeling_segments for r in results)  # int-sum: CaseResult.feeling_segments
     # RECALL, not precision. Precision (|cited & expected| / |cited|) stays at
     # 1.0 for a model that cites a single safe fact, so it cannot distinguish a
     # rich context from a starved one.
@@ -371,24 +433,43 @@ def score(
     # for `tests/test_float_accumulation.py` to check a marker against. Explicit
     # integer accumulation needs no marker to be exact.
     total_citations = state_citations = 0
+    f_hits = f_total = f_cases = 0
     positions: dict[str, int] = {}
     by_tag: dict[str, list[float]] = {}
 
     for result in results:
-        expected = set(result.expected_facts)
         cited = set(result.cited)
+        # A group is satisfied by ANY of its members — see `expectations`.
+        offered = set(result.retrieved_facts) | set(result.offered_state_ids)
+        groups = [tuple(group) for group in result.expected_must]
 
         for fact_id in result.cited:
             total_citations += 1
             if is_state_id(fact_id):
                 state_citations += 1
 
-        if expected:
-            system_total += len(expected)
-            system_hits += len(cited & expected)
-            reachable = expected & set(result.retrieved_facts)
+        if groups:
+            system_total += len(groups)
+            system_hits += sum(
+                1 for group in groups if cited & set(group)
+            )
+            reachable = [g for g in groups if offered & set(g)]
             model_total += len(reachable)
-            model_hits += len(cited & reachable)
+            model_hits += sum(
+                1 for group in reachable if cited & set(group)
+            )
+
+        # The F-only reading, over questions whose must-set names any F id.
+        f_groups = [g for g in groups if any(not is_state_id(i) for i in g)]
+        if f_groups:
+            f_cases += 1
+            for group in f_groups:
+                f_ids = {i for i in group if not is_state_id(i)}
+                if not (f_ids & offered):
+                    continue
+                f_total += 1
+                if cited & f_ids:
+                    f_hits += 1
 
         for position in result.cited_positions:
             key = str(position)
@@ -417,6 +498,12 @@ def score(
         state_citation_share=(
             round(state_citations / total_citations, 4) if total_citations else 0.0
         ),
+        f_recall=round(f_hits / f_total, 4) if f_total else 0.0,
+        f_recall_cases=f_cases,
+        feeling_fraction=(
+            round(feeling_total / total_segments, 4) if total_segments else 0.0
+        ),
+        inline_marker_takes=sum(1 for r in results if r.inline_markers),
         retry_rate=round(sum(1 for r in results if r.attempts > 1) / n, 4),
         hard_failure_rate=round(sum(1 for r in results if not r.grounded) / n, 4),
         parse_failure_rate=round(sum(1 for r in results if r.parse_failed) / n, 4),
