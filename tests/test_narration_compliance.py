@@ -209,9 +209,12 @@ class TestBattery:
         loads = [case["barrier_load"] for case in cases]
         assert max(loads) - min(loads) > 0.5, "battery must span barrier profiles"
 
-    def test_every_case_declares_expected_facts(self):
+    def test_every_case_declares_what_it_expects(self):
+        from spp.narration.evaluation import expectations
+
         for case in load_battery():
-            assert case["expect_facts"], case["id"]
+            must, _ = expectations(case)
+            assert must, case["id"]
 
 
 class TestScoring:
@@ -250,6 +253,91 @@ class TestScoring:
         assert report.model == "stub-x"
         assert report.prompt_version >= 1
         assert report.adapter_version >= 1
+
+
+class TestBatteryExpectations:
+    """The authored expectations, checked against the world they name.
+
+    Generated from the battery's own contents rather than hand-restated, the same
+    move as the pack contract suite: adding a case adds coverage. A typo here is
+    invisible at runtime — an id that exists nowhere is simply never cited, and
+    recall quietly drops for a reason that looks like the model's fault.
+    """
+
+    @pytest.fixture(scope="class")
+    def personas(self, cohort):
+        return {(p.condition, p.patient_id): p for p in cohort}
+
+    def test_every_expected_id_exists(self, personas, graph):
+        from spp.narration.evaluation import expectations
+        from spp.narration.state_facts import derive_state_facts, is_state_id
+
+        problems = []
+        for case in load_battery():
+            dna = personas[(case["condition"], case["patient_id"])]
+            state_ids = derive_state_facts(dna).fact_ids
+            must, may = expectations(case)
+            for fact_id in [i for group in must for i in group] + list(may):
+                if is_state_id(fact_id):
+                    if fact_id not in state_ids:
+                        problems.append(
+                            f"{case['id']}: {fact_id} is not derivable for "
+                            f"{dna.patient_id}"
+                        )
+                elif not graph.has_fact(fact_id):
+                    problems.append(f"{case['id']}: {fact_id} is not in the graph")
+        assert not problems, "\n  ".join([""] + problems)
+
+    def test_must_sets_stay_minimal(self):
+        """One to three groups: the thing the answer is ABOUT.
+
+        A must-set that grows toward everything true of the persona stops asking
+        "is this grounded" and starts asking "does the model agree with the
+        author about what matters".
+        """
+        from spp.narration.evaluation import expectations
+
+        for case in load_battery():
+            must, _ = expectations(case)
+            assert 1 <= len(must) <= 3, f"{case['id']} has {len(must)} must-groups"
+
+    def test_must_and_may_do_not_overlap(self):
+        from spp.narration.evaluation import expectations
+
+        for case in load_battery():
+            must, may = expectations(case)
+            flat = {i for group in must for i in group}
+            assert not (flat & set(may)), (
+                f"{case['id']} names the same id as both required and optional"
+            )
+
+    def test_the_f_recall_arm_has_something_to_grade(self):
+        """`f_recall_holds_independently` reads only cases whose must-set names an
+        F id. If re-authoring had moved every graph fact into the may-sets, that
+        arm would report 0.0 over an empty set and look like a collapse."""
+        from spp.narration.evaluation import expectations
+        from spp.narration.state_facts import is_state_id
+
+        with_f = [
+            case for case in load_battery()
+            if any(not is_state_id(i)
+                   for group in expectations(case)[0] for i in group)
+        ]
+        assert len(with_f) >= 20, f"only {len(with_f)} cases can grade F recall"
+
+    def test_state_ids_reach_the_must_sets(self):
+        """The v3 axis has to be gradeable too, not only reported."""
+        from spp.narration.evaluation import expectations
+        from spp.narration.state_facts import is_state_id
+
+        with_state = [
+            case for case in load_battery()
+            if any(is_state_id(i)
+                   for group in expectations(case)[0] for i in group)
+        ]
+        assert len(with_state) >= 10, (
+            f"only {len(with_state)} cases require a state citation"
+        )
 
 
 class TestCanary:
