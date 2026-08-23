@@ -258,13 +258,6 @@ def main(argv: list[str] | None = None) -> int:
             return 1
         return 0
 
-    if args.rerecord:
-        archived = archive_cassette(args.name)
-        if archived:
-            print(f"archived previous cassette -> {archived}")
-        else:
-            print("no previous cassette to archive")
-
     print(f"\nrecording {len(battery)} cases...")
     recorder = GatedRecorder(args.name, backend=settings.llm_backend, model=model,
                              prompt_version=PROMPT_VERSION,
@@ -307,6 +300,16 @@ def main(argv: list[str] | None = None) -> int:
             passed=bool(check and check.ok),
             reason=(check.summary if check else "unparseable response"),
         )
+
+    # Archive LAST, once every take is in hand. Archiving up front moved the
+    # committed cassette aside before the first generation, so a run that died
+    # mid-battery — one did, on an adapter timeout — left the repository with no
+    # cassette at all and the operator restoring tracked files by hand. Nothing
+    # was lost, but nothing should have needed recovering.
+    if args.rerecord:
+        archived = archive_cassette(args.name)
+        print(f"archived previous cassette -> {archived}" if archived
+              else "no previous cassette to archive")
 
     paths = recorder.save()
     verdict = grade(report)

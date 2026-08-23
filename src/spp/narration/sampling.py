@@ -176,16 +176,29 @@ def warm_up(model: str, config: SamplingConfig = DEFAULT_SAMPLING) -> bool:
     which is the better fix — so this is called before scoring rather than merely
     recorded alongside it.
 
-    The request is fixed and its output discarded; `num_ctx` matters because
-    Ollama reloads the model when it changes, which would undo the warm-up.
+    The request carries the run's own decode options — `num_ctx` above all,
+    because Ollama reloads the model when it changes and a reload would undo the
+    warm-up — and its output is discarded.
+
+    It is also SCHEMA-CONSTRAINED, for a reason learned by losing a recording to
+    it: the first constrained call against a freshly loaded model pays for
+    grammar construction as well as weights, and that combined first cost is what
+    blew the adapter's timeout mid-record. Paying it here means the first SCORED
+    call is never the first expensive one.
     """
     from ..foundation.llm import generate as llm_generate
 
     if model_is_resident(model):
         return True
+    warmup_schema = {
+        "type": "object",
+        "properties": {"ok": {"type": "string", "enum": ["ok"]}},
+        "required": ["ok"],
+    }
     try:
-        llm_generate("You are a warm-up request. Reply with the word ok.", "ok",
-                     max_tokens=1, options=config.as_options())
+        llm_generate("You are a warm-up request. Reply with {\"ok\": \"ok\"}.",
+                     "ok", max_tokens=config.num_predict, schema=warmup_schema,
+                     options=config.as_options())
     except Exception:
         return False
     return bool(model_is_resident(model))

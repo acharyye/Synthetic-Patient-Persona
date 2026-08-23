@@ -10,6 +10,13 @@ class Settings(BaseSettings):
 
     ollama_host: str = "http://localhost:11434"
     ollama_model: str = "qwen2.5:7b-instruct"
+    # Seconds to wait for one generation. A schema-constrained call against a
+    # freshly loaded 7B exceeded the old hard-coded 120 and the adapter fell back
+    # to the null backend mid-record — caught by the recorder's guard, but only
+    # because that guard exists. Generous by default: a slow answer is a slow
+    # answer, while a timeout is indistinguishable from a model that would not
+    # respond.
+    ollama_timeout: int = 600
 
     anthropic_api_key: str = ""
     anthropic_model: str = "claude-sonnet-5"
