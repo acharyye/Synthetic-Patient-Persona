@@ -221,6 +221,7 @@ class GatedRecorder:
         prompt_version: int = 0,
         model_digest: str = "",
         sampling: dict | None = None,
+        fresh: bool = False,
     ) -> None:
         from ..config import settings
 
@@ -234,7 +235,12 @@ class GatedRecorder:
         self.model_digest = model_digest
         self.sampling = sampling or {}
 
-        existing = load_cassette(name, directory)
+        # `fresh` is a deliberate re-record: start a new cassette rather than
+        # appending to the one on disk. The compatibility check exists to stop an
+        # APPEND that would mix two configurations in one file — it has nothing
+        # to say about starting over, and making the intent a parameter beats
+        # expressing it by moving files out from under the constructor.
+        existing = None if fresh else load_cassette(name, directory)
         if existing is not None:
             existing.require_compatible(self.backend, self.model, prompt_version)
         self.cassette = existing or Cassette(

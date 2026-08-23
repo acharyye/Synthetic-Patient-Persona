@@ -201,6 +201,45 @@ class TestRecorderGate:
                           prompt_version=2)
 
 
+class TestRerecordIsAFreshStart:
+    """Starting over and appending are different acts, and only one is checked.
+
+    `require_compatible` exists to stop an APPEND that would mix two
+    configurations in one file. It has nothing to say about deliberately starting
+    a new recording — but because the recorder only ever loaded whatever was on
+    disk, the only way to express "start over" was to move the old file aside
+    before constructing it. That made a crash mid-battery leave the repository
+    with no cassette at all, so the intent is a parameter now.
+    """
+
+    def _cassette(self, tmp_path, prompt_version):
+        recorder = GatedRecorder("t", directory=tmp_path, backend="ollama",
+                                 model="m", prompt_version=prompt_version)
+        recorder.offer("fp", "sys", "usr", '{"segments":[]}', passed=True)
+        recorder.save()
+
+    def test_appending_across_a_prompt_bump_still_refuses(self, tmp_path):
+        self._cassette(tmp_path, 2)
+        with pytest.raises(CassetteMismatch):
+            GatedRecorder("t", directory=tmp_path, backend="ollama", model="m",
+                          prompt_version=3)
+
+    def test_a_fresh_recorder_starts_empty_and_does_not_check(self, tmp_path):
+        self._cassette(tmp_path, 2)
+        recorder = GatedRecorder("t", directory=tmp_path, backend="ollama",
+                                 model="m", prompt_version=3, fresh=True)
+        assert recorder.cassette.takes == {}
+        assert recorder.cassette.prompt_version == 3
+
+    def test_a_fresh_recorder_leaves_the_old_file_alone_until_it_saves(self, tmp_path):
+        """The whole point: nothing on disk moves until there is a replacement."""
+        self._cassette(tmp_path, 2)
+        before = (tmp_path / "t.json").read_text(encoding="utf-8")
+        GatedRecorder("t", directory=tmp_path, backend="ollama", model="m",
+                      prompt_version=3, fresh=True)
+        assert (tmp_path / "t.json").read_text(encoding="utf-8") == before
+
+
 class TestBattery:
     def test_battery_spans_conditions_and_barrier_profiles(self):
         cases = load_battery()

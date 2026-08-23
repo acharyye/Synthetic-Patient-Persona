@@ -262,7 +262,11 @@ def main(argv: list[str] | None = None) -> int:
     recorder = GatedRecorder(args.name, backend=settings.llm_backend, model=model,
                              prompt_version=PROMPT_VERSION,
                              model_digest=digest or "",
-                             sampling=sampling.stamp())
+                             sampling=sampling.stamp(),
+                             # --rerecord means start over, and says so here
+                             # rather than by moving the old file aside before
+                             # the constructor can read it.
+                             fresh=args.rerecord)
 
     report = score(cohort, generate, graph=graph, battery=battery,
                    label="live", model=model)
