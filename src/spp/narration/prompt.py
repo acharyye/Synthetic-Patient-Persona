@@ -24,6 +24,14 @@ takes carried literal markers inside `text` while the renderer appended the same
 ids from `fact_ids` — every one of those answers rendering its citations twice.
 The renderer strips stray markers as defence in depth; v2's success criterion is
 that it has nothing to strip.
+
+PROMPT_VERSION 3 adds the ABOUT YOU block: the persona's own state, carrying
+P/B/J ids from `state_facts.py`, offered on the same terms as graph facts. Until
+v3 a persona could cite what is true of its *condition* and nothing about its own
+*circumstances*, so a sentence about having no car could not be `factual` without
+breaking the contract — which is the collapse v2 measured. The block goes AFTER
+GROUNDED FACTS deliberately: closest to the question, and outside the instruction
+section, so the no-marker-examples rule keeps a clean slice to assert over.
 """
 from __future__ import annotations
 
@@ -34,12 +42,14 @@ from pydantic import BaseModel, Field
 from ..foundation.events import EventType, PersonaState
 from ..knowledge.retrieval import RetrievalResult
 from ..schemas import PatientDNA
+from .state_facts import StateCitations, derive_state_facts
 
-# v2: the inline-citation instruction is gone. Bumping this invalidates every
-# recorded cassette via require_compatible(), which is the invalidation
-# machinery working rather than collateral — v1's takes measured a different
-# configuration and stay as the comparison baseline.
-PROMPT_VERSION = 2
+# v2: the inline-citation instruction is gone.
+# v3: the ABOUT YOU block and the P/B/J ids in the enum. Bumping this invalidates
+# every recorded cassette via require_compatible(), which is the invalidation
+# machinery working rather than collateral — v1's and v2's takes measured
+# different configurations and stay as the comparison baselines.
+PROMPT_VERSION = 3
 
 SYSTEM_TEMPLATE = """You are a SYNTHETIC PATIENT taking part in a research design \
 exercise. You are not a real person and must never claim to be.
@@ -53,10 +63,13 @@ rejected:
 - Attribute facts using each segment's `fact_ids` field. NEVER write ids, \
 brackets or reference markers inside `text` — the text is spoken aloud.
 - Every segment you mark `"kind": "factual"` MUST name at least one id in \
-`fact_ids`, drawn from GROUNDED FACTS below.
+`fact_ids`, drawn from GROUNDED FACTS or ABOUT YOU below.
+- Anything you say about your own situation — what you take, what you cannot get \
+to, what has happened to you — is `"kind": "factual"` and cites an id from ABOUT \
+YOU. Being personal does not make it a feeling.
 - Segments about your own feelings, worries or preferences take \
 `"kind": "feeling"` and need no ids.
-- If the facts do not cover something you are asked, say you do not know. Do not \
+- If neither list covers something you are asked, say you do not know. Do not \
 fill the gap.
 
 HARD RULES:
@@ -72,6 +85,9 @@ CURRENT STATE:
 
 GROUNDED FACTS:
 {facts}
+
+ABOUT YOU (your own situation, on the same citation terms):
+{state_facts}
 {memory}"""
 
 USER_TEMPLATE = "{question}"
@@ -88,6 +104,10 @@ class Prompt(BaseModel):
     # The citation allowlist travelling with the prompt, so the checker can never
     # drift from what the model was actually shown.
     allowed_fact_ids: frozenset[str] = Field(default_factory=frozenset)
+    # The state half of that allowlist, kept separately so the eval can ask
+    # "was this segment grounded in the persona or in the graph?" by set
+    # membership rather than by re-deriving anything from the id string.
+    allowed_state_ids: frozenset[str] = Field(default_factory=frozenset)
 
     @property
     def fingerprint(self) -> str:
@@ -158,6 +178,7 @@ def build_prompt(
     state: PersonaState | None = None,
     memory: list[dict] | None = None,
     shuffle_facts: bool = False,
+    include_state_facts: bool = True,
 ) -> Prompt:
     """Pure function: data in, prompt out. No I/O, no clock, no RNG.
 
@@ -165,19 +186,31 @@ def build_prompt(
     the persona id — deterministic, so purity holds. Off by default; enable only
     if the compliance eval's position-bias diagnostic shows citations
     concentrating in the first offered positions.
+
+    `include_state_facts=False` is the `strip_state_ids` canary lever: it builds
+    the v2 configuration — graph ids only — so the eval can be shown to fail on
+    the axis v3 adds. It is threaded through here rather than applied afterwards
+    so the degraded run traverses exactly this code path, the same reason
+    `degrade` is threaded through `evaluation.score`.
     """
     seed = (
         int(hashlib.blake2b(dna.patient_id.encode(), digest_size=4).hexdigest(), 16)
         if shuffle_facts else None
     )
+    state_facts: StateCitations = (
+        derive_state_facts(dna) if include_state_facts
+        else StateCitations(persona_id=dna.patient_id)
+    )
     system = SYSTEM_TEMPLATE.format(
         profile=dna.context(),
         state=render_state(state),
         facts=retrieval.block(shuffle_seed=seed),
+        state_facts=state_facts.block(),
         memory=render_memory(memory or []),
     )
     return Prompt(
         system=system,
         user=USER_TEMPLATE.format(question=question.strip()),
-        allowed_fact_ids=retrieval.fact_ids,
+        allowed_fact_ids=retrieval.fact_ids | state_facts.fact_ids,
+        allowed_state_ids=state_facts.fact_ids,
     )

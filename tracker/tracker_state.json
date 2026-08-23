@@ -5,7 +5,7 @@
   "endWeek": 44,
   "year": 2026,
   "todayWeek": 34,
-  "lastModified": "2026-08-17",
+  "lastModified": "2026-08-23",
   "stages": [
     {
       "id": "S1",
@@ -160,21 +160,34 @@
         {
           "id": "G",
           "title": "Build the P/B/J/E id namespaces",
-          "status": "active",
-          "progress": 20,
+          "status": "done",
+          "progress": 100,
           "startWeek": 34,
           "endWeek": 36,
           "aufgabe": "Implement the four state-citation namespaces under constrained decoding: P- profile, B- derived barriers, J- journey milestones, E- reserved and empty for unsimulated personas.",
           "ziel": "The persona can cite its own declared state, not only graph knowledge.",
-          "stand": "Shape is pre-registered and amended; implementation not started. E- stays empty until simulated personas enter the battery.",
+          "stand": "Done 2026-08-23. narration/state_facts.py derives P/B/J from the persona; E- is declared and pinned empty by tests/test_state_citation.py. PROMPT_VERSION 3 (cassettes invalidated on purpose), the ids in the decode enum, click-through dispatching on namespace, and the strip_state_ids canary lever wired so state_coverage can fail. H is unblocked.",
           "meetingNotes": "",
-          "achievements": [],
-          "validations": [],
-          "decisions": [],
+          "achievements": [
+            { "date": "2026-08-23", "text": "Four namespaces live: P- profile (a declared surface, PROFILE_FIELDS), B- derived barriers (the id IS the barrier name, so the graph join survives), J- journey milestones, E- reserved and empty." },
+            { "date": "2026-08-23", "text": "state_coverage implemented with a kind-independent denominator, plus the strip_state_ids canary lever. run_canary refuses `sensitive` unless BOTH the grounding lever and the state lever fire." },
+            { "date": "2026-08-23", "text": "Citation click-through closes the loop from the state side: a B- id expands to the derived barrier and the profile field the simulation computed it from." }
+          ],
+          "validations": [
+            { "date": "2026-08-23", "text": "Canary proves the new axis can fail: state_coverage collapses under strip_state_ids while model_recall holds (state_lever_clean). An unexercised axis is reported as its own verdict, not as a dead lever." },
+            { "date": "2026-08-23", "text": "Context check: worst battery prompt ~2230 tokens against num_ctx 8192 with 700 reserved. The larger prompt does not put H at risk of silent head truncation." },
+            { "date": "2026-08-23", "text": "896 offline tests green, including 23 new in tests/test_state_citation.py." }
+          ],
+          "decisions": [
+            { "date": "2026-08-23", "text": "E- emits nothing and derive_state_facts takes no PersonaState. A persona with a state slice therefore has prose about missed visits but no id for it — the coverage finding the pre-registration already recorded, left as a finding rather than repaired by widening J-." },
+            { "date": "2026-08-23", "text": "The state surface is offered WHOLE, not ranked against the question. A relevance scorer for state would be a second unevaluated variable inside a run whose entire design is one — the same reason fact-order permutation stays off for v3. If v3 shows volume-driven citation, the ranker gets its own paired comparison." },
+            { "date": "2026-08-23", "text": "FINDING for H's reading: state ids are now 64% of the enum (mean 28 state against 16 graph per battery case). A rise in state citation could be volume-driven, so f_recall_holds_independently and state_citation_share are the arms that separate that from recovery." },
+            { "date": "2026-08-23", "text": "v3_expected_shape.json amended before any recording: state_coverage gained an explicit denominator, and the P/B/E shorthand left over from the three-namespace draft now reads P/B/J. A denominator chosen after seeing results would not be a pre-registration." }
+          ],
           "links": ["KR1.1"],
           "deps": ["F"],
           "assignees": ["akm"],
-          "knowledge": []
+          "knowledge": ["docs/okf/concepts/state-citation.md"]
         },
         {
           "id": "H",
@@ -321,7 +334,7 @@
           "target": 100,
           "unit": "%",
           "type": "Commit",
-          "grade": 0.15
+          "grade": 0.3
         },
         {
           "id": "KR1.2",

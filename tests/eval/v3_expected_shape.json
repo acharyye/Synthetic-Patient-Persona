@@ -2,14 +2,28 @@
   "$comment": "PRE-REGISTERED expected shape for the v3 (state-citation) run. Committed BEFORE the P/B/E namespaces exist and before any v3 recording, for the same reason as pass_bars.json: a prediction written after seeing the numbers is not a prediction. Changing anything here is its own explicit commit that says why.",
   "registered_on": "2026-08-14",
   "registered_before_state_citation_exists": true,
+  "amendments": [
+    {
+      "on": "2026-08-15",
+      "commit": "c98cb19",
+      "what": "three namespaces -> four; E- reserved for event-log entries",
+      "why": "an id namespace whose meaning changes later makes every recording made under it silently ambiguous"
+    },
+    {
+      "on": "2026-08-23",
+      "what": "state_coverage gained an explicit denominator; the P/B/E shorthand left over from the three-namespace draft now reads P/B/J in the arms and canary sections. The header keeps its original wording as the historical record of what was committed on 2026-08-14.",
+      "why": "the namespaces were built today (tracker task G) and the metric had to be implemented. A denominator chosen while looking at results is not a pre-registration, so it is fixed now, before any v3 recording exists. The shorthand fix is clerical: the 2026-08-15 amendment already moved journey milestones from E- to J- and the arm text was not updated with it.",
+      "still_unrecorded": true
+    }
+  ],
   "baseline_bundle": "evidence/v0.3/20260814T200447+0000",
   "prompt_version_under_test": 3,
   "the_diagnosis_being_tested": {
-    "claim": "v2's factual_fraction collapse on burden (0.667 -> 0.400) and mitigation (0.933 -> 0.443) is the STATE-CITATION GAP: the model labelled circumstantial segments `feeling` because the schema had no id for a persona's own simulated circumstances. Giving it P/B/E ids should let those segments be `factual` AND cited.",
+    "claim": "v2's factual_fraction collapse on burden (0.667 -> 0.400) and mitigation (0.933 -> 0.443) is the STATE-CITATION GAP: the model labelled circumstantial segments `feeling` because the schema had no id for a persona's own simulated circumstances. Giving it P/B/J ids should let those segments be `factual` AND cited.",
     "falsified_if": "factual_fraction on burden/mitigation does not recover once the ids exist \u2014 the reclassification then had a second cause and the diagnosis was incomplete."
   },
   "single_declared_variable": {
-    "changed": "prompt v2 -> v3, plus the P/B/E namespaces in the fact-id enum",
+    "changed": "prompt v2 -> v3, plus the P/B/J namespaces in the fact-id enum (E- declared and deliberately empty: unsimulated personas carry no event log)",
     "held": [
       "model and digest (qwen2.5:7b-instruct@845dbda0ea48...)",
       "sampling (seed 42, temperature 0.0, top_p 1.0, num_predict 700, num_ctx 8192)",
@@ -43,7 +57,7 @@
         "tx",
         "proc"
       ],
-      "expect": "flat \u2014 these are graph-knowledge questions and gained nothing from P/B/E",
+      "expect": "flat \u2014 these are graph-knowledge questions and gained nothing from P/B/J",
       "tolerance_abs": 0.1,
       "v2_reference": {
         "ae": 0.9333,
@@ -65,10 +79,18 @@
       "rationale": "a persona that never merely feels has been schema'd out of personhood. The point of state ids is to let circumstance be grounded, not to abolish the feeling kind."
     },
     "state_coverage": {
-      "metric": "share of CIRCUMSTANTIAL segments carrying at least one P/B/E id",
+      "metric": "share of CIRCUMSTANTIAL segments carrying at least one P/B/J id",
       "min": 0.6,
       "$comment": "The metric that did not exist before this build. It is what the recovery arm has to be caused BY \u2014 factual_fraction rising without state ids present is the over-correction signature.",
-      "new_in": "v3"
+      "new_in": "v3",
+      "denominator": {
+        "operationalized_on": "2026-08-23",
+        "definition": "a segment whose text contains a first-person self-reference AND at least one concrete-world marker from the citation checker's own vocabulary (narration/citations.py FACTUAL_MARKERS)",
+        "kind_independent": "DELIBERATE. Scoring only segments the model labelled `factual` would make this metric blind to exactly the v2 pathology it exists to detect: a circumstantial claim relabelled `feeling` to dodge a citation would leave the denominator instead of failing the numerator, and the instrument would report health while the disease continued.",
+        "error_direction": "errs toward INCLUDING, which grows the denominator and makes 0.6 harder rather than easier. 'I worry about the side effects' scores as circumstantial though it is really a feeling. Under uncertainty a metric must not flatter itself.",
+        "why_not_a_third_segment_kind": "a `circumstance` kind would be a second declared variable in a run whose whole design is one, and the claim being tested is that these segments become `factual` \u2014 not that they get a new label.",
+        "implementation": "narration/evaluation.py::is_circumstantial"
+      }
     },
     "f_recall_holds_independently": {
       "metric": "model_recall computed ONLY over questions whose must-set includes F ids",
@@ -97,10 +119,11 @@
   },
   "canary_must_fire_first": {
     "config": "strip_state_ids",
-    "does": "removes P/B/E from the enum, leaving graph F ids only",
+    "does": "removes the P/B/J ids from the enum and the ABOUT YOU block from the prompt, leaving the v2 configuration: graph F ids only",
     "must_collapse": "state_coverage",
     "rationale": "The new axis does not count until the instrument can fail on it. Same rule as the original canary: an eval that cannot fail is decoration. Recording is refused unless this config's state_coverage drops.",
-    "note": "F-recall should be roughly UNCHANGED under this config \u2014 if it also moves, the lever is not clean and the canary is measuring something other than state ids."
+    "note": "F-recall should be roughly UNCHANGED under this config \u2014 if it also moves, the lever is not clean and the canary is measuring something other than state ids. Enforced: run_canary refuses `sensitive` unless BOTH truncate_context and strip_state_ids fire, and reports state_lever_clean separately. An unexercised axis (no circumstantial segments at all) is reported as its own verdict rather than as a dead lever \u2014 that is a finding about the battery, not the instrument.",
+    "implementation": "build_prompt(include_state_facts=False), threaded through evaluation.score as the `strip_state_ids` degradation so the degraded run traverses the same code path as a real one"
   },
   "authoring_protocol": {
     "$comment": "The battery's state-citation expectations are AUTHORED, not generated. Recorded here because how they were authored determines what the eval measures.",

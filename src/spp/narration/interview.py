@@ -27,6 +27,7 @@ from .citations import (
     strip_citations,
 )
 from .prompt import Prompt, build_prompt, prior_turns
+from .state_facts import StateCitations, derive_state_facts
 
 MAX_REGENERATIONS = 1
 
@@ -58,27 +59,72 @@ class InterviewTurn(BaseModel):
         }
 
 
+def _first_clause(text: str) -> str:
+    """One citable clause per fact, for the skeleton's bullet lines.
+
+    The checker walks SENTENCES, and a citation sits at the end of the clause it
+    belongs to. A state fact can be two sentences ("You take metformin (1000mg
+    BD). You manage that about 53% of the time.") and would leave the first one
+    uncited — the null backend failing its own gate, which is the one thing it
+    exists not to do. The trailing full stop goes too: with it, the marker lands
+    in the FOLLOWING sentence and the bullet reads as uncited.
+    """
+    return text.split(". ")[0].rstrip(".").strip()
+
+
 def citation_skeleton(
-    dna: PatientDNA, question: str, retrieval: RetrievalResult
+    dna: PatientDNA,
+    question: str,
+    retrieval: RetrievalResult,
+    state_facts: StateCitations | None = None,
 ) -> str:
     """The null backend's answer: structured, citing, and obviously offline.
 
     Deliberately passes the citation checks — that is the point. It exercises the
     verification path in CI, and it is labelled so nobody mistakes it for
     generated prose in a screenshot.
+
+    It cites STATE ids as well as graph ids, so the P/B/J namespaces are exercised
+    offline end to end rather than only on the live path. A namespace that only a
+    live model ever touches is a namespace CI cannot vouch for.
     """
-    if not retrieval.facts:
+    state_facts = state_facts if state_facts is not None else StateCitations(
+        persona_id=dna.patient_id
+    )
+    if not retrieval.facts and not state_facts.facts:
         return (
             "[offline] I don't know enough to answer that, and I'd rather say so "
             "than guess."
         )
 
-    lines = [
-        f"[offline] You asked: {question.strip()}",
-        "Speaking from what's on file for me:",
-    ]
-    for fact in retrieval.facts[:4]:
-        lines.append(f"- {fact.text} [{fact.id}]")
+    lines = [f"[offline] You asked: {question.strip()}"]
+    if state_facts.facts:
+        # Barriers first, then journey, then profile. The skeleton has no
+        # relevance ranker for state — nothing scores P/B/J against a question —
+        # so it uses the one ordering that is defensible without one: what stands
+        # in this persona's way, then what has happened to them, then who they
+        # are. Offering "you are 55 years old" as the lead answer to every
+        # question would be a stand-in that misrepresents the shape of a real one.
+        priority = {"B": 0, "J": 1, "P": 2}
+        speak = sorted(state_facts.facts, key=lambda f: priority.get(f.namespace, 3))
+        lines.append("Speaking about my own situation:")
+        for fact in speak[:3]:
+            lines.append(f"- {_first_clause(fact.text)} [{fact.id}]")
+    if retrieval.facts:
+        lines.append("And from what's on file about the condition:")
+        for fact in retrieval.facts[:4]:
+            lines.append(f"- {_first_clause(fact.text)} [{fact.id}]")
+    else:
+        # State ids do not repair an unanchored condition. Knowing its own
+        # circumstances lets a persona say something true about ITSELF; it says
+        # nothing about a condition the graph could not resolve, and a skeleton
+        # that answered fluently from state alone would read as an answer to a
+        # question nothing grounded. Ground on nothing rather than on the wrong
+        # thing — the same rule that makes `resolve()` return None.
+        lines.append(
+            "Beyond that I don't know enough about my condition to answer, and "
+            "I'd rather say so than guess."
+        )
     lines.append("I feel like that's a lot to manage on top of everything else.")
     return "\n".join(lines)
 
@@ -106,6 +152,7 @@ def interview(
     graph = graph if graph is not None else load_graph()
     barriers = tuple(barrier.name for barrier in dna.barriers)
     retrieval = retrieve(graph, dna.condition, question, limit=limit, barriers=barriers)
+    state_facts = derive_state_facts(dna)
 
     prompt = build_prompt(
         dna, retrieval, question, state=state, memory=prior_turns(log)
@@ -113,7 +160,7 @@ def interview(
 
     if generate is None:
         def generate(_prompt: Prompt, _repair: str | None):
-            return citation_skeleton(dna, question, retrieval), "null", True
+            return citation_skeleton(dna, question, retrieval, state_facts), "null", True
 
     attempts = 0
     repair: str | None = None

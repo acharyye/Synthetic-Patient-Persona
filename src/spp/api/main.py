@@ -31,6 +31,7 @@ from ..protocol import (
 from ..knowledge import fact_detail, load_graph
 from ..narration import interview as narration_interview, run_panel
 from ..narration.evaluation import load_battery
+from ..narration.state_facts import is_state_id, state_detail
 from ..narration.room import (
     MEMORY_SEMANTICS,
     available_questions,
@@ -449,11 +450,27 @@ def room_ask(req: RoomRequest) -> dict:
 def room_fact(fact_id: str, req: RoomRequest) -> dict:
     """Citation click-through: the fact, its provenance, and its simulation link.
 
+    Dispatches on the id's namespace. A `P-`/`B-`/`J-` id is the persona's own
+    declared state and resolves against the persona; anything else is graph
+    knowledge and resolves against the graph. The two payloads are distinct
+    models carrying a `kind`, because a reader who cannot tell which provenance
+    they are looking at is the exact ambiguity the four-namespace split exists to
+    prevent.
+
     When the fact concerns a Barrier, `simulation_link` names which of this
     persona's derived barriers resolves to it — the participation-subgraph join,
-    made visible.
+    made visible, from either side.
     """
     dna = _room_persona(req)
+    if is_state_id(fact_id):
+        state = state_detail(dna, fact_id)
+        if state is None:
+            raise HTTPException(
+                status_code=404,
+                detail=f"{fact_id!r} is not on file for {dna.patient_id}",
+            )
+        return state.model_dump()
+
     detail = fact_detail(load_graph(), fact_id, persona=dna)
     if detail is None:
         raise HTTPException(status_code=404, detail=f"no fact {fact_id!r}")

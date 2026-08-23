@@ -119,6 +119,8 @@ def _stash_canary(release: str, result: dict) -> None:
         "sensitive": result["sensitive"],
         "verdict": result["verdict"],
         "detected": result["detected"],
+        "lever_metric": result["lever_metric"],
+        "state_lever_clean": result["state_lever_clean"],
         "baseline": result["baseline"].model_dump(exclude={"results"}),
         "degraded": {k: v.model_dump(exclude={"results"})
                      for k, v in result["degraded"].items()},
@@ -191,7 +193,22 @@ def main(argv: list[str] | None = None) -> int:
         print(f"\nVERDICT: {result['verdict']}")
         _stash_canary(args.release, result)
 
+        if not result["state_lever_clean"]:
+            # Pre-registered note: F-recall should be roughly unchanged when the
+            # state ids are removed. If it moves too, the lever is changing more
+            # than one thing and its collapse is not evidence about state ids.
+            print("\nWARNING: the strip_state_ids lever is NOT clean — "
+                  f"model_recall moved from {baseline.model_recall:.0%} to "
+                  f"{result['degraded']['strip_state_ids'].model_recall:.0%}. "
+                  "Investigate before reading state_coverage as a state result.")
+
         if not result["sensitive"]:
+            if not result["detected"]["strip_state_ids"]:
+                print("\nThe state lever did not fire: removing the P/B/J ids "
+                      f"left state_coverage at "
+                      f"{result['degraded']['strip_state_ids'].state_coverage:.0%} "
+                      f"against a baseline of {baseline.state_coverage:.0%}. "
+                      "The v3 axis cannot be measured until it can fail.")
             # The canary has TWO readings once a live model is involved. It
             # asserts degraded < normal; if the model is non-compliant
             # everywhere, both score low and the gap vanishes. Disambiguate on

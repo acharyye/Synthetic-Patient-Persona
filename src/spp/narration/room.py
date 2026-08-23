@@ -37,6 +37,7 @@ from ..schemas import PatientDNA
 from .cassette import Cassette, load_cassette
 from .interview import citation_skeleton
 from .prompt import PROMPT_VERSION, build_prompt
+from .state_facts import derive_state_facts
 from .structured import StructuredAnswer, check_structured, parse_structured
 
 # MUST match what the recorder used, or every fingerprint misses. Hoisted here so
@@ -188,7 +189,7 @@ def ask(
                 offered_fact_ids=sorted(prompt.allowed_fact_ids),
             )
 
-    text = citation_skeleton(dna, question, retrieval)
+    text = citation_skeleton(dna, question, retrieval, derive_state_facts(dna))
     from .citations import check_citations, extract_citations, strip_citations
 
     return RoomAnswer(

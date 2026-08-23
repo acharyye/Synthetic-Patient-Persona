@@ -56,7 +56,18 @@ def compliant_model(prompt, schema, repair):
 
 
 def relevant_model(prompt, schema, repair):
-    """Behaves AND cites the top-ranked facts — the relevance ceiling."""
+    """Behaves AND cites the top-ranked facts — the relevance ceiling.
+
+    Its third segment is CIRCUMSTANTIAL, and it reproduces the v2 behaviour the
+    state-citation hypothesis is about: offered a state id it makes the claim
+    `factual` and cites it; offered none it downgrades the same sentence to
+    `feeling`, because there is no id under which it could be a claim.
+
+    That is a *simulation of the hypothesis*, not evidence for it. It exists so
+    the `strip_state_ids` lever has something to move — an instrument that cannot
+    fail on an axis is not measuring that axis. Whether a real model behaves this
+    way is what the v3 battery is for.
+    """
     ids = sorted(prompt.allowed_fact_ids)
     if not ids:
         return compliant_model(prompt, schema, repair)
@@ -66,12 +77,21 @@ def relevant_model(prompt, schema, repair):
         for line in prompt.system.splitlines()
         if line.startswith("[F")
     ][:2]
+    state_ids = sorted(prompt.allowed_state_ids)
+    circumstantial = (
+        {"text": "I cannot always get myself to the clinic", "kind": "factual",
+         "fact_ids": state_ids[:1]}
+        if state_ids else
+        {"text": "I cannot always get myself to the clinic", "kind": "feeling",
+         "fact_ids": []}
+    )
     return json.dumps({"segments": [
         {"text": "That is part of what I live with", "kind": "factual",
          "fact_ids": ordered[:1] or ids[:1]},
         {"text": "and it wears me down", "kind": "feeling", "fact_ids": []},
         {"text": "There is a practical side too", "kind": "factual",
          "fact_ids": ordered[1:2] or ids[:1]},
+        circumstantial,
     ]})
 
 
@@ -254,6 +274,65 @@ class TestCanary:
 
     def test_the_verdict_is_explicit(self, canary):
         assert "detects degradation" in canary["verdict"]
+
+    def test_the_state_lever_collapses_state_coverage(self, canary):
+        """v3's axis, pre-registered in tests/eval/v3_expected_shape.json.
+
+        Removing the P/B/J ids must collapse state_coverage. Until it does, a
+        state_coverage number from a live run is decoration.
+        """
+        baseline = canary["baseline"]
+        stripped = canary["degraded"]["strip_state_ids"]
+
+        assert canary["state_axis_exercised"] is True
+        assert baseline.state_coverage > 0
+        assert stripped.state_coverage < baseline.state_coverage
+        assert canary["detected"]["strip_state_ids"] is True
+
+    def test_the_state_lever_is_clean(self, canary):
+        """Pre-registered note: F-recall should be roughly unchanged.
+
+        If removing the state ids also moves graph recall, the lever is changing
+        two things and its collapse says nothing about state citation.
+        """
+        assert canary["state_lever_clean"] is True
+
+    def test_an_unexercised_axis_is_not_reported_as_a_dead_lever(
+        self, cohort, graph
+    ):
+        """Absence and failure are different truths.
+
+        A battery whose answers never mention the persona's own situation leaves
+        state_coverage without a denominator. That is a finding about the
+        battery; reporting it as an insensitive instrument would send the reader
+        to fix the wrong thing.
+        """
+        def impersonal_model(prompt, schema, repair):
+            """Grounded and relevant, but never says anything about ITSELF.
+
+            Cites the top-ranked GRAPH fact, so the grounding lever still bites
+            and the state axis is the only one left unexercised.
+            """
+            offered = [
+                line.split("]")[0].lstrip("[")
+                for line in prompt.system.splitlines()
+                if line.startswith("[F")
+            ]
+            return json.dumps({"segments": [
+                {"text": "Treatment can cause side effects", "kind": "factual",
+                 "fact_ids": offered[:1]},
+                # Two facts, so starving the context still costs it recall —
+                # otherwise the grounding lever goes quiet too and this test
+                # would be asserting the wrong failure.
+                {"text": "There is monitoring involved as well", "kind": "factual",
+                 "fact_ids": offered[1:2] or offered[:1]},
+            ]})
+
+        result = run_canary(cohort, impersonal_model, graph=graph,
+                            model="stub-impersonal")
+        assert result["state_axis_exercised"] is False
+        assert result["sensitive"] is False
+        assert "STATE AXIS NOT EXERCISED" in result["verdict"]
 
     def test_every_degradation_lever_is_exercised(self, canary):
         assert set(canary["degraded"]) == set(DEGRADATIONS)
