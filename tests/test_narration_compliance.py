@@ -704,3 +704,124 @@ class TestDiagnostics:
         assert shuffled_a.system == shuffled_b.system, "must stay a pure function"
         assert shuffled_a.system != plain.system
         assert shuffled_a.allowed_fact_ids == plain.allowed_fact_ids
+
+
+class TestOverflowIsMeasuredNotAssumed:
+    """`context_overflow_rate` is a pre-registered HARD bar, and `grade()` used
+    to supply it as a literal 0.0.
+
+    So the bar reported PASS in every run ever recorded — including one where
+    every prompt overflowed the window and nothing reached the model. That is the
+    same species as `TestGateCanActuallyFail` in the protocol CI: a check that
+    cannot fail is not protection, it is a reassuring line in a report.
+    """
+
+    def overflowing_model(self, prompt, schema, repair):
+        from spp.narration.sampling import DEFAULT_SAMPLING, ContextOverflow
+
+        raise ContextOverflow(999_999, DEFAULT_SAMPLING)
+
+    def test_an_overflowing_run_scores_a_nonzero_rate(self, cohort, graph):
+        report = score(cohort, self.overflowing_model, graph=graph, model="stub-of")
+        assert report.context_overflow_rate == 1.0
+
+    def test_the_hard_bar_actually_fails(self, cohort, graph):
+        from spp.narration.evaluation import grade
+
+        report = score(cohort, self.overflowing_model, graph=graph, model="stub-of")
+        bar = next(b for b in grade(report).bars
+                   if b.metric == "context_overflow_rate")
+        assert not bar.passed
+        assert bar.kind == "hard"
+
+    def test_an_overflow_is_not_charged_to_the_model(self, cohort, graph):
+        """A prompt that never reached the model is not evidence about the
+        model. It leaves the behavioural denominators rather than scoring as a
+        grounding failure — the opposite error, an instrument fault reported as
+        non-compliance."""
+        report = score(cohort, self.overflowing_model, graph=graph, model="stub-of")
+        assert report.n_cases == 0
+        assert report.hard_failure_rate == 0.0
+        assert report.parse_failure_rate == 0.0
+
+    def test_a_clean_run_still_reads_zero(self, cohort, graph):
+        report = score(cohort, compliant_model, graph=graph, model="stub-clean")
+        assert report.context_overflow_rate == 0.0
+
+
+class TestScoringAndRecordingSeeTheSameSample:
+    """The report and the cassette must describe one generation, not two.
+
+    They used to be separate live passes over identical prompts. Two of thirty
+    v0.4 takes drifted between them, which was enough to move `state_coverage`
+    from 0.5641 to 0.5135 — so the committed recording did not reproduce the
+    archived aggregates, and each artifact looked like evidence for the other.
+    """
+
+    def test_every_case_generates_exactly_once(self, cohort, graph):
+        calls: list[str] = []
+
+        def counting(prompt, schema, repair):
+            calls.append(prompt.fingerprint)
+            return compliant_model(prompt, schema, repair)
+
+        taken: list[str] = []
+        report = score(cohort, counting, graph=graph, model="stub-count",
+                       on_take=lambda prompt, raw, check: taken.append(raw))
+
+        assert len(calls) == report.n_cases
+        assert len(taken) == report.n_cases
+
+    def test_the_take_handed_over_is_the_one_that_was_scored(self, cohort, graph):
+        from spp.narration.structured import parse_structured
+
+        taken: dict[str, str] = {}
+        report = score(
+            cohort, compliant_model, graph=graph, model="stub-same",
+            on_take=lambda prompt, raw, check: taken.__setitem__(prompt.fingerprint, raw),
+        )
+        for result in report.results:
+            answer = parse_structured(taken[result.fingerprint])
+            assert answer.render() == result.rendered
+
+    def test_a_retried_case_hands_over_the_repaired_take(self, cohort, graph):
+        """The recorder archived FIRST attempts while the report scored RETRIED
+        ones, so a take repaired on the second try was recorded broken."""
+        state: dict[str, int] = {}
+
+        def repairs_on_retry(prompt, schema, repair):
+            state[prompt.fingerprint] = state.get(prompt.fingerprint, 0) + 1
+            if state[prompt.fingerprint] == 1:
+                return hallucinating_model(prompt, schema, repair)
+            return compliant_model(prompt, schema, repair)
+
+        taken: dict[str, str] = {}
+        report = score(
+            cohort, repairs_on_retry, graph=graph, model="stub-retry",
+            on_take=lambda prompt, raw, check: taken.__setitem__(prompt.fingerprint, raw),
+        )
+        from spp.narration.structured import parse_structured
+
+        assert report.retry_rate == 1.0
+        for result in report.results:
+            assert result.grounded, "the second attempt should have grounded"
+            handed = parse_structured(taken[result.fingerprint])
+            assert handed.render() == result.rendered, (
+                "the recorder was handed the first, ungrounded attempt"
+            )
+
+    def test_an_overflowed_case_hands_over_an_empty_take(self, cohort, graph):
+        """The recorder distinguishes "refused before the call" from "the model
+        answered badly" by the empty response, and quarantines it under its own
+        reason rather than as a grounding failure."""
+        from spp.narration.sampling import DEFAULT_SAMPLING, ContextOverflow
+
+        def overflowing(prompt, schema, repair):
+            raise ContextOverflow(999_999, DEFAULT_SAMPLING)
+
+        seen: list[tuple[str, object]] = []
+        score(cohort, overflowing, graph=graph, model="stub-of",
+              on_take=lambda prompt, raw, check: seen.append((raw, check)))
+
+        assert seen, "an overflowed case must still reach the recorder"
+        assert all(raw == "" and check is None for raw, check in seen)

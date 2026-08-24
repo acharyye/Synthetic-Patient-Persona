@@ -45,6 +45,7 @@ from ..knowledge.retrieval import retrieve
 from ..schemas import PatientDNA
 from .citations import FACTUAL_MARKERS
 from .prompt import PROMPT_VERSION, build_prompt
+from .sampling import ContextOverflow
 from .state_facts import is_state_id
 from .structured import (
     StructuredAnswer,
@@ -210,6 +211,12 @@ class ComplianceReport(BaseModel):
     retry_rate: float = 0.0
     hard_failure_rate: float = 0.0
     parse_failure_rate: float = 0.0
+    # Pre-registered max 0, and until now the only bar `grade()` did not measure
+    # — it passed a literal 0.0, so a HARD bar reported PASS in every run ever
+    # recorded, including one where every prompt overflowed. Measured here, over
+    # cases attempted rather than cases scored: an overflowed prompt never
+    # reaches the model and leaves every other denominator.
+    context_overflow_rate: float = 0.0
 
     # Diagnostics, deliberately without pass bars.
     position_histogram: dict[str, int] = Field(default_factory=dict)
@@ -299,6 +306,7 @@ def score(
     label: str = "run",
     model: str = "unknown",
     degrade: str | None = None,
+    on_take=None,
 ) -> ComplianceReport:
     """Run the battery and score it.
 
@@ -309,6 +317,16 @@ def score(
     `degrade` is the canary lever — see `run_canary`. It is threaded through here
     rather than bolted on outside so the degraded run traverses exactly the same
     code path as a real one.
+
+    `on_take(prompt, raw, check)` is called once per case with the FINAL attempt,
+    so a caller that records cassettes records exactly the responses that were
+    scored. It exists because the recorder used to run the battery a second time
+    to capture its takes, which made the archived numbers describe a generation
+    that no longer existed anywhere: same prompts, a second sample, and two of
+    thirty takes drifted — enough to move `state_coverage` by five points. A
+    report and a recording that disagree are worse than either alone, because
+    each looks like evidence for the other. `raw` is "" and `check` is None when
+    the prompt overflowed the context window and no call was made.
     """
     graph = graph if graph is not None else load_graph()
     battery = battery if battery is not None else load_battery()
@@ -321,6 +339,7 @@ def score(
     by_key = {(dna.condition, dna.patient_id): dna for dna in cohort}
 
     results: list[CaseResult] = []
+    overflowed: list[tuple[str, str]] = []
     for case in battery:
         key = (case.get("condition", ""), case.get("patient_id", ""))
         dna = by_key.get(key)
@@ -359,20 +378,37 @@ def score(
         answer: StructuredAnswer | None = None
         check = None
         repair = None
-        while attempts < 2:
-            attempts += 1
-            raw = generate(prompt, schema, repair)
-            answer = parse_structured(raw)
-            if answer is None:
-                check = None
-                repair = "Return only a JSON object matching the schema."
-                continue
-            check = check_structured(answer, prompt.allowed_fact_ids)
-            if check.ok:
-                break
-            from .structured import structured_repair_instruction
+        raw = ""
+        try:
+            while attempts < 2:
+                attempts += 1
+                raw = generate(prompt, schema, repair)
+                answer = parse_structured(raw)
+                if answer is None:
+                    check = None
+                    repair = "Return only a JSON object matching the schema."
+                    continue
+                check = check_structured(answer, prompt.allowed_fact_ids)
+                if check.ok:
+                    break
+                from .structured import structured_repair_instruction
 
-            repair = structured_repair_instruction(check)
+                repair = structured_repair_instruction(check)
+        except ContextOverflow as exc:
+            # A prompt that would not fit never reached the model, so it is not
+            # evidence about the model. It leaves the behavioural denominators
+            # entirely and is counted only in `context_overflow_rate` — which
+            # `grade()` used to supply as a literal 0.0, making a pre-registered
+            # HARD bar one that could not fail. Scoring it as a grounding failure
+            # would be the opposite error: an instrument fault charged to the
+            # model.
+            overflowed.append((case["id"], str(exc)))
+            if on_take is not None:
+                on_take(prompt, "", None)
+            continue
+
+        if on_take is not None:
+            on_take(prompt, raw, check)
 
         segments = answer.segments if answer else []
         factual = [s for s in segments if s.needs_citation]
@@ -526,6 +562,12 @@ def score(
         retry_rate=round(sum(1 for r in results if r.attempts > 1) / n, 4),
         hard_failure_rate=round(sum(1 for r in results if not r.grounded) / n, 4),
         parse_failure_rate=round(sum(1 for r in results if r.parse_failed) / n, 4),
+        # Over cases ATTEMPTED, not cases scored. Dividing by `n` would shrink
+        # the rate as more prompts overflowed, and reach 0/0 exactly when every
+        # single one did.
+        context_overflow_rate=round(
+            len(overflowed) / (len(results) + len(overflowed)), 4
+        ) if (results or overflowed) else 0.0,
         mean_segments_per_take=round(sum(r.total_segments for r in results) / n, 2),  # int-sum: CaseResult.total_segments
         mean_response_chars=round(sum(r.response_chars for r in results) / n, 1),  # int-sum: CaseResult.response_chars
         single_segment_rate=round(
@@ -721,7 +763,7 @@ def grade(report: ComplianceReport, path: Path = PASS_BARS_PATH) -> Verdict:
     observed = {
         "citation_validity": report.citation_validity,
         "parse_failure_rate": report.parse_failure_rate,
-        "context_overflow_rate": 0.0,
+        "context_overflow_rate": report.context_overflow_rate,
         "factual_coverage": report.factual_coverage,
         "model_recall": report.model_recall,
         "system_recall": report.system_recall,
