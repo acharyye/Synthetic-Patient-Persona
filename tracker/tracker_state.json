@@ -5,7 +5,7 @@
   "endWeek": 44,
   "year": 2026,
   "todayWeek": 34,
-  "lastModified": "2026-08-23",
+  "lastModified": "2026-08-24",
   "stages": [
     {
       "id": "S1",
@@ -24,15 +24,25 @@
           "stand": "Released 2026-08-02. Bundle archived at evidence/v0.1/20260802T150651+0000 and kept untouched as the comparison baseline.",
           "meetingNotes": "",
           "achievements": [
-            { "date": "2026-08-02", "text": "v0.1 released — simulation-driven design review." }
+            {
+              "date": "2026-08-02",
+              "text": "v0.1 released — simulation-driven design review."
+            }
           ],
           "validations": [],
           "decisions": [
-            { "date": "2026-08-02", "text": "Architectural rule fixed: the deterministic core decides what happens, the narration layer only verbalises it and never makes a decision." }
+            {
+              "date": "2026-08-02",
+              "text": "Architectural rule fixed: the deterministic core decides what happens, the narration layer only verbalises it and never makes a decision."
+            }
           ],
-          "links": ["KR2.3"],
+          "links": [
+            "KR2.3"
+          ],
           "deps": [],
-          "assignees": ["akm"],
+          "assignees": [
+            "akm"
+          ],
           "knowledge": []
         },
         {
@@ -47,15 +57,27 @@
           "stand": "Done. Persona-relevant metaedge slice loads 47,031 nodes / 277,997 edges, idempotent on re-run. graph/schema.py is the single source of truth for labels, rel types and metaedge codes.",
           "meetingNotes": "",
           "achievements": [
-            { "date": "2026-08-13", "text": "cypher_guard validates LLM-written Cypher before execution." }
+            {
+              "date": "2026-08-13",
+              "text": "cypher_guard validates LLM-written Cypher before execution."
+            }
           ],
           "validations": [],
           "decisions": [
-            { "date": "2026-08-13", "text": "Hetionet has only 137 diseases; heart failure is deliberately NOT aliased to a near neighbour — resolve() returns None and the persona grounds on nothing. Grounding on the wrong disease is worse than grounding on none." }
+            {
+              "date": "2026-08-13",
+              "text": "Hetionet has only 137 diseases; heart failure is deliberately NOT aliased to a near neighbour — resolve() returns None and the persona grounds on nothing. Grounding on the wrong disease is worse than grounding on none."
+            }
           ],
-          "links": ["KR1.1"],
-          "deps": ["A"],
-          "assignees": ["akm"],
+          "links": [
+            "KR1.1"
+          ],
+          "deps": [
+            "A"
+          ],
+          "assignees": [
+            "akm"
+          ],
           "knowledge": []
         },
         {
@@ -72,9 +94,15 @@
           "achievements": [],
           "validations": [],
           "decisions": [],
-          "links": ["KR3.2"],
-          "deps": ["B"],
-          "assignees": ["akm"],
+          "links": [
+            "KR3.2"
+          ],
+          "deps": [
+            "B"
+          ],
+          "assignees": [
+            "akm"
+          ],
           "knowledge": []
         },
         {
@@ -89,18 +117,37 @@
           "stand": "Released 2026-08-14. 859 Python tests across 3.11/3.12/3.13, 27 SPA tests, 3 E2E specs, all green per push.",
           "meetingNotes": "",
           "achievements": [
-            { "date": "2026-08-14", "text": "Four bugs (networkx undeclared, dash venv sourcing, Neumaier sum drift, venv drift) closed as one construction rather than four patches." },
-            { "date": "2026-08-14", "text": "CI matrix: Python on 3.11/3.12/3.13, Node once, full leg on the oldest." }
+            {
+              "date": "2026-08-14",
+              "text": "Four bugs (networkx undeclared, dash venv sourcing, Neumaier sum drift, venv drift) closed as one construction rather than four patches."
+            },
+            {
+              "date": "2026-08-14",
+              "text": "CI matrix: Python on 3.11/3.12/3.13, Node once, full leg on the oldest."
+            }
           ],
           "validations": [
-            { "date": "2026-08-14", "text": "Guard fires: tests/test_float_accumulation.py walks the core AST and fails on any bare sum() whose operands are not stated. 8 of 10 int-sum markers verify against a schema; the 2 that cannot (Neo4j driver rows) are enumerated by the test rather than remembered." }
+            {
+              "date": "2026-08-14",
+              "text": "Guard fires: tests/test_float_accumulation.py walks the core AST and fails on any bare sum() whose operands are not stated. 8 of 10 int-sum markers verify against a schema; the 2 that cannot (Neo4j driver rows) are enumerated by the test rather than remembered."
+            }
           ],
           "decisions": [
-            { "date": "2026-08-14", "text": "Environment enforcement in tiers: refuse on lock-hash mismatch, warn on interpreter difference inside the supported range, refuse outside it. The warn tier is only honest while the matrix keeps running goldens on every interpreter." }
+            {
+              "date": "2026-08-14",
+              "text": "Environment enforcement in tiers: refuse on lock-hash mismatch, warn on interpreter difference inside the supported range, refuse outside it. The warn tier is only honest while the matrix keeps running goldens on every interpreter."
+            }
           ],
-          "links": ["KR2.1", "KR2.2"],
-          "deps": ["A"],
-          "assignees": ["akm"],
+          "links": [
+            "KR2.1",
+            "KR2.2"
+          ],
+          "deps": [
+            "A"
+          ],
+          "assignees": [
+            "akm"
+          ],
           "knowledge": []
         },
         {
@@ -115,17 +162,36 @@
           "stand": "Done 2026-08-14 (commit 168a686). A second measurement, not a repair; v0.1's bundle stays untouched as the comparison baseline.",
           "meetingNotes": "",
           "achievements": [
-            { "date": "2026-08-14", "text": "Double-citation dead at source: 0 of 30 raw responses contain an inline [F###] marker (v1: 7 of 25). Renderer stripping stays as defence in depth and now has nothing to strip." },
-            { "date": "2026-08-14", "text": "Bundles archive both layers — segments as the model emitted them, plus the rendered text. Dead-and-wrong take-fetching code replaced." }
+            {
+              "date": "2026-08-14",
+              "text": "Double-citation dead at source: 0 of 30 raw responses contain an inline [F###] marker (v1: 7 of 25). Renderer stripping stays as defence in depth and now has nothing to strip."
+            },
+            {
+              "date": "2026-08-14",
+              "text": "Bundles archive both layers — segments as the model emitted them, plus the rendered text. Dead-and-wrong take-fetching code replaced."
+            }
           ],
           "validations": [
-            { "date": "2026-08-14", "text": "model_recall 0.525 against the 0.5 bar on the full battery, up from v1's exactly-on-the-bar 0.500 — two independent readings above the bar." },
-            { "date": "2026-08-14", "text": "Friction hypothesis supported but CONFOUNDED: quarantine 5/30 -> 0/30, retries 6.7% -> 0%, but some of that is attributable to a separate finding and the two causes are not yet separated." }
+            {
+              "date": "2026-08-14",
+              "text": "model_recall 0.525 against the 0.5 bar on the full battery, up from v1's exactly-on-the-bar 0.500 — two independent readings above the bar."
+            },
+            {
+              "date": "2026-08-14",
+              "text": "Friction hypothesis supported but CONFOUNDED: quarantine 5/30 -> 0/30, retries 6.7% -> 0%, but some of that is attributable to a separate finding and the two causes are not yet separated."
+            }
           ],
           "decisions": [],
-          "links": ["KR1.2", "KR1.3"],
-          "deps": ["D"],
-          "assignees": ["akm"],
+          "links": [
+            "KR1.2",
+            "KR1.3"
+          ],
+          "deps": [
+            "D"
+          ],
+          "assignees": [
+            "akm"
+          ],
           "knowledge": []
         }
       ]
@@ -149,12 +215,24 @@
           "achievements": [],
           "validations": [],
           "decisions": [
-            { "date": "2026-08-14", "text": "The escape clause is a CONTROL ARM, not a ceiling number. Graph-knowledge tags (ae, tx, proc) gained nothing from P/B/E and must stay flat within 0.10. sym is explicitly NOT a control — symptoms are simulated state, so P-citations there are legitimate." },
-            { "date": "2026-08-15", "text": "Four namespaces, not three: P- profile, B- derived barriers, J- journey milestones, E- RESERVED for simulation event-log entries. An id namespace whose meaning changes later makes every v3 recording silently ambiguous." }
+            {
+              "date": "2026-08-14",
+              "text": "The escape clause is a CONTROL ARM, not a ceiling number. Graph-knowledge tags (ae, tx, proc) gained nothing from P/B/E and must stay flat within 0.10. sym is explicitly NOT a control — symptoms are simulated state, so P-citations there are legitimate."
+            },
+            {
+              "date": "2026-08-15",
+              "text": "Four namespaces, not three: P- profile, B- derived barriers, J- journey milestones, E- RESERVED for simulation event-log entries. An id namespace whose meaning changes later makes every v3 recording silently ambiguous."
+            }
           ],
-          "links": ["KR1.1"],
-          "deps": ["E"],
-          "assignees": ["akm"],
+          "links": [
+            "KR1.1"
+          ],
+          "deps": [
+            "E"
+          ],
+          "assignees": [
+            "akm"
+          ],
           "knowledge": []
         },
         {
@@ -169,82 +247,252 @@
           "stand": "Done 2026-08-23. narration/state_facts.py derives P/B/J from the persona; E- is declared and pinned empty by tests/test_state_citation.py. PROMPT_VERSION 3 (cassettes invalidated on purpose), the ids in the decode enum, click-through dispatching on namespace, and the strip_state_ids canary lever wired so state_coverage can fail. H is unblocked.",
           "meetingNotes": "",
           "achievements": [
-            { "date": "2026-08-23", "text": "Four namespaces live: P- profile (a declared surface, PROFILE_FIELDS), B- derived barriers (the id IS the barrier name, so the graph join survives), J- journey milestones, E- reserved and empty." },
-            { "date": "2026-08-23", "text": "state_coverage implemented with a kind-independent denominator, plus the strip_state_ids canary lever. run_canary refuses `sensitive` unless BOTH the grounding lever and the state lever fire." },
-            { "date": "2026-08-23", "text": "Citation click-through closes the loop from the state side: a B- id expands to the derived barrier and the profile field the simulation computed it from." }
+            {
+              "date": "2026-08-23",
+              "text": "Four namespaces live: P- profile (a declared surface, PROFILE_FIELDS), B- derived barriers (the id IS the barrier name, so the graph join survives), J- journey milestones, E- reserved and empty."
+            },
+            {
+              "date": "2026-08-23",
+              "text": "state_coverage implemented with a kind-independent denominator, plus the strip_state_ids canary lever. run_canary refuses `sensitive` unless BOTH the grounding lever and the state lever fire."
+            },
+            {
+              "date": "2026-08-23",
+              "text": "Citation click-through closes the loop from the state side: a B- id expands to the derived barrier and the profile field the simulation computed it from."
+            }
           ],
           "validations": [
-            { "date": "2026-08-23", "text": "Canary proves the new axis can fail: state_coverage collapses under strip_state_ids while model_recall holds (state_lever_clean). An unexercised axis is reported as its own verdict, not as a dead lever." },
-            { "date": "2026-08-23", "text": "Context check: worst battery prompt ~2230 tokens against num_ctx 8192 with 700 reserved. The larger prompt does not put H at risk of silent head truncation." },
-            { "date": "2026-08-23", "text": "896 offline tests green, including 23 new in tests/test_state_citation.py." }
+            {
+              "date": "2026-08-23",
+              "text": "Canary proves the new axis can fail: state_coverage collapses under strip_state_ids while model_recall holds (state_lever_clean). An unexercised axis is reported as its own verdict, not as a dead lever."
+            },
+            {
+              "date": "2026-08-23",
+              "text": "Context check: worst battery prompt ~2230 tokens against num_ctx 8192 with 700 reserved. The larger prompt does not put H at risk of silent head truncation."
+            },
+            {
+              "date": "2026-08-23",
+              "text": "896 offline tests green, including 23 new in tests/test_state_citation.py."
+            }
           ],
           "decisions": [
-            { "date": "2026-08-23", "text": "E- emits nothing and derive_state_facts takes no PersonaState. A persona with a state slice therefore has prose about missed visits but no id for it — the coverage finding the pre-registration already recorded, left as a finding rather than repaired by widening J-." },
-            { "date": "2026-08-23", "text": "The state surface is offered WHOLE, not ranked against the question. A relevance scorer for state would be a second unevaluated variable inside a run whose entire design is one — the same reason fact-order permutation stays off for v3. If v3 shows volume-driven citation, the ranker gets its own paired comparison." },
-            { "date": "2026-08-23", "text": "FINDING for H's reading: state ids are now 64% of the enum (mean 28 state against 16 graph per battery case). A rise in state citation could be volume-driven, so f_recall_holds_independently and state_citation_share are the arms that separate that from recovery." },
-            { "date": "2026-08-23", "text": "v3_expected_shape.json amended before any recording: state_coverage gained an explicit denominator, and the P/B/E shorthand left over from the three-namespace draft now reads P/B/J. A denominator chosen after seeing results would not be a pre-registration." }
+            {
+              "date": "2026-08-23",
+              "text": "E- emits nothing and derive_state_facts takes no PersonaState. A persona with a state slice therefore has prose about missed visits but no id for it — the coverage finding the pre-registration already recorded, left as a finding rather than repaired by widening J-."
+            },
+            {
+              "date": "2026-08-23",
+              "text": "The state surface is offered WHOLE, not ranked against the question. A relevance scorer for state would be a second unevaluated variable inside a run whose entire design is one — the same reason fact-order permutation stays off for v3. If v3 shows volume-driven citation, the ranker gets its own paired comparison."
+            },
+            {
+              "date": "2026-08-23",
+              "text": "FINDING for H's reading: state ids are now 64% of the enum (mean 28 state against 16 graph per battery case). A rise in state citation could be volume-driven, so f_recall_holds_independently and state_citation_share are the arms that separate that from recovery."
+            },
+            {
+              "date": "2026-08-23",
+              "text": "v3_expected_shape.json amended before any recording: state_coverage gained an explicit denominator, and the P/B/E shorthand left over from the three-namespace draft now reads P/B/J. A denominator chosen after seeing results would not be a pre-registration."
+            }
           ],
-          "links": ["KR1.1"],
-          "deps": ["F"],
-          "assignees": ["akm"],
-          "knowledge": ["docs/okf/concepts/state-citation.md"]
+          "links": [
+            "KR1.1"
+          ],
+          "deps": [
+            "F"
+          ],
+          "assignees": [
+            "akm"
+          ],
+          "knowledge": [
+            "docs/okf/concepts/state-citation.md"
+          ]
         },
         {
           "id": "H",
           "title": "Record the v3 battery against the pre-registered bars",
-          "status": "active",
-          "progress": 50,
+          "status": "done",
+          "progress": 100,
           "startWeek": 36,
           "endWeek": 37,
           "aufgabe": "Run the battery with the namespaces live, changing exactly one declared variable, and write the bundle beside v0.1 and v0.3.",
           "ziel": "A third reading comparable to the first two.",
-          "stand": "2026-08-23: expectations authored and the three missing arms implemented; live canary running against qwen2.5:7b-instruct@845dbda0ea48. Recording is refused until it fires.",
+          "stand": "Done 2026-08-23. Battery recorded against qwen2.5:7b-instruct@845dbda0ea48, prompt v3: 30/30 takes accepted, 0 quarantined, canary sensitive on both levers, all 8 pre-registered pass bars met. Bundle at evidence/v0.4/20260823T170152+0000. Caveat recorded in its NOTE.md: the aggregates are not reproducible from the committed cassette (see task N).",
           "meetingNotes": "",
           "achievements": [
-            { "date": "2026-08-23", "text": "Battery re-authored: expect_facts (retrieval's own top ranks) replaced by authored must/may sets with alternation groups. Every inherited id reviewed against the persona it names." },
-            { "date": "2026-08-23", "text": "Three pre-registered arms had no metric and now do: feeling_floor, inline_marker_takes and f_recall_holds_independently." },
-            { "date": "2026-08-23", "text": "scripts/state_dumps.py regenerates the authoring worksheet from inputs only — it reads no cassette, by design." }
+            {
+              "date": "2026-08-23",
+              "text": "Battery re-authored: expect_facts (retrieval's own top ranks) replaced by authored must/may sets with alternation groups. Every inherited id reviewed against the persona it names."
+            },
+            {
+              "date": "2026-08-23",
+              "text": "Three pre-registered arms had no metric and now do: feeling_floor, inline_marker_takes and f_recall_holds_independently."
+            },
+            {
+              "date": "2026-08-23",
+              "text": "scripts/state_dumps.py regenerates the authoring worksheet from inputs only — it reads no cassette, by design."
+            },
+            {
+              "date": "2026-08-23",
+              "text": "v3 battery recorded: 30/30 accepted, 0 quarantined, hard_failure_rate 0.0, citation_validity 1.0. Canary fired on both levers — strip_instructions takes model_recall 0.586 -> 0.052, strip_state_ids takes state_coverage 0.564 -> 0.0."
+            }
           ],
           "validations": [
-            { "date": "2026-08-23", "text": "Expectation contract tests generated from battery contents: every expected id must exist in the graph or be derivable for that persona; must-sets stay 1-3 groups; both the F arm and the state axis have enough cases to grade." },
-            { "date": "2026-08-23", "text": "f_recall semantics pinned by two stubs: satisfying a mixed alternation through the profile clears model_recall and misses f_recall, which is the arm working rather than a bug." }
+            {
+              "date": "2026-08-23",
+              "text": "Expectation contract tests generated from battery contents: every expected id must exist in the graph or be derivable for that persona; must-sets stay 1-3 groups; both the F arm and the state axis have enough cases to grade."
+            },
+            {
+              "date": "2026-08-23",
+              "text": "f_recall semantics pinned by two stubs: satisfying a mixed alternation through the profile clears model_recall and misses f_recall, which is the arm working rather than a bug."
+            },
+            {
+              "date": "2026-08-24",
+              "text": "Reading protocol followed in its committed order: canary, then the five seed-chosen takes read in full, then quarantine (empty), then aggregates. The takes are terse but not degenerate; the sym take is pure feeling and uncited, which is the question doing its job rather than a miss."
+            }
           ],
           "decisions": [
-            { "date": "2026-08-23", "text": "COVERAGE FINDING: copd-s42-0005 has no derived barriers, so every mitigation fact retrieval offers is about a barrier it does not have. Its must-set is its own circumstances — a question with no correct answer before these ids existed." },
-            { "date": "2026-08-23", "text": "Several inherited F-expectations contradicted their persona (a persona with a car expected to cite \"no reliable way to get to the site\"; a persona on metformin expected to cite insulin glargine). Dropped, not inherited." },
-            { "date": "2026-08-23", "text": "Recall is NOT comparable to v0.1/v0.3 under re-authored expectations, and the battery says so in its own description. f_recall carries the pre-registered floor for graph recall instead." }
+            {
+              "date": "2026-08-23",
+              "text": "COVERAGE FINDING: copd-s42-0005 has no derived barriers, so every mitigation fact retrieval offers is about a barrier it does not have. Its must-set is its own circumstances — a question with no correct answer before these ids existed."
+            },
+            {
+              "date": "2026-08-23",
+              "text": "Several inherited F-expectations contradicted their persona (a persona with a car expected to cite \"no reliable way to get to the site\"; a persona on metformin expected to cite insulin glargine). Dropped, not inherited."
+            },
+            {
+              "date": "2026-08-23",
+              "text": "Recall is NOT comparable to v0.1/v0.3 under re-authored expectations, and the battery says so in its own description. f_recall carries the pre-registered floor for graph recall instead."
+            }
           ],
-          "links": ["KR1.1"],
-          "deps": ["G"],
+          "links": [
+            "KR1.1"
+          ],
+          "deps": [
+            "G"
+          ],
           "assignees": [],
-          "knowledge": []
+          "knowledge": [
+            "docs/okf/concepts/state-citation.md"
+          ]
         },
         {
           "id": "I",
           "title": "Adjudicate: recovery or over-correction?",
-          "status": "backlog",
-          "progress": 0,
+          "status": "done",
+          "progress": 100,
           "startWeek": 37,
           "endWeek": 37,
           "aufgabe": "Check burden and mitigation factual_fraction against the controls. If burden and mitigation recover while ae/tx/proc hold flat within 0.10, the new ids did the work. If everything rises together it is over-correction, however good the burden numbers look.",
           "ziel": "A verdict the pre-registration can actually adjudicate, not a number chosen after the fact.",
-          "stand": "2026-08-23: the decision procedure is built and tested ahead of the run (narration/adjudication.py). It reads thresholds out of the shape file and follows the registered tree; nothing to read until H records.",
+          "stand": "Done 2026-08-24. Verdict: RECOVERY WITHOUT STATE CITATION — burden 0.400->0.700 and mitigation 0.443->0.933 with ae/tx/proc flat, but state_coverage 0.564 under its 0.6 floor. 12 of 13 arms passed. Written to the bundle as adjudication.json by scripts/adjudicate_bundle.py.",
           "meetingNotes": "",
           "achievements": [
-            { "date": "2026-08-23", "text": "adjudication.py reads the arms from v3_expected_shape.json, transcribes no threshold, and carries the amendment trail into the verdict." }
+            {
+              "date": "2026-08-23",
+              "text": "adjudication.py reads the arms from v3_expected_shape.json, transcribes no threshold, and carries the amendment trail into the verdict."
+            },
+            {
+              "date": "2026-08-24",
+              "text": "adjudicate_bundle() reads an archived bundle and leaves the verdict in it; the bundle README gains it as step 5, read LAST so it cannot colour the reading of the raw takes. Reproducible from the archived files without a model run."
+            }
           ],
           "validations": [
-            { "date": "2026-08-23", "text": "Every branch of the reading tree is reachable against a synthesised report (tests/test_adjudication.py) — the TestGateCanActuallyFail move. The branch that matters is OVER-CORRECTION: burden excellent while the controls rose with it." }
+            {
+              "date": "2026-08-23",
+              "text": "Every branch of the reading tree is reachable against a synthesised report (tests/test_adjudication.py) — the TestGateCanActuallyFail move. The branch that matters is OVER-CORRECTION: burden excellent while the controls rose with it."
+            },
+            {
+              "date": "2026-08-24",
+              "text": "The branch's stated cause does NOT match this run, and that is the finding. Relabelling would be circumstantial claims marked `feeling` with no ids; 17 of the 18 uncovered segments are marked `factual` and carry graph citations. The canary corroborates from the other side: under strip_state_ids f_recall RISES 0.531 -> 0.694. The two id families compete for citation slots — a budgeting habit, not an evasion."
+            }
           ],
           "decisions": [
-            { "date": "2026-08-23", "text": "A tag below its floor outranks another above its ceiling: a tag that did not recover falsifies the diagnosis whatever a second tag did." },
-            { "date": "2026-08-23", "text": "Recovery with state_coverage under its floor is NOT recovery — that is relabelling, the over-correction signature in its purest form." },
-            { "date": "2026-08-23", "text": "Caveats travel with the numbers rather than being remembered: recall comparability, the 64% enum asymmetry, a thin circumstantial denominator, and degeneracy sending the reader to the raw takes." }
+            {
+              "date": "2026-08-23",
+              "text": "A tag below its floor outranks another above its ceiling: a tag that did not recover falsifies the diagnosis whatever a second tag did."
+            },
+            {
+              "date": "2026-08-23",
+              "text": "Recovery with state_coverage under its floor is NOT recovery — that is relabelling, the over-correction signature in its purest form."
+            },
+            {
+              "date": "2026-08-23",
+              "text": "Caveats travel with the numbers rather than being remembered: recall comparability, the 64% enum asymmetry, a thin circumstantial denominator, and degeneracy sending the reader to the raw takes."
+            },
+            {
+              "date": "2026-08-24",
+              "text": "The shape file is NOT amended to fit. A fused segment citing both id families is the next prompt iteration, and it is a separate explicit commit — never made in the same breath as reporting a result against the file it would edit."
+            }
           ],
-          "links": ["KR1.1"],
-          "deps": ["H"],
+          "links": [
+            "KR1.1"
+          ],
+          "deps": [
+            "H"
+          ],
           "assignees": [],
-          "knowledge": []
+          "knowledge": [
+            "docs/okf/concepts/v3-reading.md"
+          ]
+        },
+        {
+          "id": "N",
+          "title": "Close two instrument defects found while adjudicating",
+          "status": "done",
+          "progress": 100,
+          "startWeek": 34,
+          "endWeek": 34,
+          "aufgabe": "Make the report and the cassette describe one generation, and make context_overflow_rate a bar that can actually fail.",
+          "ziel": "Evidence that reproduces from its own artifacts, and no pre-registered bar that passes by construction.",
+          "stand": "Done 2026-08-24. Both fixed and pinned by tests. The v0.4 bundle is annotated rather than retro-fixed — it records what happened.",
+          "meetingNotes": "",
+          "achievements": [
+            {
+              "date": "2026-08-24",
+              "text": "score() gained on_take, so one generation feeds both the report and the cassette. A live run now costs half the model calls, which also halves exposure to the adapter timeout that cost a recording on 2026-08-23."
+            },
+            {
+              "date": "2026-08-24",
+              "text": "context_overflow_rate is computed from cases the guard refused, over cases ATTEMPTED rather than scored, and an overflowed case leaves every behavioural denominator instead of scoring as a grounding failure."
+            }
+          ],
+          "validations": [
+            {
+              "date": "2026-08-24",
+              "text": "TestScoringAndRecordingSeeTheSameSample: one call per case, the handed-over take renders to what was scored, and a retried case hands over the REPAIRED take — the recorder used to archive first attempts while the report scored retried ones."
+            },
+            {
+              "date": "2026-08-24",
+              "text": "TestOverflowIsMeasuredNotAssumed runs a battery whose every prompt overflows and requires the hard bar to FAIL. Same move as TestGateCanActuallyFail."
+            }
+          ],
+          "decisions": [
+            {
+              "date": "2026-08-24",
+              "text": "MEASURED: two of thirty v0.4 takes drifted between the scoring pass and the recording pass, moving state_coverage from 0.5641 to 0.5135. Both readings miss the 0.6 floor, so the adjudication branch is unchanged — but the headline figure is not precise to three digits and the bundle now says so."
+            },
+            {
+              "date": "2026-08-24",
+              "text": "Every bundle before 2026-08-24 shows context_overflow_rate observed 0.0 PASSED. Read that as UNEVALUATED, not as evidence no prompt overflowed."
+            },
+            {
+              "date": "2026-08-24",
+              "text": "The v0.4 bundle is annotated, not corrected. A bundle is the record of what happened; rewriting its numbers would make it a record of what we wish had."
+            }
+          ],
+          "links": [
+            "KR1.1",
+            "KR2.3"
+          ],
+          "deps": [
+            "H"
+          ],
+          "assignees": [
+            "akm"
+          ],
+          "knowledge": [
+            "docs/okf/concepts/v3-reading.md",
+            "docs/okf/decisions/one-generation-one-sample.md",
+            "docs/okf/decisions/gate-must-be-able-to-fail.md"
+          ]
         }
       ]
     },
@@ -267,7 +515,9 @@
           "achievements": [],
           "validations": [],
           "decisions": [],
-          "links": ["KR3.1"],
+          "links": [
+            "KR3.1"
+          ],
           "deps": [],
           "assignees": [],
           "knowledge": []
@@ -286,8 +536,12 @@
           "achievements": [],
           "validations": [],
           "decisions": [],
-          "links": ["KR3.2"],
-          "deps": ["J"],
+          "links": [
+            "KR3.2"
+          ],
+          "deps": [
+            "J"
+          ],
           "assignees": [],
           "knowledge": []
         }
@@ -312,7 +566,9 @@
           "achievements": [],
           "validations": [],
           "decisions": [],
-          "links": ["KR3.3"],
+          "links": [
+            "KR3.3"
+          ],
           "deps": [],
           "assignees": [],
           "knowledge": []
@@ -332,7 +588,9 @@
           "validations": [],
           "decisions": [],
           "links": [],
-          "deps": ["I"],
+          "deps": [
+            "I"
+          ],
           "assignees": [],
           "knowledge": []
         }
@@ -344,7 +602,9 @@
       "id": "O1",
       "title": "A persona cannot claim anything it cannot cite",
       "desc": "Every statement traces to declared state (P/B/J/E) or retrieved graph knowledge — verified by measurement against pre-registered bars, not by inspection.",
-      "refs": ["S2"],
+      "refs": [
+        "S2"
+      ],
       "krs": [
         {
           "id": "KR1.1",
@@ -353,7 +613,7 @@
           "target": 100,
           "unit": "%",
           "type": "Commit",
-          "grade": 0.3
+          "grade": 0.9
         },
         {
           "id": "KR1.2",
@@ -379,7 +639,9 @@
       "id": "O2",
       "title": "A result reproduces without the author's machine",
       "desc": "Environment declared, locked, verified across every supported interpreter, and stamped into every artifact that claims reproducibility.",
-      "refs": ["S1"],
+      "refs": [
+        "S1"
+      ],
       "krs": [
         {
           "id": "KR2.1",
@@ -414,7 +676,10 @@
       "id": "O3",
       "title": "Realism comes from data, not from ballparks",
       "desc": "Retire the caveats that currently block quoting the model's own numbers as findings.",
-      "refs": ["S3", "S4"],
+      "refs": [
+        "S3",
+        "S4"
+      ],
       "krs": [
         {
           "id": "KR3.1",
