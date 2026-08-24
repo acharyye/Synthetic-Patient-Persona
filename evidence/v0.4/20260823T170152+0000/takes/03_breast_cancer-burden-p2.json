@@ -1,0 +1,116 @@
+{
+  "attempts": 1,
+  "case_id": "breast_cancer-burden-p2",
+  "circumstantial_segments": 1,
+  "citation_valid": true,
+  "cited": [
+    "P-constraints.no-car-and-no-reliable-lift-to",
+    "P-constraints.limited-mobility-travel-is",
+    "P-constraints.cannot-absorb-out-of-pocket"
+  ],
+  "cited_circumstantial_segments": 1,
+  "cited_factual_segments": 1,
+  "cited_positions": [],
+  "expected_facts": [
+    "F011",
+    "F012",
+    "B-transport",
+    "P-constraints.no-car-and-no-reliable-lift-to",
+    "P-social_determinants.transport"
+  ],
+  "expected_may": [
+    "F015",
+    "F019",
+    "F023",
+    "B-cost",
+    "B-mobility",
+    "P-constraints.limited-mobility-travel-is"
+  ],
+  "expected_must": [
+    [
+      "F011"
+    ],
+    [
+      "F012"
+    ],
+    [
+      "B-transport",
+      "P-constraints.no-car-and-no-reliable-lift-to",
+      "P-social_determinants.transport"
+    ]
+  ],
+  "factual_segments": 1,
+  "failure": "",
+  "feeling_segments": 0,
+  "fingerprint": "9ad35a896164a11705c352765a1e71a6",
+  "grounded": true,
+  "inline_markers": 0,
+  "offered_state_ids": [
+    "B-cost",
+    "B-mobility",
+    "B-pill_burden",
+    "B-transport",
+    "J-adverse_event",
+    "J-diagnosis",
+    "J-first_contact",
+    "J-follow_up",
+    "J-symptom_onset",
+    "J-treatment_start",
+    "P-adherence_baseline",
+    "P-age",
+    "P-comorbidities.obesity",
+    "P-comorbidities.osteoporosis",
+    "P-condition",
+    "P-constraints.cannot-absorb-out-of-pocket",
+    "P-constraints.limited-mobility-travel-is",
+    "P-constraints.no-car-and-no-reliable-lift-to",
+    "P-goals.get-by-on-fewer-tablets-not-more",
+    "P-goals.slow-this-down-and-stay-out-of",
+    "P-goals.stay-well-enough-to-look-after",
+    "P-health_literacy",
+    "P-medications.anastrozole",
+    "P-medications.paclitaxel",
+    "P-medications.tamoxifen",
+    "P-sex",
+    "P-social_determinants.caregiver",
+    "P-social_determinants.employment",
+    "P-social_determinants.residence",
+    "P-social_determinants.transport",
+    "P-stage"
+  ],
+  "parse_failed": false,
+  "patient_id": "breast-cancer-s42-0002",
+  "question": "Could you get to the site twice a month?",
+  "rendered": "I'm not sure, but I think it would be tough. I don't have my own car and there's no reliable lift for me. The journey is tiring and I can't afford to take time off work or pay for transport. [P-constraints.no-car-and-no-reliable-lift-to, P-constraints.limited-mobility-travel-is, P-constraints.cannot-absorb-out-of-pocket]",
+  "response_chars": 322,
+  "retrieved_facts": [
+    "F011",
+    "F019",
+    "F012",
+    "F015",
+    "F013",
+    "F014",
+    "F017",
+    "F021",
+    "F023",
+    "F016",
+    "F018",
+    "F020",
+    "F022",
+    "F024",
+    "F030",
+    "F031"
+  ],
+  "segments": [
+    {
+      "fact_ids": [
+        "P-constraints.no-car-and-no-reliable-lift-to",
+        "P-constraints.limited-mobility-travel-is",
+        "P-constraints.cannot-absorb-out-of-pocket"
+      ],
+      "kind": "factual",
+      "text": "I'm not sure, but I think it would be tough. I don't have my own car and there's no reliable lift for me. The journey is tiring and I can't afford to take time off work or pay for transport."
+    }
+  ],
+  "total_segments": 1
+}

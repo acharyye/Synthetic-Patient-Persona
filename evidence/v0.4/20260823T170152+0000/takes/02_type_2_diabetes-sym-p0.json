@@ -1,0 +1,98 @@
+{
+  "attempts": 1,
+  "case_id": "type_2_diabetes-sym-p0",
+  "circumstantial_segments": 0,
+  "citation_valid": true,
+  "cited": [],
+  "cited_circumstantial_segments": 0,
+  "cited_factual_segments": 0,
+  "cited_positions": [],
+  "expected_facts": [
+    "F057",
+    "F058",
+    "F059",
+    "F060",
+    "F061",
+    "F062"
+  ],
+  "expected_may": [
+    "P-condition",
+    "P-stage",
+    "P-comorbidities.hypertension",
+    "P-comorbidities.obesity",
+    "P-comorbidities.cardiovascular-disease"
+  ],
+  "expected_must": [
+    [
+      "F057",
+      "F058",
+      "F059",
+      "F060",
+      "F061",
+      "F062"
+    ]
+  ],
+  "factual_segments": 0,
+  "failure": "",
+  "feeling_segments": 1,
+  "fingerprint": "c1d1d270e3d68cdfb02a4a44d768dd4c",
+  "grounded": true,
+  "inline_markers": 0,
+  "offered_state_ids": [
+    "B-competing_care",
+    "J-diagnosis",
+    "J-first_contact",
+    "J-follow_up",
+    "J-symptom_onset",
+    "J-treatment_start",
+    "P-adherence_baseline",
+    "P-age",
+    "P-comorbidities.cardiovascular-disease",
+    "P-comorbidities.hypertension",
+    "P-comorbidities.obesity",
+    "P-condition",
+    "P-constraints.works-full-time",
+    "P-goals.keep-working-without-my",
+    "P-goals.stay-well-enough-to-look-after",
+    "P-health_literacy",
+    "P-medications.empagliflozin",
+    "P-medications.metformin",
+    "P-sex",
+    "P-social_determinants.caregiver",
+    "P-social_determinants.employment",
+    "P-social_determinants.residence",
+    "P-social_determinants.transport",
+    "P-stage"
+  ],
+  "parse_failed": false,
+  "patient_id": "type-2-diabetes-s42-0001",
+  "question": "What do you actually feel day to day?",
+  "rendered": "I feel pretty tired most days, like I could use more sleep. And my feet sometimes tingle a bit, especially after walking around at work all day.",
+  "response_chars": 144,
+  "retrieved_facts": [
+    "F057",
+    "F058",
+    "F059",
+    "F060",
+    "F061",
+    "F062",
+    "F009",
+    "F025",
+    "F026",
+    "F027",
+    "F020",
+    "F030",
+    "F051",
+    "F052",
+    "F063",
+    "F068"
+  ],
+  "segments": [
+    {
+      "fact_ids": [],
+      "kind": "feeling",
+      "text": "I feel pretty tired most days, like I could use more sleep. And my feet sometimes tingle a bit, especially after walking around at work all day."
+    }
+  ],
+  "total_segments": 1
+}
