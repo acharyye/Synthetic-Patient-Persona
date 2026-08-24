@@ -143,3 +143,69 @@ class TestCaveatsTravelWithTheNumbers:
     def test_the_report_renders_without_a_verdict_being_implied(self):
         text = adjudicate(report()).report()
         assert "READING:" in text and "CAVEATS" in text
+
+
+class TestReadingAnArchivedBundle:
+    """The verdict is a read over the bundle, never a by-product of recording.
+
+    A reader who doubts `adjudication.json` must be able to delete it and get the
+    same file back without a model run — otherwise the verdict is something you
+    have to take on trust from whoever happened to be at the keyboard.
+    """
+
+    def bundle(self, tmp_path, **overrides):
+        from spp.narration.bundle import BundleManifest, write_bundle
+
+        return write_bundle(
+            "v0.4",
+            BundleManifest(
+                release="v0.4", backend="ollama", model="stub", prompt_version=3,
+                battery_cases=30, accepted_takes=30,
+            ),
+            compliance={"report": report(**overrides).model_dump()},
+            quarantine=[],
+            sampled_takes=[{"case_id": "one"}],
+            root=tmp_path,
+        )
+
+    def test_it_reproduces_the_verdict_from_the_archived_files(self, tmp_path):
+        from spp.narration.adjudication import adjudicate_bundle
+
+        directory = self.bundle(tmp_path)
+        first = adjudicate_bundle(directory)
+        written = json.loads((directory / "adjudication.json").read_text())
+
+        (directory / "adjudication.json").unlink()
+        assert adjudicate_bundle(directory).model_dump() == first.model_dump()
+        assert written == first.model_dump()
+
+    def test_quarantined_takes_reach_the_holds_from_v2_arm(self, tmp_path):
+        """A run can look clean precisely because its failures went elsewhere.
+        The count lives in quarantine.json, not in the report."""
+        from spp.narration.adjudication import adjudicate_bundle
+        from spp.narration.bundle import write_bundle, BundleManifest
+
+        directory = write_bundle(
+            "v0.4",
+            BundleManifest(release="v0.4", backend="ollama", model="stub",
+                           prompt_version=3),
+            compliance={"report": report().model_dump()},
+            quarantine=[{"failure_reason": "uncited claim"}],
+            root=tmp_path,
+        )
+        arm = next(a for a in adjudicate_bundle(directory).by_arm("holds_from_v2")
+                   if a.metric == "quarantine")
+        assert arm.observed == 1.0 and not arm.passed
+
+    def test_the_verdict_is_read_last(self, tmp_path):
+        """Meeting the verdict before the raw takes would colour the reading of
+        them, which is the whole point of the ordered protocol."""
+        from spp.narration.adjudication import adjudicate_bundle
+
+        directory = self.bundle(tmp_path)
+        assert "adjudication.json" not in (directory / "README.md").read_text()
+
+        adjudicate_bundle(directory)
+        readme = (directory / "README.md").read_text()
+        assert readme.index("compliance.json") < readme.index("adjudication.json")
+        assert readme.index("takes/") < readme.index("adjudication.json")
