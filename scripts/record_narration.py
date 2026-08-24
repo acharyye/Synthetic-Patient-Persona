@@ -56,13 +56,12 @@ from spp.narration.evaluation import grade, load_battery, run_canary, score
 from spp.narration.prompt import PROMPT_VERSION
 from spp.narration.sampling import (
     DEFAULT_SAMPLING,
-    context_fits,
     model_identity,
     model_is_resident,
+    require_context_fits,
     resolve_model_digest,
     warm_up,
 )
-from spp.narration.structured import check_structured, parse_structured
 
 AS_OF = date(2026, 8, 1)
 CONDITIONS = ["type 2 diabetes", "COPD", "heart failure",
@@ -91,9 +90,11 @@ def live_generator(sampling=DEFAULT_SAMPLING):
         if repair:
             system = f"{system}\n\nCORRECTION: {repair}"
 
-        fits, estimated = context_fits(system, prompt.user, sampling)
-        if not fits:
-            raise ContextTooLong(estimated)
+        # Raises ContextOverflow, which score() counts into
+        # context_overflow_rate. The script used to raise its own near-identical
+        # exception that no library code knew about, so an overflow aborted the
+        # scoring pass outright and the quarantine path below it was unreachable.
+        require_context_fits(system, prompt.user, sampling)
 
         result = llm_generate(system, prompt.user, max_tokens=sampling.num_predict,
                               schema=schema, options=sampling.as_options())
@@ -135,12 +136,6 @@ def _load_canary(release: str, key: str | None = None):
         return None
     payload = json.loads(path.read_text(encoding="utf-8"))
     return payload.get(key) if key else payload
-
-
-class ContextTooLong(RuntimeError):
-    def __init__(self, estimated: int) -> None:
-        super().__init__(f"prompt ~{estimated} tokens exceeds the context budget")
-        self.estimated = estimated
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -268,42 +263,30 @@ def main(argv: list[str] | None = None) -> int:
                              # the constructor can read it.
                              fresh=args.rerecord)
 
-    report = score(cohort, generate, graph=graph, battery=battery,
-                   label="live", model=model)
-
-    # Re-run to capture the raw exchanges for the cassette, gating each one.
-    from spp.knowledge.retrieval import retrieve
-    from spp.narration.prompt import build_prompt
-    from spp.narration.structured import answer_schema
-
-    by_id = {dna.patient_id: dna for dna in cohort}
-    for case in battery:
-        dna = by_id.get(case["patient_id"]) or cohort[0]
-        retrieval = retrieve(graph, dna.condition, case["question"],
-                             limit=case.get("limit", 16),
-                             barriers=tuple(b.name for b in dna.barriers))
-        prompt = build_prompt(dna, retrieval, case["question"])
-        schema = answer_schema(prompt.allowed_fact_ids)
-
-        try:
-            raw = generate(prompt, schema, None)
-        except ContextTooLong as exc:
-            # Its own reason, so a truncation refusal is never counted as the
-            # model failing to ground.
+    # ONE generation pass. Scoring and recording used to be two live runs over
+    # the same prompts, which meant the archived aggregates described a sample
+    # that was never recorded anywhere: in the v0.4 run two of thirty takes
+    # differed between the passes, and replaying the committed cassette
+    # reproduces state_coverage 0.5135 against the bundle's 0.5641. It also
+    # recorded FIRST attempts while scoring RETRIED ones, so a take repaired on
+    # the second try was archived in its broken form. `on_take` hands the
+    # recorder the exact final exchange the report was computed from.
+    def offer(prompt, raw, check):
+        if not raw:
+            # score() only passes an empty raw when the prompt overflowed the
+            # window. Its own reason, so a truncation refusal is never read as
+            # the model failing to ground.
             recorder.offer(prompt.fingerprint, prompt.system, prompt.user, "",
-                           passed=False,
-                           reason=f"{CONTEXT_OVERFLOW_REASON}: {exc}")
-            continue
-
-        answer = parse_structured(raw)
-        check = (
-            check_structured(answer, prompt.allowed_fact_ids) if answer else None
-        )
+                           passed=False, reason=CONTEXT_OVERFLOW_REASON)
+            return
         recorder.offer(
             prompt.fingerprint, prompt.system, prompt.user, raw,
             passed=bool(check and check.ok),
             reason=(check.summary if check else "unparseable response"),
         )
+
+    report = score(cohort, generate, graph=graph, battery=battery,
+                   label="live", model=model, on_take=offer)
 
     # Archive LAST, once every take is in hand. Archiving up front moved the
     # committed cassette aside before the first generation, so a run that died
