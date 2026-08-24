@@ -11,11 +11,16 @@ directory rather than printed and lost:
       compliance.json    aggregates and the pre-registered pass-bar verdicts
       takes/             the five seed-chosen raw takes, in full
       quarantine.json    every rejected response with its reason
+      adjudication.json  the pre-registered arms, read against what happened
 
 `takes/` and `quarantine.json` are the reading protocol made durable: the
 protocol says read five sampled takes and every quarantine entry before acting
 on aggregates, and a bundle that omitted them would let a later reader skip
 straight to the numbers — which is the failure the protocol exists to prevent.
+
+`adjudication.json` is written **last and read last** for the same reason. It is
+the verdict the shape file committed to before the run existed, and a reader who
+met it first would read the raw takes looking for it.
 """
 from __future__ import annotations
 
@@ -76,6 +81,7 @@ def write_bundle(
     compliance: dict | None = None,
     sampled_takes: list[dict] | None = None,
     quarantine: list[dict] | None = None,
+    adjudication: dict | None = None,
     root: Path = EVIDENCE_DIR,
 ) -> Path:
     """Archive one run. Returns the bundle directory."""
@@ -96,6 +102,8 @@ def write_bundle(
         dump("compliance.json", compliance)
     if quarantine is not None:
         dump("quarantine.json", {"count": len(quarantine), "rejected": quarantine})
+    if adjudication is not None:
+        dump("adjudication.json", adjudication)
 
     for index, take in enumerate(sampled_takes or []):
         (directory / "takes" / f"{index:02d}_{take.get('case_id', 'take')}.json").write_text(
@@ -103,15 +111,27 @@ def write_bundle(
             encoding="utf-8",
         )
 
-    _write_readme(directory, manifest, len(sampled_takes or []))
+    _write_readme(directory, manifest, len(sampled_takes or []),
+                  adjudicated=adjudication is not None)
     return directory
 
 
-def _write_readme(directory: Path, manifest: BundleManifest, take_count: int) -> None:
+def _write_readme(
+    directory: Path,
+    manifest: BundleManifest,
+    take_count: int,
+    adjudicated: bool = False,
+) -> None:
     """A human entry point, so the bundle explains itself in six months."""
     identity = (
         f"{manifest.model}@{manifest.model_digest[:19]}"
         if manifest.model_digest else manifest.model
+    )
+    adjudication_step = (
+        "5. `adjudication.json` — **last**. The arms registered before the run,\n"
+        "   read against what happened. Meeting the verdict first would colour the\n"
+        "   reading of everything above it.\n"
+        if adjudicated else ""
     )
     (directory / "README.md").write_text(
         f"""# Narration evidence bundle — {manifest.release}
@@ -137,12 +157,32 @@ Recorded {manifest.recorded_at} against **{identity}**, prompt v{manifest.prompt
    aggregate catches degeneracy; only reading does.
 3. `quarantine.json` — every rejected response, with its reason.
 4. `compliance.json` — aggregates and the pre-registered pass-bar verdicts.
-
+{adjudication_step}
 ## Caveat
 
 {manifest.caveat}
 """,
         encoding="utf-8",
+    )
+
+
+def refresh_readme(directory: Path) -> None:
+    """Re-render an archived bundle's README from what the directory now holds.
+
+    A bundle gains its adjudication after the fact — the verdict is a read over
+    the recording, and forcing a re-record to obtain one would make the reading
+    cost a model run. Re-rendering keeps a single README template rather than
+    letting a second, hand-patched one drift away from it.
+    """
+    manifest = BundleManifest.model_validate_json(
+        (directory / "manifest.json").read_text(encoding="utf-8")
+    )
+    takes = directory / "takes"
+    _write_readme(
+        directory,
+        manifest,
+        len(list(takes.glob("*.json"))) if takes.exists() else 0,
+        adjudicated=(directory / "adjudication.json").exists(),
     )
 
 

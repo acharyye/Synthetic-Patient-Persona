@@ -32,6 +32,7 @@ from pathlib import Path
 
 from pydantic import BaseModel, Field
 
+from .bundle import refresh_readme
 from .evaluation import BATTERY_PATH, ComplianceReport
 
 SHAPE_PATH = BATTERY_PATH.parent / "v3_expected_shape.json"
@@ -275,3 +276,32 @@ def _caveats(report: ComplianceReport) -> list[str]:
             "any of this."
         )
     return caveats
+
+
+def adjudicate_bundle(directory: Path, shape_path: Path = SHAPE_PATH) -> Adjudication:
+    """Read an archived bundle against the shape, and leave the verdict in it.
+
+    Deliberately a read over `compliance.json` and `quarantine.json` rather than
+    a step inside recording: the run and the reading of the run are separate
+    acts, and keeping them separate is what lets the verdict be re-derived from
+    an archived bundle by anyone who doubts it. The written file is a
+    convenience for that reader, never the source — delete it and this function
+    reproduces it exactly.
+    """
+    compliance = json.loads((directory / "compliance.json").read_text(encoding="utf-8"))
+    quarantine_path = directory / "quarantine.json"
+    quarantined = (
+        json.loads(quarantine_path.read_text(encoding="utf-8"))["count"]
+        if quarantine_path.exists() else 0
+    )
+    verdict = adjudicate(
+        ComplianceReport.model_validate(compliance["report"]),
+        quarantined=quarantined,
+        shape_path=shape_path,
+    )
+    (directory / "adjudication.json").write_text(
+        json.dumps(verdict.model_dump(), indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    refresh_readme(directory)
+    return verdict
