@@ -1,0 +1,145 @@
+{
+  "attempts": 1,
+  "case_id": "type_2_diabetes-mitigation-p1",
+  "circumstantial_segments": 3,
+  "citation_valid": true,
+  "cited": [
+    "F042",
+    "F043",
+    "P-social_determinants.transport",
+    "F032",
+    "F041",
+    "P-medications.metformin",
+    "P-medications.empagliflozin",
+    "P-adherence_baseline",
+    "P-goals.slow-this-down-and-stay-out-of"
+  ],
+  "cited_circumstantial_segments": 2,
+  "cited_factual_segments": 2,
+  "cited_positions": [
+    0,
+    1,
+    4,
+    13
+  ],
+  "expected_facts": [
+    "F042",
+    "F043",
+    "F051",
+    "F052",
+    "B-scheduling",
+    "P-constraints.works-shifts-so-weekday-daytime"
+  ],
+  "expected_may": [
+    "F044",
+    "B-unsupported",
+    "B-competing_care",
+    "P-social_determinants.caregiver",
+    "P-social_determinants.employment"
+  ],
+  "expected_must": [
+    [
+      "F042",
+      "F043"
+    ],
+    [
+      "F051",
+      "F052"
+    ],
+    [
+      "B-scheduling",
+      "P-constraints.works-shifts-so-weekday-daytime"
+    ]
+  ],
+  "factual_segments": 2,
+  "failure": "",
+  "feeling_segments": 1,
+  "fingerprint": "7208d6089894b8f4e0310a5f7bb3a566",
+  "grounded": true,
+  "inline_markers": 0,
+  "offered_state_ids": [
+    "B-competing_care",
+    "B-scheduling",
+    "B-unsupported",
+    "J-adverse_event",
+    "J-diagnosis",
+    "J-first_contact",
+    "J-follow_up",
+    "J-symptom_onset",
+    "J-treatment_start",
+    "P-adherence_baseline",
+    "P-age",
+    "P-comorbidities.ckd",
+    "P-comorbidities.diabetic-retinopathy",
+    "P-comorbidities.dyslipidemia",
+    "P-comorbidities.hypertension",
+    "P-comorbidities.obesity",
+    "P-condition",
+    "P-constraints.no-one-at-home-to-help",
+    "P-constraints.works-shifts-so-weekday-daytime",
+    "P-goals.keep-working-without-my",
+    "P-goals.slow-this-down-and-stay-out-of",
+    "P-health_literacy",
+    "P-medications.empagliflozin",
+    "P-medications.metformin",
+    "P-sex",
+    "P-social_determinants.caregiver",
+    "P-social_determinants.employment",
+    "P-social_determinants.residence",
+    "P-social_determinants.transport",
+    "P-stage"
+  ],
+  "parse_failed": false,
+  "patient_id": "type-2-diabetes-s42-0005",
+  "question": "What support would make taking part possible?",
+  "rendered": "I work shifts, so weekday daytime appointments are hard for me. Evening and weekend clinic slots or remote visits by video could help with that. [F042, F043] Getting to the site is a bit of an issue, but I have a lift from family. A travel reimbursement scheme might be useful if it's needed though. [P-social_determinants.transport, F032, F041] Keeping to my treatment routine is tough as it is, so reminder calls from the research nurse could really help me stay on track. [P-medications.metformin, P-medications.empagliflozin, P-adherence_baseline, P-goals.slow-this-down-and-stay-out-of]",
+  "response_chars": 591,
+  "retrieved_facts": [
+    "F042",
+    "F043",
+    "F051",
+    "F052",
+    "F032",
+    "F033",
+    "F034",
+    "F035",
+    "F036",
+    "F037",
+    "F038",
+    "F039",
+    "F040",
+    "F041",
+    "F045",
+    "F046"
+  ],
+  "segments": [
+    {
+      "fact_ids": [
+        "F042",
+        "F043"
+      ],
+      "kind": "factual",
+      "text": "I work shifts, so weekday daytime appointments are hard for me. Evening and weekend clinic slots or remote visits by video could help with that."
+    },
+    {
+      "fact_ids": [
+        "P-social_determinants.transport",
+        "F032",
+        "F041"
+      ],
+      "kind": "factual",
+      "text": "Getting to the site is a bit of an issue, but I have a lift from family. A travel reimbursement scheme might be useful if it's needed though."
+    },
+    {
+      "fact_ids": [
+        "P-medications.metformin",
+        "P-medications.empagliflozin",
+        "P-adherence_baseline",
+        "P-goals.slow-this-down-and-stay-out-of"
+      ],
+      "kind": "feeling",
+      "text": "Keeping to my treatment routine is tough as it is, so reminder calls from the research nurse could really help me stay on track."
+    }
+  ],
+  "total_segments": 3
+}
