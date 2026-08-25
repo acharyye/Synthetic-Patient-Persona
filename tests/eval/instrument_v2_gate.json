@@ -334,5 +334,34 @@
       "reading": "v3 misses the 0.6 floor under the adopted instrument as it did under every other. Instrument history: v1 0.5135, v2 0.6000, v2.1 0.4762, v2.2 0.4419, human labels 0.5263."
     },
     "anchor_sentence": "v3 missed the floor under every defensible reading \u2014 shipped instrument, corrected instrument, adopted instrument, and human labels \u2014 and the correction changed the size of the miss, not its existence."
+  },
+  "GOLD_FLOOR": {
+    "registered_on": "2026-08-25",
+    "registered_before": "the v4 pre-registration and any v4 run",
+    "floor": 0.6,
+    "semantics": "GOLD. The bar is answered against blind human labels on an audited slice, never against an instrument's full-run estimate.",
+    "why_not_instrument_relative": "the bias sign of an instrument has already flipped once across texts \u2014 v2 over-reported, v2.1 under-reported, v2.2 under-reports on this cassette by 0.084. A floor attached to an estimator whose error changes direction with the text is a bar that means something different each time it is read.",
+    "the_instrument_estimates_and_is_audited": {
+      "adopted_estimator": "is_circumstantial_v22",
+      "known_deviation_on_the_v3_cassette": -0.0844,
+      "deviation_direction": "under-inclusion, via the modal-plus-possessive door the minimal pair found",
+      "obligation": "every run carries an audit slice, labelled blind BEFORE any aggregate is read. The audit measures the estimator's error on that run's own text; it is reported, not corrected for."
+    },
+    "v3_baseline_registered_for_v4": {
+      "gold": 0.5263,
+      "v22_estimate": 0.4419,
+      "stated_deviation": -0.0844,
+      "instrument_history": {
+        "v1": 0.5135,
+        "v2": 0.6,
+        "v2.1": 0.4762,
+        "v2.2": 0.4419
+      },
+      "anchor": "v3 missed the floor under every defensible reading \u2014 shipped instrument, corrected instrument, adopted instrument, and human labels \u2014 and the correction changed the size of the miss, not its existence."
+    },
+    "state_citation_aptness_baseline": {
+      "v3": 0.913,
+      "expected_at_v4": "DOWN, per the gap-citing prediction"
+    }
   }
 }
