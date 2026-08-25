@@ -171,6 +171,16 @@
       "the per-run audit of v2.2's estimate on this run's own text",
       "v2.3's held-out sheet"
     ],
-    "sealing_rule": "the aggregates stay unread until the labels come back."
+    "sealing_rule": "the aggregates stay unread until the labels come back.",
+    "rater_pre_commitments_for_the_slice": {
+      "registered_on": "2026-08-25",
+      "registered_before": "the slice was extracted, and while the aggregates were still unread by anyone",
+      "why_needed": "sealed aggregates cut both ways. The rater knows nothing about the RUN, but does know the v4 predictions \u2014 and a rater who expects finer segmentation can unconsciously find it.",
+      "commitments": [
+        "SEGMENTATION GRAIN IS NOT A LABEL INPUT. A compound segment is labelled for what it ASSERTS, exactly as on the previous three sheets. Whether v4 actually split anything is a fact the rater learns from the scoring, never inferred mid-sheet and allowed to colour the calls.",
+        "Pass 1 is circumstantiality per rule, segment by segment, submitted before Pass 2 begins.",
+        "Grain patterns noticed while rating go in a POST-LABELS observation block, written after the labels are frozen \u2014 same discipline as the consistency pairs."
+      ]
+    }
   }
 }
