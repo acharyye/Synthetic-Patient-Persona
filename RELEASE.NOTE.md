@@ -75,4 +75,4 @@ remote already carries. Enforced rather than remembered, which is this
 repository's standing preference for any rule it has now demonstrated it can
 break.
 
-Referenced from v0.5's notes when they exist.
+Referenced from v0.5's notes, which ship in `RELEASE.md` alongside this file.

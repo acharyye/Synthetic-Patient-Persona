@@ -1,149 +1,162 @@
-# v0.4 — The state-citation release
+# v0.5 — The lever worked and the floor was missed
 
-A persona can now cite **itself**. The `P-`/`B-`/`J-` id namespaces put its own
-profile fields, derived barriers and journey milestones into the same citation
-enum as the retrieved graph facts, so a claim about circumstance can be
-`factual` instead of being relabelled `feeling` for want of an id.
+Both clauses. Never one.
 
-It worked. It also cost something, and the instrument caught both — which is
-the actual subject of this release.
+A reader who takes away "v4 failed" has been misinformed exactly as badly as one
+who takes away "v4 passed." The segmentation lever did the thing it was built to
+do, the headline metric still sits below its floor, and the two facts are not in
+tension — they name different parts of the same result.
 
-## The diagnosis, and what happened to it
+## The lever worked
 
-v0.3 shipped with `factual_fraction` collapsed on two question tags. The
-pre-registered claim, committed 2026-08-14 **before the namespaces existed**,
-was that this was a *state-citation gap*: the model labelled circumstantial
-segments `feeling` because the schema had no id for a persona's own simulated
-circumstances. Give it P/B/J ids and those segments should become `factual`
-**and cited**.
+v0.4 shipped a miss with a diagnosis: about half of it was the instrument, and of
+the rest, roughly eight of eighteen uncovered segments were **compound** — a
+circumstance riding along with a cited mitigation, one `fact_ids` list serving two
+claims, and the scorer unable to split a sentence to see it. Prompt v4 asks for
+**one claim per segment**.
 
-| tag | v1 (pv1) | v2 (pv2) | v3 (pv3) | |
-|---|---|---|---|---|
-| burden | 0.6667 | **0.4000** | **0.7000** | recovered |
-| mitigation | 0.9333 | **0.4433** | **0.9333** | recovered exactly |
-| ae | 1.0 | 0.9333 | 1.0 | control, flat |
-| tx | 1.0 | 1.0 | 1.0 | control, flat |
-| proc | 1.0 | 0.9 | 1.0 | control, flat |
+It acted, on three independent readings:
 
-Both recovery arms landed inside their registered bounds while all three
-controls stayed flat. On its face the diagnosis is confirmed.
+| | v3 | v4 |
+|---|---|---|
+| `single_segment_rate` | 0.567 | **0.30** |
+| `mean_segments_per_take` | 1.80 | **2.23** |
+| compounds counted by a blind rater | the norm | **2 of 34 segments** |
 
-**The verdict is `OVER-CORRECTION` anyway.** `state_coverage` — the axis built
-for exactly this run, kind-independent by design — read **0.5641 against a
-pre-registered floor of 0.6**. So roughly half the circumstantial segments cite
-a state id and the rest were simply **relabelled**: `factual` without the
-grounding that was supposed to earn the label. The recovery is real and its
-mechanism is only partly the one predicted.
+The pre-registered falsification condition — *compounds do not fall* — was not
+met.
 
-The floor caught it. That is the whole reason a floor written before the run
-exists, and the arm was not moved to accommodate what was measured.
+**And the displacement barrier broke.** This is the finding the whole arc was
+chasing. v0.4 measured state ids *displacing* graph citations: the two competing
+for one segment's citation budget, so buying state coverage cost graph recall.
+The conjunction was pre-registered precisely because either number alone is
+purchasable by sacrificing the other:
 
-## What the canary found before the run
+    state_coverage       0.4419 -> 0.50     WHILE
+    f_recall_exclusive   0.4615 -> 0.5897
 
-Two properties of the live configuration, both discovered by running the canary
-and then failing to reproduce its baseline, both recorded as amendments while
-nothing was yet recorded.
+Both rose. Splitting a compound gives each half its own segment and its own
+citation obligation, and on these numbers state and graph citation stopped
+competing.
 
-**The `strip_state_ids` lever is not clean.** `f_recall` was registered as
-roughly unchanged when the state ids are removed. It moves 0.5306 → 0.6939, and
-`f_recall_exclusive` — over the 39 must-groups no state id can satisfy — moves
-with it, 0.4615 → 0.6154. That second figure is what makes the reading
-unambiguous: this is not a mixed alternation being grounded through its profile
-member instead of its graph one. **State ids displace graph citations for claims
-with no other citation path.** The enum grew to ~64% state ids and the model
-spent its citations accordingly. This is the enum-incentive effect
-`f_recall_holds_independently` was registered to catch, arriving in the canary
-rather than in the run. Baseline `f_recall` clears its 0.5 floor at 0.5306, and
-the thinness is the finding.
+Nothing structural was spent: `citation_validity` 1.0, `parse_failure_rate` 0.0,
+`retry_rate` 0.0, `context_overflow_rate` 0.0 and measured, zero quarantine, zero
+inline markers. The prompt changed; the **schema did not**, so every v3
+guarantee — fabrication ungrammatical, format valid at the decoder — carried into
+v4 untouched. A schema-level SPLIT would have traded a measurable behaviour for a
+re-verification of every structural claim.
 
-**Model-server load state is a hidden variable.** A cold load and a warm one
-produce different output for identical inputs: same battery, same digest, same
-`(seed, temperature, top_p, num_predict, num_ctx)` — system_recall 0.5862 /
-state_coverage 0.5641 cold, against 0.6034 / 0.5897 warm. Each state is
-internally exact: two warm runs matched to 4dp and a deliberate unload
-reproduced the cold figures exactly. So it is a variable, not noise, and the
-digest that pins the weights says nothing about it. Every run now warms the
-model first, because stamping it would only let a reader learn that two bundles
-are incomparable.
+## The floor was missed
 
-## Two instrument defects, found in the wrong order
+Gold-semantics coverage on the audited slice: **0.556 against a floor of 0.6.**
+Ten apt-citing segments of eighteen coverable, from blind human labels.
 
-Both were found while *adjudicating* the run rather than while building the
-instrument, which is why both survived to be found at all.
+The slice is symptom-heavy and burden-absent. That caveat **sized** the miss; it
+does not excuse it. The headline stays a miss.
 
-**Scoring and recording were two live passes** over identical prompts — once
-inside `score()` for the report, once again to capture the cassette. Ollama at
-temperature 0.0 with a fixed seed is nearly, not exactly, reproducible: two of
-thirty takes drifted, and replaying the committed cassette gives `state_coverage`
-0.5135 against the bundle's 0.5641. The archived aggregates described a
-generation that existed nowhere, and the report and the recording each looked
-like evidence for the other. The same defect recorded **first** attempts while
-scoring **retried** ones, so a take repaired on its second try would have been
-archived broken. Now one pass, via `score(on_take=...)`.
+**What stands between 0.556 and the floor is reliability, not expressiveness.**
+Identical claim shapes are intermittently grounded: *"I take metformin,
+empagliflozin and semaglutide"* cites nothing while a four-drug segment of the
+same shape cites all four; one methotrexate segment cites, another does not. The
+uncited-coverable population is not a claim type the schema cannot express — it
+is the same claim type, sometimes grounded and sometimes not.
 
-**`context_overflow_rate` was a HARD bar at 0 that `grade()` supplied as a
-literal `0.0`.** It had reported PASS in every bundle ever written and would have
-done so in a run where every prompt overflowed. It is now counted, over cases
-*attempted* rather than cases scored — an overflowed prompt never reaches the
-model, so it is not evidence about the model and leaves every behavioural
-denominator alone.
+## The methodology result, which may outlast the experiment
 
-Neither changes the v0.4 verdict: both readings of `state_coverage` miss the
-floor, so the run takes the same branch of the pre-registered tree either way.
+**The adopted instrument was beaten by the one it replaced, on the run's own
+text.**
 
-## The bundle is not retro-fixed
+`is_circumstantial` v2.2 won its adoption gate honestly — agreement 0.6939, κ
+0.3336, on a sheet held out from every instrument. On v4's output it scores
+**0.5882 / +0.1765 against v2.1's 0.6765 / +0.2609**, and under-counts the
+denominator by twelve of twenty-nine.
 
-`evidence/v0.4/20260823T170152+0000/` is committed as it was recorded, with a
-`NOTE.md` stating that its aggregates are not reproducible from its own
-cassette, that `state_coverage` should be read as ~0.51–0.56 rather than 0.5641,
-and that `context_overflow_rate` was unevaluated there. A bundle is the record
-of what happened. The next one is reproducible from its own cassette; this one
-is not, and says so.
+Nothing regressed. v2.2 is the same code that won. What changed is the text: its
+frames were validated on multi-clause segments, and the SPLIT lever's entire
+purpose was to produce short single-claim ones.
 
-Adjudication is now its own act: `adjudicate_bundle()` and
-`scripts/adjudicate_bundle.py` read a verdict out of `compliance.json`,
-`quarantine.json` and the shape file with **no model involved**. Delete
-`adjudication.json` and it reproduces exactly. It is written last and read last,
-because a reader who meets the verdict first goes through the raw takes looking
-for it.
+> **Estimator validity is distribution-relative. Any lever that changes the
+> output distribution silently re-opens every instrument validated on the old
+> one.**
 
-## What is pinned
+Made structural rather than remembered. Adoption is **per-distribution**: an
+instrument's validation carries a distribution stamp — prompt version, grain
+statistics — and **expires** when a lever moves them. And the per-run audit is
+promoted from *a check on the estimate* to *the mechanism that detects instrument
+expiry*, which is what it did on its first exercise. Without it, `state_coverage`
+0.50 ships as the v4 figure with no sign the instrument had degraded on exactly
+the text it was measuring.
 
-935 Python tests across 3.11 / 3.12 / 3.13, 27 SPA tests and 3 E2E specs, on
-every push. New this release: that scoring and recording see the same sample
-(`TestScoringAndRecordingSeeTheSameSample`), that the overflow bar is measured
-rather than assumed (`TestOverflowIsMeasuredNotAssumed`), that a verdict can be
-re-derived from an archived bundle (`TestReadingAnArchivedBundle`), and that
-`E-` stays reserved and empty until event-log citation is actually built.
+That completes a shape three releases have been accumulating:
 
-Work is now steered by OKRs in `tracker/tracker_state.json`, reconstructed from
-git history rather than from prose — which immediately caught this file, in its
-v0.3 form, still listing the prompt v2 re-record as open two commits after it
-closed.
+| failure mode | mechanism |
+|---|---|
+| motivated reading — a prediction written after the numbers | pre-registration |
+| a dead instrument — a metric that cannot fail | canaries |
+| a true instrument dying quietly of distribution shift | per-run audits |
+
+Three failure modes, three mechanisms, all three now demonstrated on real runs.
+The third is the least obvious, because nothing is broken at any point and the
+instrument returns numbers of the usual shape throughout.
+
+## How this run was gated
+
+Every commitment was pushed before the generation it constrains:
+
+- **17 arms pre-registered** and published before the prompt change existed.
+- **The floor is gold-semantics**, answered against blind labels, never against an
+  instrument's estimate — because an instrument's bias sign has already flipped
+  once across texts.
+- **The audit slice was seeded** (`20260825`, 15 of 30 takes, sampled from keys
+  sorted by *fingerprint* — dict order is recording order is battery order, and a
+  slice inheriting it is not a slice).
+- **Two-pass labelling**, order fixed: circumstantiality text-only and frozen,
+  then aptness with citations revealed. It validated itself on first use — the
+  four not-apt segments are exactly the four the frozen pass had marked as
+  schema-gap.
+- **Aggregates stayed sealed** until the labels came back.
+- **The reading order changed a verdict.** `schema_gap_union` reads 0.379 against
+  v3's 0.1364 and would have been logged as an arm violation; read against the
+  composition note first — four `sym` takes and *zero* burden takes in fifteen —
+  it is **not adjudicable** from this slice against an arm registered at
+  population level.
+
+## Also in this release
+
+- `is_circumstantial` v2.2, adopted on held-out labels, with v1 kept in the module
+  and unused by scoring: every v1-era bundle number was produced by it.
+- `RELEASE.NOTE.md` — the correction to v0.4's notes, placed beside them rather
+  than folded into them. The v0.4 tag and its notes are byte-stable.
+- `scripts/check_release_freeze.py` — refuses to amend or re-tag anything the
+  remote already carries, and fails closed on an unreachable remote.
+- `Take.persona_id` — takes carry whose they are, so the join is a lookup. Third
+  appearance of *join by a non-unique key*; a fourth was caught in the design pass
+  before it could produce a wrong number.
 
 ## Still open
 
-- **`state_coverage` is under its floor.** The relabelling half of the recovery
-  is unexplained. Reading it needs the raw takes, not another aggregate.
-- **State ids displace graph citations.** Measured in the canary, not yet
-  addressed. Any fix is a prompt or enum change and therefore a new
-  pre-registration, not an edit to this one.
-- **`sym` has read `factual_fraction` 0.0 in all three prompt versions.** The
-  shape file explicitly predicted that symptom questions *could* legitimately
-  rise once state ids existed, since symptoms are simulated state. It did not
-  move at all. No bar was set, so this is a reading, not a miss — but it is the
-  one prediction in the file that produced nothing.
-- **57% of takes are a single segment**, up from 43% in v2. No metric here
-  catches degeneracy.
-- **The seeded fact-order permutation stays off.** It is the registered lever
-  for position concentration and gets its own paired comparison, deliberately
-  after v3, so two effects do not entangle.
+- **`state_coverage` is below its floor**, and the next lever is reliability:
+  when the model *can* cite correctly, what makes it do so every time? A decoding
+  and prompt-consistency question, so v5 risks no structural guarantee either.
+- **Gap-citing is systematic**, measured at four of fourteen citing segments. Under
+  citation pressure the model reaches for the causally nearest id — the drug that
+  causes the symptom, the condition that produces it. `state_citation_aptness`
+  fell 0.913 → 0.714, in the direction registered before the run.
+- **Zero `B-` and `J-` citations in the audited slice.** If derived barriers never
+  speak run-wide, the barrier click-through chain has no traffic from v4 voice.
+  Unsealed with the full run, and the expressiveness thread's next pull — after
+  reliability.
+- **`P-constraints.*` ids are being cited** while the authoring worksheet marked
+  constraints context-not-citable. One line to reconcile.
+- **Parameter leakage into voice**: *"I take my medication about 77% of the
+  time"* is `P-adherence_baseline` = 0.77 speaking in first person. Maximally
+  citable and a realism defect; the grounding metrics are structurally blind to
+  it.
 - `ingest/synthea_loader.py` remains the one open build-order item, so
-  `cohort/epidemiology.py` priors are still literature ballparks. **Never quote
-  a number from that module as a finding.**
+  `cohort/epidemiology.py` priors are still literature ballparks. **Never quote a
+  number from that module as a finding.**
 - `cumulative_burden_weight` still ships **frozen at zero**, unidentifiable from
-  two anchors. Separating it from `burden_increment_weight` needs a third anchor
-  varying per-visit burden at fixed visit count.
+  two anchors.
 
 ## Running it
 
@@ -156,12 +169,13 @@ cd ui && npm install && npm run dev               # Scenario Lab
 pytest && cd ui && npm test && npx playwright test
 ```
 
-Recording a battery, and reading one:
+Recording a battery, reading one, and refusing to rewrite a published one:
 
 ```bash
-SPP_LIVE=true PYTHONPATH=src python scripts/record_narration.py --canary --release v0.4
-SPP_LIVE=true PYTHONPATH=src python scripts/record_narration.py --record --release v0.4
-PYTHONPATH=src python scripts/adjudicate_bundle.py --release v0.4
+SPP_LIVE=true PYTHONPATH=src python scripts/record_narration.py --canary --release v0.5
+SPP_LIVE=true PYTHONPATH=src python scripts/record_narration.py --record --release v0.5
+PYTHONPATH=src python scripts/adjudicate_bundle.py --release v0.5
+PYTHONPATH=src python scripts/check_release_freeze.py --tag v0.5
 ```
 
 Adding a dependency: edit `[project.dependencies]`, run `uv lock`, then
