@@ -1,0 +1,176 @@
+{
+  "registered_shape": "tests/eval/v4_expected_shape.json",
+  "adjudicated_on": "2026-08-25",
+  "reading_order_note": "the schema-gap arm was read against the slice-composition note FIRST, per the pre-registered order. That order changed its verdict from VIOLATION to NOT ADJUDICABLE.",
+  "slice_composition": {
+    "battery": {
+      "sym": 5,
+      "proc": 5,
+      "ae": 5,
+      "mitigation": 5,
+      "tx": 5,
+      "burden": 5
+    },
+    "slice": {
+      "sym": 4,
+      "ae": 3,
+      "mitigation": 3,
+      "tx": 3,
+      "proc": 2,
+      "burden": 0
+    },
+    "finding": "sym over-represented 4/15 against an expected 2.5/15, and burden ABSENT entirely. sym carries factual_fraction 0.0 and symptoms are the known uncoverable class, so the slice inflates schema gap by construction.",
+    "grain_is_representative": "2.27 segments/take in the slice against 2.23 run-wide, so grain-based readings are unaffected."
+  },
+  "arms": [
+    {
+      "arm": "recovery",
+      "metric": "factual_fraction.burden",
+      "observed": 0.9,
+      "bound": "0.6..0.95",
+      "passed": true
+    },
+    {
+      "arm": "recovery",
+      "metric": "factual_fraction.mitigation",
+      "observed": 0.85,
+      "bound": "0.8..1.0",
+      "passed": true
+    },
+    {
+      "arm": "control",
+      "metric": "factual_fraction.ae",
+      "observed": 0.9,
+      "bound": "within 0.10 of v3's 1.0",
+      "passed": true,
+      "note": "exactly at the edge"
+    },
+    {
+      "arm": "control",
+      "metric": "factual_fraction.tx",
+      "observed": 1.0,
+      "bound": "within 0.10 of 1.0",
+      "passed": true
+    },
+    {
+      "arm": "control",
+      "metric": "factual_fraction.proc",
+      "observed": 1.0,
+      "bound": "within 0.10 of 1.0",
+      "passed": true
+    },
+    {
+      "arm": "headline",
+      "metric": "state_coverage_gold_on_audited_slice",
+      "observed": 0.556,
+      "bound": "floor 0.6",
+      "passed": false,
+      "note": "10 apt-citing of 18 coverable, from blind labels. MISS by 0.044 on a slice the composition note shows is symptom-heavy and burden-free."
+    },
+    {
+      "arm": "feeling_floor",
+      "metric": "feeling_fraction",
+      "observed": 0.2388,
+      "bound": "floor 0.10",
+      "passed": true
+    },
+    {
+      "arm": "compound",
+      "metric": "compound_miss_count",
+      "observed": "fell",
+      "bound": "FALLS from v3's ~8",
+      "passed": true,
+      "note": "single_segment_rate 0.567 -> 0.30, mean_segments_per_take 1.8 -> 2.23, and the blind rater counted 2 real compounds in 34 segments against multi-clause norms on every prior sheet. The falsification condition is NOT met: the lever acted."
+    },
+    {
+      "arm": "graph_recall",
+      "metric": "f_recall_exclusive",
+      "observed": 0.5897,
+      "bound": "recovers toward 0.62",
+      "passed": true,
+      "note": "0.4615 -> 0.5897. Recovered substantially, short of 0.62."
+    },
+    {
+      "arm": "graph_recall",
+      "metric": "state_coverage_holds_while_f_recall_exclusive_rises",
+      "observed": "both rose",
+      "bound": "coverage does not fall",
+      "passed": true,
+      "note": "THE DISPLACEMENT TEST. v2.2 estimate 0.4419 -> 0.5 while f_recall_exclusive rose 0.4615 -> 0.5897. Splitting was the hypothesis that state and graph citation need not compete for one fact_ids list, and on these numbers they did not."
+    },
+    {
+      "arm": "schema_gap",
+      "metric": "schema_gap_union",
+      "observed": 0.379,
+      "bound": "roughly flat against v3's 0.1364",
+      "passed": null,
+      "verdict": "NOT ADJUDICABLE FROM THIS SLICE",
+      "note": "sym over-represented 60% and burden absent. The arm was pre-registered as POPULATION-level flat, which a 15-take slice with this mix is not obliged to reproduce. Read run-wide before treating any movement as an arm violation."
+    },
+    {
+      "arm": "schema_gap",
+      "metric": "state_citation_aptness",
+      "observed": 0.714,
+      "bound": "EXPECTED DOWN from 0.913",
+      "passed": true,
+      "note": "realized in the pre-registered direction. Registered before the run precisely so a fall could not later be read as the model regressing."
+    },
+    {
+      "arm": "canary",
+      "metric": "strip_state_ids",
+      "observed": "state_coverage 50% -> 0%",
+      "bound": "collapses",
+      "passed": true,
+      "note": "shown under the v4 instruction, not inherited from v3. The partial branch was ruled out by measurement."
+    },
+    {
+      "arm": "holds_from_v3",
+      "metric": "citation_validity",
+      "observed": 1.0,
+      "bound": "1.0 hard",
+      "passed": true
+    },
+    {
+      "arm": "holds_from_v3",
+      "metric": "parse_failure_rate",
+      "observed": 0.0,
+      "bound": "0.0 hard",
+      "passed": true,
+      "note": "the finer contract cost nothing at the decoder"
+    },
+    {
+      "arm": "holds_from_v3",
+      "metric": "inline_marker_takes",
+      "observed": 0,
+      "bound": "0",
+      "passed": true
+    },
+    {
+      "arm": "holds_from_v3",
+      "metric": "context_overflow_rate",
+      "observed": 0.0,
+      "bound": "0.0 hard and MEASURED",
+      "passed": true
+    }
+  ],
+  "per_run_audit_of_the_estimator": {
+    "instrument": "is_circumstantial_v22 (adopted)",
+    "against": "the 34 blind slice labels",
+    "v1": {
+      "agreement": 0.4706,
+      "kappa": 0.092
+    },
+    "v2.1": {
+      "agreement": 0.6765,
+      "kappa": 0.2609
+    },
+    "v2.2": {
+      "agreement": 0.5882,
+      "kappa": 0.1765
+    },
+    "denominator_error": -12,
+    "finding": "THE ADOPTED INSTRUMENT IS BEATEN BY THE ONE IT REPLACED, on this run's own text. v2.2 counts 17 circumstantial where the labels say 29. Its frames were validated on multi-clause text; the SPLIT lever changed the text distribution to short single-claim segments, and the instrument's error moved with it.",
+    "consequence": "the estimator's error is DISTRIBUTION-DEPENDENT and the lever changed the distribution. The per-run audit rule justified itself on its first exercise: without it, state_coverage 0.5 would have been reported as the v4 figure with no indication that the instrument had degraded on exactly the text it was measuring."
+  },
+  "verdict": "THE LEVER ACTED AND THE FLOOR WAS MISSED. Compounds fell, the displacement test passed with both metrics rising together, aptness fell in its registered direction, every structural guarantee held, and gold coverage on the audited slice read 0.556 against a floor of 0.6. The falsification condition was not met."
+}

@@ -1,0 +1,137 @@
+{
+  "attempts": 1,
+  "case_id": "type_2_diabetes-mitigation-p1",
+  "circumstantial_segments": 2,
+  "citation_valid": true,
+  "cited": [
+    "F042",
+    "F039",
+    "F046",
+    "F038",
+    "P-social_determinants.transport"
+  ],
+  "cited_circumstantial_segments": 1,
+  "cited_factual_segments": 3,
+  "cited_positions": [
+    0,
+    11,
+    15,
+    10
+  ],
+  "expected_facts": [
+    "F042",
+    "F043",
+    "F051",
+    "F052",
+    "B-scheduling",
+    "P-constraints.works-shifts-so-weekday-daytime"
+  ],
+  "expected_may": [
+    "F044",
+    "B-unsupported",
+    "B-competing_care",
+    "P-social_determinants.caregiver",
+    "P-social_determinants.employment"
+  ],
+  "expected_must": [
+    [
+      "F042",
+      "F043"
+    ],
+    [
+      "F051",
+      "F052"
+    ],
+    [
+      "B-scheduling",
+      "P-constraints.works-shifts-so-weekday-daytime"
+    ]
+  ],
+  "factual_segments": 3,
+  "failure": "",
+  "feeling_segments": 0,
+  "fingerprint": "bee92ea22046551701dc69d1b4617e79",
+  "grounded": true,
+  "inline_markers": 0,
+  "offered_state_ids": [
+    "B-competing_care",
+    "B-scheduling",
+    "B-unsupported",
+    "J-adverse_event",
+    "J-diagnosis",
+    "J-first_contact",
+    "J-follow_up",
+    "J-symptom_onset",
+    "J-treatment_start",
+    "P-adherence_baseline",
+    "P-age",
+    "P-comorbidities.ckd",
+    "P-comorbidities.diabetic-retinopathy",
+    "P-comorbidities.dyslipidemia",
+    "P-comorbidities.hypertension",
+    "P-comorbidities.obesity",
+    "P-condition",
+    "P-constraints.no-one-at-home-to-help",
+    "P-constraints.works-shifts-so-weekday-daytime",
+    "P-goals.keep-working-without-my",
+    "P-goals.slow-this-down-and-stay-out-of",
+    "P-health_literacy",
+    "P-medications.empagliflozin",
+    "P-medications.metformin",
+    "P-sex",
+    "P-social_determinants.caregiver",
+    "P-social_determinants.employment",
+    "P-social_determinants.residence",
+    "P-social_determinants.transport",
+    "P-stage"
+  ],
+  "parse_failed": false,
+  "patient_id": "type-2-diabetes-s42-0005",
+  "question": "What support would make taking part possible?",
+  "rendered": "Evening slots would help because I work shifts, so weekday daytime appointments are hard. [F042] Remote visits by video could also be good for me. The site is a long journey away and public transport can be unreliable. [F039, F046] A travel reimbursement scheme would help too, as my lift from family isn't always reliable. [F038, P-social_determinants.transport]",
+  "response_chars": 363,
+  "retrieved_facts": [
+    "F042",
+    "F043",
+    "F051",
+    "F052",
+    "F032",
+    "F033",
+    "F034",
+    "F035",
+    "F036",
+    "F037",
+    "F038",
+    "F039",
+    "F040",
+    "F041",
+    "F045",
+    "F046"
+  ],
+  "segments": [
+    {
+      "fact_ids": [
+        "F042"
+      ],
+      "kind": "factual",
+      "text": "Evening slots would help because I work shifts, so weekday daytime appointments are hard."
+    },
+    {
+      "fact_ids": [
+        "F039",
+        "F046"
+      ],
+      "kind": "factual",
+      "text": "Remote visits by video could also be good for me. The site is a long journey away and public transport can be unreliable."
+    },
+    {
+      "fact_ids": [
+        "F038",
+        "P-social_determinants.transport"
+      ],
+      "kind": "factual",
+      "text": "A travel reimbursement scheme would help too, as my lift from family isn't always reliable."
+    }
+  ],
+  "total_segments": 3
+}

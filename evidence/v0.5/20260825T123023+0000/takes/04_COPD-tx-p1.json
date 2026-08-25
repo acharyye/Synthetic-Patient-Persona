@@ -1,0 +1,103 @@
+{
+  "attempts": 1,
+  "case_id": "COPD-tx-p1",
+  "circumstantial_segments": 1,
+  "citation_valid": true,
+  "cited": [
+    "F097",
+    "F101"
+  ],
+  "cited_circumstantial_segments": 0,
+  "cited_factual_segments": 1,
+  "cited_positions": [
+    0,
+    1
+  ],
+  "expected_facts": [
+    "P-medications.salbutamol-prn",
+    "F097",
+    "P-medications.tiotropium",
+    "F101"
+  ],
+  "expected_may": [
+    "P-adherence_baseline",
+    "B-adherence"
+  ],
+  "expected_must": [
+    [
+      "P-medications.salbutamol-prn",
+      "F097"
+    ],
+    [
+      "P-medications.tiotropium",
+      "F101"
+    ]
+  ],
+  "factual_segments": 1,
+  "failure": "",
+  "feeling_segments": 0,
+  "fingerprint": "460463f250ac0a0788f5f14a96d619b4",
+  "grounded": true,
+  "inline_markers": 0,
+  "offered_state_ids": [
+    "B-adherence",
+    "B-transport_fragile",
+    "J-diagnosis",
+    "J-first_contact",
+    "J-follow_up",
+    "J-symptom_onset",
+    "J-treatment_start",
+    "P-adherence_baseline",
+    "P-age",
+    "P-comorbidities.cardiovascular-disease",
+    "P-comorbidities.hypertension",
+    "P-condition",
+    "P-constraints.depends-on-public-transport-to",
+    "P-goals.keep-up-with-treatment-more",
+    "P-goals.slow-this-down-and-stay-out-of",
+    "P-goals.stay-well-enough-to-look-after",
+    "P-health_literacy",
+    "P-medications.salbutamol-prn",
+    "P-medications.tiotropium",
+    "P-sex",
+    "P-social_determinants.caregiver",
+    "P-social_determinants.employment",
+    "P-social_determinants.residence",
+    "P-social_determinants.transport",
+    "P-stage"
+  ],
+  "parse_failed": false,
+  "patient_id": "copd-s42-0001",
+  "question": "What medication are you taking for it?",
+  "rendered": "I take salbutamol PRN and tiotropium. [F097, F101]",
+  "response_chars": 50,
+  "retrieved_facts": [
+    "F097",
+    "F101",
+    "F105",
+    "F111",
+    "F014",
+    "F025",
+    "F038",
+    "F039",
+    "F045",
+    "F046",
+    "F091",
+    "F092",
+    "F093",
+    "F094",
+    "F095",
+    "F096"
+  ],
+  "segments": [
+    {
+      "fact_ids": [
+        "F097",
+        "F101"
+      ],
+      "kind": "factual",
+      "text": "I take salbutamol PRN and tiotropium."
+    }
+  ],
+  "total_segments": 1
+}

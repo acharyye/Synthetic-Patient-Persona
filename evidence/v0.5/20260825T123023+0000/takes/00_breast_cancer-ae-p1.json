@@ -1,0 +1,166 @@
+{
+  "attempts": 1,
+  "case_id": "breast_cancer-ae-p1",
+  "circumstantial_segments": 2,
+  "citation_valid": true,
+  "cited": [
+    "P-medications.anastrozole",
+    "P-medications.tamoxifen",
+    "P-medications.paclitaxel",
+    "P-medications.trastuzumab",
+    "F155",
+    "F156",
+    "F162",
+    "F163",
+    "F166",
+    "F167",
+    "F168",
+    "F173"
+  ],
+  "cited_circumstantial_segments": 1,
+  "cited_factual_segments": 2,
+  "cited_positions": [
+    0,
+    1,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "expected_facts": [
+    "F155",
+    "F156",
+    "F157",
+    "F161",
+    "F162",
+    "F163",
+    "F166",
+    "F167",
+    "F168",
+    "F173",
+    "F174",
+    "F175"
+  ],
+  "expected_may": [
+    "F154",
+    "F160",
+    "F165",
+    "F172",
+    "J-adverse_event",
+    "B-pill_burden"
+  ],
+  "expected_must": [
+    [
+      "F155",
+      "F156",
+      "F157"
+    ],
+    [
+      "F161",
+      "F162",
+      "F163"
+    ],
+    [
+      "F166",
+      "F167",
+      "F168",
+      "F173",
+      "F174",
+      "F175"
+    ]
+  ],
+  "factual_segments": 2,
+  "failure": "",
+  "feeling_segments": 0,
+  "fingerprint": "18a2ce71986b1f9acbd16d25f98581bb",
+  "grounded": true,
+  "inline_markers": 0,
+  "offered_state_ids": [
+    "B-competing_care",
+    "B-cost",
+    "B-pill_burden",
+    "J-adverse_event",
+    "J-diagnosis",
+    "J-first_contact",
+    "J-follow_up",
+    "J-symptom_onset",
+    "J-treatment_start",
+    "P-adherence_baseline",
+    "P-age",
+    "P-comorbidities.anxiety",
+    "P-comorbidities.cardiovascular-disease",
+    "P-comorbidities.hypertension",
+    "P-comorbidities.obesity",
+    "P-comorbidities.osteoporosis",
+    "P-comorbidities.type-2-diabetes",
+    "P-condition",
+    "P-constraints.cannot-absorb-out-of-pocket",
+    "P-constraints.works-part-time",
+    "P-goals.keep-working-without-my",
+    "P-goals.slow-this-down-and-stay-out-of",
+    "P-goals.stay-well-enough-to-look-after",
+    "P-health_literacy",
+    "P-medications.anastrozole",
+    "P-medications.paclitaxel",
+    "P-medications.tamoxifen",
+    "P-medications.trastuzumab",
+    "P-sex",
+    "P-social_determinants.caregiver",
+    "P-social_determinants.employment",
+    "P-social_determinants.residence",
+    "P-social_determinants.transport",
+    "P-stage"
+  ],
+  "parse_failed": false,
+  "patient_id": "breast-cancer-s42-0005",
+  "question": "What side effects should I expect from treatment?",
+  "rendered": "I take anastrozole, tamoxifen, paclitaxel, and trastuzumab for my breast cancer. [P-medications.anastrozole, P-medications.tamoxifen, P-medications.paclitaxel, P-medications.trastuzumab] Anastrozole can give me hot flushes and joint pain, tamoxifen might cause mood changes or blood clots, paclitaxel can make my hair fall out and feel numb in hands, and trastuzumab could strain my heart. [F155, F156, F162, F163, F166, F167, F168, F173]",
+  "response_chars": 438,
+  "retrieved_facts": [
+    "F155",
+    "F156",
+    "F157",
+    "F161",
+    "F162",
+    "F163",
+    "F166",
+    "F167",
+    "F168",
+    "F173",
+    "F174",
+    "F175",
+    "F154",
+    "F160",
+    "F165",
+    "F172"
+  ],
+  "segments": [
+    {
+      "fact_ids": [
+        "P-medications.anastrozole",
+        "P-medications.tamoxifen",
+        "P-medications.paclitaxel",
+        "P-medications.trastuzumab"
+      ],
+      "kind": "factual",
+      "text": "I take anastrozole, tamoxifen, paclitaxel, and trastuzumab for my breast cancer."
+    },
+    {
+      "fact_ids": [
+        "F155",
+        "F156",
+        "F162",
+        "F163",
+        "F166",
+        "F167",
+        "F168",
+        "F173"
+      ],
+      "kind": "factual",
+      "text": "Anastrozole can give me hot flushes and joint pain, tamoxifen might cause mood changes or blood clots, paclitaxel can make my hair fall out and feel numb in hands, and trastuzumab could strain my heart."
+    }
+  ],
+  "total_segments": 2
+}
