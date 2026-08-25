@@ -1,94 +1,62 @@
 {
-  "$comment": "PRE-REGISTERED expected shape for the v4 (citation-budget) run. Committed BEFORE the lever is built and before any v4 recording, and deliberately BEFORE reading v3's takes in detail — a remedy designed against a fresh look at the failure it is meant to fix is a remedy fitted to that look. Same rule as pass_bars.json and the v3 shape: changing anything here is its own explicit commit that says why.",
-  "registered_on": "2026-08-23",
-  "registered_before_v4_lever_exists": true,
-  "registered_before_reading_v3_takes": true,
-  "baseline_bundle": "evidence/v0.4/<v3 bundle>",
+  "$comment": "PRE-REGISTERED expected shape for v4 (the segmentation lever). Written and PUSHED before the prompt change exists and before any v4 generation. A pre-registration that could still be amended locally after seeing numbers is not a pre-registration, which is why the push precedes the run rather than following it. Changing anything here is its own explicit commit that says why, and amendments are legal only while nothing is recorded.",
+  "registered_on": "2026-08-25",
+  "registered_before_the_prompt_change_exists": true,
+  "registered_before_any_v4_generation": true,
 
-  "what_v3_established": {
-    "finding": "State ids DISPLACE graph citations for claims that have no other citation path. Removing them raises f_recall 0.5306 -> 0.6939 and f_recall_exclusive — over the 39 must-groups no state id can satisfy — 0.4615 -> 0.6154.",
-    "not_the_benign_reading": "If the model were merely grounding a mixed alternation through its profile member instead of its graph one, f_recall_exclusive would have stayed flat. It did not, so the effect is displacement between claims rather than redirection within one.",
-    "measured_in": "the v3 canary, before a single take was recorded"
-  },
-
-  "the_diagnosis_being_tested": {
-    "claim": "The displacement is a CITATION BUDGET effect, not an attention or ranking effect. The model emits ~1.8 segments per take with 57% of takes a single segment, and every citation must attach to a segment — so it has roughly one or two citation slots to spend across a context where state ids are ~64% of the enum. Raising the floor on segments per answer gives it more slots, and the graph facts it was dropping get cited without the state ids being taken away.",
-    "why_this_lever_and_not_ranking": "Retrieval-ranking the state ids would shrink the enum's temptation, which also predicts recovery — but the budget diagnosis says the model under-segments even when the right ids are all present, and ranking does nothing about that. The two remedies are distinguishable and this run tests one of them. If the budget lever fails, ranking is the next single variable, not a second one added here.",
-    "falsified_if": "f_recall_exclusive does not recover, OR it recovers only by state_coverage falling. Either number alone can be bought by sacrificing the other, which is why the claim is the CONJUNCTION and not either half."
-  },
-
-  "single_declared_variable": {
-    "changed": "answer_schema segments minItems 1 -> 3, and the adapter_version bump that invalidates v3's recordings",
-    "not_changed": "PROMPT_VERSION stays 3. The prompt is not asked to request more segments — that would be a second lever, and it would confound a decode-time guarantee with an instruction the model may or may not follow.",
+  "the_declared_variable": {
+    "changed": "prompt v3 -> v4: FINER SEGMENTATION. A segment carrying both a circumstance and a mitigation must split, so 'I work shifts, so evening slots would help' becomes two segments with two citation obligations.",
+    "why_this_lever": "the v3 segment read found ~8 of 18 uncovered segments were compound — a circumstance riding along with a cited mitigation, the scorer unable to split a sentence. That is a segmentation problem, and this is the smallest change that addresses it.",
     "held": [
       "model and digest (qwen2.5:7b-instruct@845dbda0ea48...)",
       "sampling (seed 42, temperature 0.0, top_p 1.0, num_predict 700, num_ctx 8192)",
-      "model-server load state: WARM (see the v3 shape's 2026-08-23 amendment)",
-      "battery personas, questions, and the authored must/may expectations",
-      "the state surface offered whole and unranked — that is the OTHER remedy candidate and it stays off",
-      "seeded fact-order permutation STAYS OFF, as in v3"
+      "battery personas and questions",
+      "the P/B/J/E namespaces and PROFILE_FIELDS — no symptom id is added, deliberately",
+      "seeded fact-order permutation STAYS OFF, as at v3"
     ]
   },
 
-  "arms": {
-    "$comment": "The primary arm is a conjunction. Reporting either half alone would let a run that traded one for the other read as a success.",
-
-    "budget_recovery": {
-      "metric": "f_recall_exclusive",
-      "floor": 0.54,
-      "ceiling_observed_in_v3_canary": 0.6154,
-      "v3_reference": 0.4615,
-      "rationale": "0.6154 is what the model achieves on these same groups when the state ids are removed entirely — the most graph recall this configuration has been observed to produce. 0.54 asks for recovery of roughly half the gap between v3's 0.4615 and that ceiling. Anything at or above the ceiling would mean the extra slots bought more than the state ids ever cost, which is a finding in its own right and not a failure.",
-      "on_miss": "the budget diagnosis was wrong, or three segments is not enough budget. Do NOT raise minItems again in the same breath as reporting this — a lever tuned until it works is not a test of the lever. Investigate whether the extra segments were used for citations at all (see segments_are_spent_on_citations)."
-    },
-
-    "state_coverage_holds": {
-      "metric": "state_coverage",
-      "rule": "must not fall more than 0.05 below the v3 recorded bundle's figure",
-      "v3_reference": null,
-      "v3_reference_source": "transcribed from evidence/v0.4/<v3 bundle>/aggregates.json once that bundle exists. This is a transcription from a committed artifact, not a judgement — the same relationship the v3 control arm has to its v2 reference.",
-      "rationale": "The expressiveness gain v3 bought is the thing being protected. A v4 that recovers graph recall by making the persona stop citing itself has undone v3 rather than completed it.",
-      "on_miss": "the lever traded one for the other. That is not a fix, it is a different point on the same curve."
-    },
-
-    "segments_are_spent_on_citations": {
-      "metric": "factual_coverage and mean_segments_per_take",
-      "expect": "mean_segments_per_take >= 3.0 by construction, and factual_coverage stays at its v3 level",
-      "$comment": "Diagnostic for the mechanism, not a bar on the outcome. If segments rise but factual_coverage falls, the model is buying its minItems quota with uncited `feeling` segments and the extra budget never reached the citations. That is the most likely way this lever fails while looking like it worked."
-    },
-
-    "no_padding": {
-      "metric": "mean_response_chars",
-      "rule": "must not fall below the v3 figure by more than 15%",
-      "rationale": "Forcing a segment floor invites the model to split one thought into three clauses rather than say three things. Same character count across more segments is padding, and padding would raise the citation count without the answer containing more grounded claims.",
-      "on_miss": "read the takes. No aggregate distinguishes three real claims from one claim chopped into three."
-    },
-
-    "feeling_floor": {
-      "metric": "share of all segments with kind=feeling",
-      "min": 0.1,
-      "$comment": "Carried forward from v3 unchanged. A persona that never merely feels has been schema'd out of personhood, and a segment floor is exactly the kind of pressure that would do it."
-    },
-
-    "holds_from_v3": {
-      "citation_validity": { "min": 1.0 },
-      "parse_failure_rate": { "max": 0.0 },
-      "inline_marker_takes": { "max": 0 },
-      "$comment": "minItems is a decode constraint like the fact_ids enum. If raising it produces parse failures, the backend is not honouring the schema and no other number in the run means anything."
-    }
+  "the_baseline": {
+    "gold": 0.5263,
+    "v22_estimate": 0.4419,
+    "stated_deviation": -0.0844,
+    "deviation_direction": "under-inclusion via the modal-plus-possessive door",
+    "instrument_history": {"v1": 0.5135, "v2": 0.6000, "v2.1": 0.4762, "v2.2": 0.4419},
+    "anchor_sentence_verbatim": "v3 missed the floor under every defensible reading — shipped instrument, corrected instrument, adopted instrument, and human labels — and the correction changed the size of the miss, not its existence."
   },
 
-  "canary_must_fire_first": {
-    "config": "high_minitems_no_citation_rules",
-    "does": "raises minItems as the real run does, but strips the CITATION RULES section from the prompt",
-    "must_collapse": "f_recall_exclusive",
-    "rationale": "The instrument has to distinguish MORE SEGMENTS from BETTER GROUNDING. If f_recall_exclusive recovers even with the citation rules gone, then segment count alone is moving the metric and the arm is measuring verbosity rather than grounding. Recording is refused unless this config scores worse.",
-    "note": "The v3 levers (truncate_context, strip_state_ids) still run and must still fire. strip_state_ids under a raised minItems is also the direct test of whether the budget and the enum-composition effects are separable."
+  "how_the_headline_is_answered": {
+    "rule": "the pass/fail question is answered AT GOLD SEMANTICS on the audited slice. v2.2's full-run figure is the ESTIMATOR whose error the audit measures.",
+    "audit_slice": "the first slice of v4's own output, extracted exhaustively and labelled blind BEFORE any aggregate is read.",
+    "ordering_is_the_point": "this is the last untested discipline in the protocol. An audit read after the headline is a check on a number already believed.",
+    "double_duty_declared_in_advance": "the audit slice is fresh text nobody has seen, so it also serves as v2.3's held-out sheet. One labelling pass, two registered purposes, both declared before the run rather than discovered convenient afterwards."
   },
 
-  "reading_protocol": {
-    "$comment": "Carried from v3 and extended by what v3's own read is expected to surface.",
-    "order": ["canary", "raw takes", "quarantine", "aggregates"],
-    "the_question_v3_raised": "For every graph fact the model leaves uncited, is the corresponding CLAIM still being made without grounding, or is it dropped? Those are the same f_recall and different remedies — the first is a gate problem, the second is an answer getting narrower. If v3's read says claims are being dropped rather than asserted uncited, the budget diagnosis is strengthened; if they are asserted uncited, this lever is aimed at the wrong thing and the citation obligation is."
-  }
+  "arms": [
+    {"arm": "recovery", "metric": "factual_fraction.burden", "bound": "0.6..0.95", "note": "as at v3, but the recovery must now come WITH CITATIONS ATTACHED — a tag recovering while state_coverage does not is the v3 result repeated, not progress."},
+    {"arm": "recovery", "metric": "factual_fraction.mitigation", "bound": "0.8..1.0", "note": "same condition."},
+    {"arm": "control", "metric": "factual_fraction.ae", "bound": "within 0.10 of v3's 1.0"},
+    {"arm": "control", "metric": "factual_fraction.tx", "bound": "within 0.10 of v3's 1.0"},
+    {"arm": "control", "metric": "factual_fraction.proc", "bound": "within 0.10 of v3's 1.0"},
+    {"arm": "headline", "metric": "state_coverage", "bound": "floor 0.6 at GOLD semantics on the audited slice", "note": "the v2.2 estimate is reported beside it with its audited error, never in place of it."},
+    {"arm": "feeling_floor", "metric": "feeling_fraction", "bound": "floor 0.10", "note": "a persona that never merely feels has been schema'd out of personhood. Finer segmentation raises the citation obligation, which is exactly the pressure that could abolish the feeling kind."},
+    {"arm": "compound", "metric": "compound_miss_count", "bound": "FALLS from v3's ~8", "note": "the lever's direct target. If this does not move, the lever did not act."},
+    {"arm": "graph_recall", "metric": "f_recall_exclusive", "bound": "recovers toward 0.62", "note": "v3 read 0.4615 against 0.6154 with state ids stripped. Splitting compounds should give the graph half its own segment and its own obligation."},
+    {"arm": "graph_recall", "metric": "state_coverage_holds", "bound": "does not fall while f_recall_exclusive rises", "note": "the displacement finding says the two compete for citations. Splitting is the hypothesis that they need not."},
+    {"arm": "schema_gap", "metric": "schema_gap_union", "bound": "roughly flat against v3", "note": "UNION of uncited-circumstantial-with-no-apt-id AND gap-citing. Measured as the union because citation pressure moves members between the two buckets, so either alone can fail for a bookkeeping reason."},
+    {"arm": "schema_gap", "metric": "state_citation_aptness", "bound": "EXPECTED DOWN from v3's 0.913", "note": "the gap's second face. More segments obligated to cite, no apt id added for symptoms and experience, so the model reaches for the nearest state id. A fall here is the schema gap becoming visible, NOT the model regressing — registered in this direction so it cannot be read backwards later."},
+    {"arm": "canary", "metric": "strip_state_ids", "bound": "collapses state_coverage", "note": "must be re-earned UNDER THE v4 SCHEMA. A canary validated on v3's decode contract is presumed, not shown, to detect degradation on v4's."},
+    {"arm": "holds_from_v3", "metric": "citation_validity", "bound": "1.0 hard"},
+    {"arm": "holds_from_v3", "metric": "parse_failure_rate", "bound": "0.0 hard", "note": "the most likely place a schema change breaks: a finer contract is a harder contract to satisfy."},
+    {"arm": "holds_from_v3", "metric": "inline_marker_takes", "bound": "0"},
+    {"arm": "holds_from_v3", "metric": "context_overflow_rate", "bound": "0.0 hard, and MEASURED this time"}
+  ],
+
+  "falsified_if": "compound_miss_count does not fall. The lever is segmentation; if compounds do not split, nothing downstream of it is evidence about the hypothesis.",
+
+  "pre_flight_required_before_recording": [
+    "the canary's degraded configurations must be shown to degrade UNDER THE v4 SCHEMA, not assumed to from v3",
+    "parse_failure_rate on a null-backend dry run must be 0.0 under the finer contract",
+    "PROMPT_VERSION bumped to 4, cassettes re-recorded with --rerecord, v3 cassette archived"
+  ]
 }
