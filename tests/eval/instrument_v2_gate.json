@@ -77,6 +77,12 @@
       "v21_in_sample": "denominator too LARGE (false positives) -> deflates coverage. Observed 0.4762 against gold 0.5263.",
       "consequence": "the two instruments are not symmetric risks. A floor registered against v2.1 is CONSERVATIVE: a pass under v2.1 implies a pass under gold, not the reverse. A floor under v2 would have been the opposite and would have passed runs gold fails.",
       "does_not_change_decision_1": "the bar is still gold-semantics and the held-out gate still decides. Recorded here because the asymmetry belongs where the floor is."
+    },
+    "superseded_by_unstable_bias": {
+      "on": "2026-08-25",
+      "rule": "the instrument's job is ESTIMATION with human-label audits at every version bump. It does not carry the floor.",
+      "why": "with the bias direction unstable across texts, no instrument-relative floor is conservative by construction, so an instrument-relative floor cannot be defended at all. The gold-semantics bar is the only defensible one.",
+      "audit_obligation": "each instrument version is scored against blind human labels on text it has not seen, and its deviation from the gold reading is reported as the estimate's error bar \u2014 not corrected for, reported."
     }
   },
   "schema_gap_rate_arm": {
@@ -124,5 +130,47 @@
       "note": "the fixture text that v2.1 rejects ('I cannot always get myself to the clinic') is a plausible circumstance a human would label y \u2014 the same under-inclusion class as the 8 shared-term misses, surfacing in the canary rather than in the sheet.",
       "decision_required": "rewrite the canary fixture so it asserts circumstance in a form v2.1 recognises and re-verify the lever collapses; or treat the canary failure as evidence v2.1's under-inclusion is too aggressive and iterate the definition. Rewriting a fixture so an adopted instrument passes its own failure test is not a decision to take quietly."
     }
+  },
+  "metric_restructure_question": {
+    "asked": "why is a CLASSIFIER recovering what the GENERATOR already knows? A segment citing B-transport is circumstantial by construction.",
+    "answer": "the restructure is NOT what the metric does. state_coverage is cited_circumstantial / total_circumstantial where BOTH come from the classifier's list, so a segment that cites a state id but is not flagged leaves the numerator AND the denominator.",
+    "measured_on_the_v3_cassette": {
+      "segments_citing_a_state_id": 23,
+      "current_metric_numerators": {
+        "v1": 19,
+        "v2": 18,
+        "v2.1": 20,
+        "gold_labels": 20
+      },
+      "finding": "3 to 5 genuinely grounded segments are invisible to the current metric under every instrument. That is a correctness defect, not a precision one: the metric can under-count grounding that the schema already proved.",
+      "restructured": {
+        "v1": 0.561,
+        "v2": 0.6571,
+        "v2.1": 0.5111,
+        "gold": 0.561
+      },
+      "current": {
+        "v1": 0.5135,
+        "v2": 0.6,
+        "v2.1": 0.4762,
+        "gold": 0.5263
+      }
+    },
+    "does_it_shrink_the_classifier_job": "PARTLY, and less than hoped. The numerator becomes exact and classifier-free, which is the real win. But the residual \u2014 uncited circumstantial \u2014 is still 18 of 41 denominator entries at gold, so the classifier still determines about 44% of the denominator. Deviation from gold barely moves for v2.1 (-0.0501 current, -0.0499 restructured) and gets worse for v2.",
+    "conclusion": "do the restructure on correctness grounds. It does not remove the need for v2.2; it narrows what v2.2 must catch to uncited circumstance, which is exactly the three-sightings class.",
+    "floor_note": "gold reads 0.5610 restructured against 0.5263 current. BOTH miss 0.6. The anchor sentence holds under the restructure."
+  },
+  "v22_protocol": {
+    "registered_on": "2026-08-25",
+    "the_sheets_are_spent": "both existing sheets become IN-SAMPLE for v2.2 the moment its definition is written by anyone who has seen the 8 held-out misses. Scoring v2.2 on them and calling it a win would be in-sample dressed as held-out.",
+    "definition_source": "the expanded frame inventory is derived from R1-R5 and BA1-BA3, which already name the frames: possession, experience, ability, situation/distance, negated-resource. The misses told us the inventory was SHORT; they must not tell us what to put in it.",
+    "scoring": "both existing sheets scored and reported, labelled IN-SAMPLE.",
+    "adoption_requires": "a third sheet neither party has seen.",
+    "candidate_third_sheets": [
+      "the v1-era cassette in the evidence bundle archive",
+      "quarantine texts across bundles"
+    ],
+    "fallback_if_no_unseen_text_of_sufficient_size": "pre-register v2.2's held-out sheet as the FIRST SLICE of v4's own output, scored before v4's headline numbers are computed, so the instrument is validated on the text it will actually measure.",
+    "standing_rule": "the switch stays unthrown until an instrument passes a sheet nobody has seen."
   }
 }

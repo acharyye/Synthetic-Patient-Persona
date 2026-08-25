@@ -59,6 +59,18 @@ class Take(BaseModel):
     adapter_version: int = CASSETTE_VERSION
     # adapter_version does not cover decode settings, and they change output.
     sampling: dict = Field(default_factory=dict)
+    # WHO this take is about. Empty on takes recorded before 2026-08-25.
+    #
+    # A take used to be joinable to its persona only by reconstruction — match
+    # the question text back to a battery case. The battery has 30 cases over
+    # SIX unique questions, five personas each, so that join silently returned
+    # the wrong persona for 24 of 30 takes and every state-surface number
+    # computed from it was wrong. Third appearance of one bug: join by a key
+    # that is not unique. The first was `synthetic-0000`, unique only within a
+    # cohort; the second was the compliance eval scoring one condition's
+    # personas against another's expected facts. Both were fixed at the source
+    # by making the key carry identity, and so is this.
+    persona_id: str = ""
 
 
 class QuarantinedTake(Take):
@@ -252,9 +264,15 @@ class GatedRecorder:
 
     def offer(
         self, fingerprint: str, system: str, user: str, response: str, *, passed: bool,
-        reason: str = "",
+        reason: str = "", persona_id: str = "",
     ) -> bool:
-        """Offer a response for recording. Returns whether it was accepted."""
+        """Offer a response for recording. Returns whether it was accepted.
+
+        `persona_id` stamps WHO the take is about. Optional so an existing caller
+        keeps working, but every recorder should pass it: without it the only way
+        back to the persona is reconstruction from question text, and that join
+        is not unique — see the comment on `Take.persona_id`.
+        """
         from datetime import datetime, timezone
 
         take_kwargs = dict(
@@ -262,6 +280,7 @@ class GatedRecorder:
             system=system, user=user, response=response,
             model=self.model, model_digest=self.model_digest,
             adapter_version=CASSETTE_VERSION, sampling=self.sampling,
+            persona_id=persona_id,
         )
         if passed:
             self.cassette.put(Take(**take_kwargs))

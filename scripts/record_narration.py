@@ -277,12 +277,14 @@ def main(argv: list[str] | None = None) -> int:
             # window. Its own reason, so a truncation refusal is never read as
             # the model failing to ground.
             recorder.offer(prompt.fingerprint, prompt.system, prompt.user, "",
-                           passed=False, reason=CONTEXT_OVERFLOW_REASON)
+                           passed=False, reason=CONTEXT_OVERFLOW_REASON,
+                           persona_id=prompt.persona_id)
             return
         recorder.offer(
             prompt.fingerprint, prompt.system, prompt.user, raw,
             passed=bool(check and check.ok),
             reason=(check.summary if check else "unparseable response"),
+            persona_id=prompt.persona_id,
         )
 
     report = score(cohort, generate, graph=graph, battery=battery,

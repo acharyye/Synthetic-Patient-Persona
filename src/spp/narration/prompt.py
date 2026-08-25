@@ -108,6 +108,12 @@ class Prompt(BaseModel):
     # "was this segment grounded in the persona or in the graph?" by set
     # membership rather than by re-deriving anything from the id string.
     allowed_state_ids: frozenset[str] = Field(default_factory=frozenset)
+    # WHO this prompt is about, carried so a recorder can stamp it on the take
+    # without reconstructing it later. NOT part of the fingerprint: the
+    # fingerprint hashes what the model was shown, and the persona is already in
+    # the system text, so including it would change every cassette key without
+    # changing a single prompt.
+    persona_id: str = ""
 
     @property
     def fingerprint(self) -> str:
@@ -213,4 +219,5 @@ def build_prompt(
         user=USER_TEMPLATE.format(question=question.strip()),
         allowed_fact_ids=retrieval.fact_ids | state_facts.fact_ids,
         allowed_state_ids=state_facts.fact_ids,
+        persona_id=dna.patient_id,
     )
