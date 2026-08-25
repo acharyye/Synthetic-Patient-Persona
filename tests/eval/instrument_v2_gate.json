@@ -236,5 +236,53 @@
       "the have-to obligation"
     ],
     "why": "the canary principle at unit level \u2014 every frame watched to fire before any aggregate is computed. It makes the ability-frame-passes-the-canary claim free-and-asserted from birth rather than discovered at the gate."
+  },
+  "v22_in_sample": {
+    "on": "2026-08-25",
+    "status": "IN-SAMPLE ON BOTH SHEETS. Not adoption evidence. The v1-era sheet decides.",
+    "sheet_1_53_segments": {
+      "v1": [
+        0.6154,
+        -0.0484
+      ],
+      "v2": [
+        0.6923,
+        0.3113
+      ],
+      "v2.1": [
+        0.8462,
+        0.4639
+      ],
+      "v2.2": [
+        0.8269,
+        0.3676
+      ]
+    },
+    "sheet_2_63_segments": {
+      "v1": [
+        0.4921,
+        -0.0909
+      ],
+      "v2": [
+        0.4603,
+        0.0
+      ],
+      "v2.1": [
+        0.6825,
+        0.3182
+      ],
+      "v2.2": [
+        0.8254,
+        0.6118
+      ]
+    },
+    "reading": "v2.2 is slightly WORSE than v2.1 on sheet 1 and much better on sheet 2. That is the expected shape: sheet 1 is where v2.1's definition was written, so v2.1's sheet-1 figures were inflated by the same in-sample effect this row is labelled for. v2.2 trades a little sheet-1 performance for consistency \u2014 0.83/0.83 against 0.85/0.68.",
+    "BA1_locator_false_positives": "down from 6 of 7 under v2.1 to 2 of 7 under v2.2, with 5 of 6 asserted conflicts still caught.",
+    "canary": "PASSES by construction \u2014 the ability frame fires on the fixture sentence, asserted in tests/test_frames.py rather than discovered at the gate.",
+    "restructured_with_aptness_exclusion_on_the_v3_cassette": {
+      "v2.2": 0.4667,
+      "gold_equivalent": 0.5385,
+      "note": "both miss the 0.6 floor. The anchor sentence survives the restructure AND the aptness exclusion."
+    }
   }
 }
