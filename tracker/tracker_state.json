@@ -663,27 +663,35 @@
           "id": "Q",
           "title": "is_circumstantial v2 — instrument correction, blind validation pending",
           "status": "in-progress",
-          "progress": 60,
+          "progress": 90,
           "startWeek": 34,
           "endWeek": 35,
           "aufgabe": "Define the state_coverage denominator from namespace semantics instead of first-person grammar, validate it blind, then rescore v3 under both instruments and publish the pair.",
           "ziel": "An instrument correction that is visibly an instrument correction, never folded into a model comparison.",
-          "stand": "Classifier built and pinned as NOT wired in. Blind rating sheet for all 53 segments generated. Blocked on an independent rater: the classifier's author has read the segments and cannot label them.",
+          "stand": "Blind labels in, both instruments scored. v2 beats v1 on agreement (0.6923 vs 0.6154) and kappa (0.3113 vs -0.0484), so the pre-registered comparative criterion adopts it. Blocked on one decision: the floor value under v2 semantics.",
           "meetingNotes": "",
           "achievements": [
             "src/spp/narration/circumstantial.py — first person AND at least one term the persona's P/B/J facts carry that no offered graph fact does. Derived from PROFILE_FIELDS and the offered-fact contract, not from the segments.",
             "Rescored the committed v3 cassette, zero model calls: v1 0.5135 (19/37), v2 0.6000 (18/30). The 15 dropped segments are the clinical-claim class; the true relabelling case survives under both.",
-            "tests/test_circumstantial_v2.py — 5 tests, including TestNotWiredIn asserting evaluation.py does not import v2."
+            "tests/test_circumstantial_v2.py — 5 tests, including TestNotWiredIn asserting evaluation.py does not import v2.",
+            "Blind labels from an independent rater, text only: 38 y!, 6 y?, 8 n, 1 abstention. Committed as tests/eval/instrument_v2_labels.json.",
+            "v1 kappa is BELOW CHANCE (-0.0484) on this labelled set. On coverable segments the two instruments tie on raw agreement (0.6957 each) and split on kappa 0.0359 vs 0.3347 — raw agreement alone would have decided it wrong.",
+            "All 15 of v2's misses cluster into three named classes with none left over: own regimen (8), shared circumstance term (5), uncoverable y? (2)."
           ],
           "validations": [
             "952 passed, 19 skipped.",
-            "NOT validated against labels. The number is an instrument correction under review and is reported beside v1's, never instead of it."
+            "NOT validated against labels. The number is an instrument correction under review and is reported beside v1's, never instead of it.",
+            "state_coverage against the label-validated denominator: 0.5263 (20/38), schema_gap_rate 0.1364 (6/44). The v0.4 miss SURVIVES the instrument fix — the corrected number is closer to v1's 0.5135 than to v2's 0.6000.",
+            "v2 over-reports coverage by ~7 points: its denominator is 30 where the labels say 38. Known direction, recorded as a named limitation."
           ],
           "decisions": [
             "v2 lands EXACTLY on the pre-registered floor of 0.6. Reported as the suspicious coincidence it is, not as a pass. A metric arriving precisely at its own bar after being rewritten is the shape score inflation takes.",
             "Not wired in, and the not-wiring is a test rather than a note. Adopting it before blind labels would publish a metric correction as a model improvement.",
             "v0.4 is untouched: it was adjudicated under v1, which is what the shape file registered.",
-            "v2's 8 ADDED segments are the open question — mostly symptom and goal claims, and symptoms are not in PROFILE_FIELDS, so they enlarge the denominator with segments no P- id can cover. Logged, not patched."
+            "v2's 8 ADDED segments are the open question — mostly symptom and goal claims, and symptoms are not in PROFILE_FIELDS, so they enlarge the denominator with segments no P- id can cover. Logged, not patched.",
+            "v2 ADOPTED on the pre-registered comparative criterion. The two miss classes are named limitations, NOT patched: editing the classifier until it stops missing them would fit it to the labels that validated it, and the next definition needs its own blind rating.",
+            "Both real miss classes are one mechanism — the subtraction cannot tell asserting POSSESSION of a thing from asserting a clinical PROPERTY of it, and discards the shared term either way.",
+            "The 0.6000 coincidence resolves as a coincidence. v2 landing exactly on the old floor was its own denominator being too small, not the model clearing a bar."
           ],
           "links": [
             "KR1.1"
