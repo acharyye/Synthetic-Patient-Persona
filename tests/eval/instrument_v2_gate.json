@@ -1,0 +1,40 @@
+{
+  "$comment": "PRE-REGISTERED adoption gate for is_circumstantial v2. Committed BEFORE any blind label exists and before the classifier's author has seen a single rating. Same rule as pass_bars.json and v3_expected_shape.json: a criterion written after seeing the agreement figure is not a criterion. Changing anything here is its own explicit commit that says why.",
+  "registered_on": "2026-08-25",
+  "registered_before_labels_exist": true,
+  "what_is_being_decided": "whether the state_coverage denominator moves from is_circumstantial v1 (first person + factual marker) to v2 (first person + a term the persona's P/B/J facts carry that no offered graph fact does).",
+
+  "adoption_criterion": {
+    "rule": "v2 is adopted IFF it agrees with the blind labels BETTER than v1 does, over the same 53 segments.",
+    "why_comparative": "an absolute figure is uninterpretable. 'v2 agrees 85%' means nothing without knowing whether v1 agrees 70% or 90%, and the question on the table is not whether v2 is good but whether it is better than what ships today.",
+    "report": [
+      "simple agreement for v1 and for v2",
+      "Cohen's kappa for v1 and for v2, because the classes are unbalanced and raw agreement flatters a classifier that mostly says the majority class",
+      "every disagreement, BOTH directions, enumerated with its segment text"
+    ],
+    "read_the_disagreements": "a v2 miss that is a principled edge case is a different object from one that is a hole in the definition. The enumeration is not decoration; it is how that distinction gets made.",
+    "clustering_clause": "if v2 beats v1 but its misses CLUSTER in one identifiable class, that class is recorded as a NAMED LIMITATION of instrument v2 — never as a silent tolerance, and never fixed by editing the classifier until it stops missing them, which would be fitting to the labels."
+  },
+
+  "metric_split": {
+    "rule": "instrument v2 reports TWO numbers, never one.",
+    "state_coverage": "over circumstantial segments that a P/B/J id COULD cover.",
+    "schema_gap_rate": "share of circumstantial segments that no id in the declared surface can cover.",
+    "derivation": "from principle, not from the eight segments that raised it: a coverage metric computed over segments nothing in the schema can express measures the SCHEMA, not the model. Blending the two produces a number that falls when the model gets worse and also when the surface gets narrower, and cannot say which happened.",
+    "known_uncoverable_class": "symptoms. PROFILE_FIELDS does not carry them and biomarkers are deliberately outside it, so 'I feel breathless most days' asserts a circumstance with no available id. That is a coverage finding to log, exactly as the module docstring already says for an unsimulated persona's missing event log.",
+    "who_adjudicates": "the labels. The rater labels the CONCEPT — does this segment assert a fact about the speaker's own circumstances, and could the declared surface support it — and the classifier's job is to approximate that, never to define it."
+  },
+
+  "floors_are_instrument_relative": {
+    "rule": "a coverage floor is stamped with the instrument version it was registered against, and does not transfer across an instrument change.",
+    "v3_floor": {"value": 0.6, "instrument": "is_circumstantial v1", "status": "unchanged, and v0.4 remains adjudicated under it"},
+    "consequence": "v2 reading 0.6000 on the v3 cassette is NOT a pass against the v3 floor. It is a number from a different denominator that happens to land on the old bar, which is the most suspicious shape a rewritten metric can take and is reported as a coincidence rather than a result.",
+    "before_v4": "adopting v2 re-registers the floor against the label-validated denominator, in its own commit, BEFORE any v4 run exists. A bar that silently survives an instrument change is a bar that means nothing."
+  },
+
+  "conflicts_of_interest": {
+    "classifier_author_has_read_the_segments": true,
+    "consequence": "the author cannot rate. Labels come from an independent rater working from segment text alone — no personas, no citations, no kinds, no classifier verdicts — so the validation cannot inherit the classifier's token-match logic.",
+    "sheet": "53 segments, hash-shuffled so the classes are not grouped."
+  }
+}

@@ -658,6 +658,43 @@
           "deps": [],
           "assignees": [],
           "knowledge": []
+        },
+        {
+          "id": "Q",
+          "title": "is_circumstantial v2 — instrument correction, blind validation pending",
+          "status": "in-progress",
+          "progress": 60,
+          "startWeek": 34,
+          "endWeek": 35,
+          "aufgabe": "Define the state_coverage denominator from namespace semantics instead of first-person grammar, validate it blind, then rescore v3 under both instruments and publish the pair.",
+          "ziel": "An instrument correction that is visibly an instrument correction, never folded into a model comparison.",
+          "stand": "Classifier built and pinned as NOT wired in. Blind rating sheet for all 53 segments generated. Blocked on an independent rater: the classifier's author has read the segments and cannot label them.",
+          "meetingNotes": "",
+          "achievements": [
+            "src/spp/narration/circumstantial.py — first person AND at least one term the persona's P/B/J facts carry that no offered graph fact does. Derived from PROFILE_FIELDS and the offered-fact contract, not from the segments.",
+            "Rescored the committed v3 cassette, zero model calls: v1 0.5135 (19/37), v2 0.6000 (18/30). The 15 dropped segments are the clinical-claim class; the true relabelling case survives under both.",
+            "tests/test_circumstantial_v2.py — 5 tests, including TestNotWiredIn asserting evaluation.py does not import v2."
+          ],
+          "validations": [
+            "952 passed, 19 skipped.",
+            "NOT validated against labels. The number is an instrument correction under review and is reported beside v1's, never instead of it."
+          ],
+          "decisions": [
+            "v2 lands EXACTLY on the pre-registered floor of 0.6. Reported as the suspicious coincidence it is, not as a pass. A metric arriving precisely at its own bar after being rewritten is the shape score inflation takes.",
+            "Not wired in, and the not-wiring is a test rather than a note. Adopting it before blind labels would publish a metric correction as a model improvement.",
+            "v0.4 is untouched: it was adjudicated under v1, which is what the shape file registered.",
+            "v2's 8 ADDED segments are the open question — mostly symptom and goal claims, and symptoms are not in PROFILE_FIELDS, so they enlarge the denominator with segments no P- id can cover. Logged, not patched."
+          ],
+          "links": [
+            "KR1.1"
+          ],
+          "deps": [
+            "P"
+          ],
+          "assignees": [],
+          "knowledge": [
+            "docs/okf/concepts/instrument-v2.md"
+          ]
         }
       ]
     }
