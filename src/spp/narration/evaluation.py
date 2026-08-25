@@ -43,10 +43,12 @@ import re
 from ..knowledge.graph import KnowledgeGraph, load_graph
 from ..knowledge.retrieval import retrieve
 from ..schemas import PatientDNA
+from .circumstantial import tokens_of
 from .citations import FACTUAL_MARKERS
+from .frames import is_circumstantial_v22
 from .prompt import PROMPT_VERSION, build_prompt
 from .sampling import ContextOverflow
-from .state_facts import is_state_id
+from .state_facts import derive_state_facts, is_state_id
 from .structured import (
     StructuredAnswer,
     answer_schema,
@@ -414,7 +416,28 @@ def score(
         factual = [s for s in segments if s.needs_citation]
         offered = [f.id for f in retrieval.facts]
         cited_ids = answer.cited_fact_ids if answer else []
-        circumstantial = [s for s in segments if is_circumstantial(s.text)]
+        # Instrument v2.2, ADOPTED 2026-08-25 on a sheet held out from every
+        # instrument: agreement 0.6939 / kappa +0.3336 against v2.1's 0.5510 /
+        # +0.0972 and v1's 0.5306 / +0.0242. Comparative criterion in
+        # tests/eval/instrument_v2_gate.json, canary compatibility asserted from
+        # birth by the ability fixture in tests/test_frames.py.
+        #
+        # `is_circumstantial` (v1) is KEPT above and unused by scoring: every
+        # v1-era number in the evidence bundles was produced by it, and a reader
+        # re-deriving one needs the function that made it, not its successor.
+        state = derive_state_facts(dna)
+        state_terms: set[str] = set()
+        for fact in state.facts:
+            state_terms |= tokens_of(fact.text) | tokens_of(fact.detail)
+            state_terms |= tokens_of(fact.origin)
+        graph_terms: set[str] = set()
+        for fact in retrieval.facts:
+            if graph.has_fact(fact.id):
+                graph_terms |= tokens_of(graph.render(graph.fact(fact.id)))
+        circumstantial = [
+            s for s in segments
+            if is_circumstantial_v22(s.text, frozenset(state_terms), frozenset(graph_terms))
+        ]
         must, may = expectations(case)
         results.append(CaseResult(
             case_id=case["id"],

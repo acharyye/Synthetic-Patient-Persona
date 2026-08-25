@@ -60,27 +60,32 @@ class TestTheDefinition:
         assert with_offered <= without, "offering facts can only remove terms"
 
 
-class TestNotWiredIn:
-    """The switch stays unthrown, and this test is why it cannot slip.
+class TestTheAdoptedInstrument:
+    """v2.2 is the scoring instrument, adopted 2026-08-25.
 
-    v2.1 WON the held-out comparison — agreement 0.6825 / kappa +0.3182 against
-    v1's 0.4921 / -0.0909 — so the pre-registered criterion adopts it. Wiring it
-    in was attempted and reverted: under v2.1 the canary's baseline fixture
-    contains ZERO circumstantial segments, so `state_coverage` reads 0.0 and
-    `test_the_state_lever_collapses_state_coverage` cannot run. An instrument
-    whose denominator the canary cannot exercise is an instrument the canary
-    cannot validate, and the canary outranks the adoption criterion here: the
-    pre-registration never contemplated an adopted instrument that disables the
-    mechanism proving the metric can fail.
+    It stayed unwired through v2 and v2.1. What threw the switch is a sheet held
+    out from EVERY instrument — 50 segments from the v1-era cassette, 49 scored —
+    where v2.2 reads agreement 0.6939 / kappa +0.3336 against v2.1's 0.5510 /
+    +0.0972 and v1's 0.5306 / +0.0242. v2.1 failed adoption on the canary
+    criterion before it ever got here; v2.2 passes it by construction.
     """
 
-    def test_score_still_uses_v1(self):
+    def test_score_uses_v22(self):
         import inspect
 
         from spp.narration import evaluation
 
-        source = inspect.getsource(evaluation)
-        assert "is_circumstantial_v21" not in source
+        assert "is_circumstantial_v22" in inspect.getsource(evaluation)
+
+    def test_v1_survives_and_does_not_score(self):
+        """Every v1-era bundle number was produced by v1. A reader re-deriving one
+        needs the function that made it, not its successor."""
+        import inspect
+
+        from spp.narration import evaluation
+
+        assert callable(evaluation.is_circumstantial)
+        assert "is_circumstantial(" not in inspect.getsource(evaluation.score)
 
 
 class TestTheMetricSplit:

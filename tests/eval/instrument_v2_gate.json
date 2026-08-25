@@ -284,5 +284,55 @@
       "gold_equivalent": 0.5385,
       "note": "both miss the 0.6 floor. The anchor sentence survives the restructure AND the aptness exclusion."
     }
+  },
+  "ADOPTION": {
+    "on": "2026-08-25",
+    "adopted": "is_circumstantial_v22",
+    "sheet": "50 segments from the v1-era cassette (git 1c07e78), exhaustive extraction minus 5 exposed cases, 49 scored \u2014 segment 48 excluded as a documented rule collision. Held out from EVERY instrument, so this is the one comparison on genuinely equal footing.",
+    "scores": {
+      "v1": {
+        "agreement": 0.5306,
+        "kappa": 0.0242,
+        "confusion": "TP 18 FN 13 FP 10 TN 8"
+      },
+      "v2": {
+        "agreement": 0.4898,
+        "kappa": 0.0838,
+        "confusion": "TP 10 FN 21 FP 4 TN 14"
+      },
+      "v2.1": {
+        "agreement": 0.551,
+        "kappa": 0.0972,
+        "confusion": "TP 17 FN 14 FP 8 TN 10"
+      },
+      "v2.2": {
+        "agreement": 0.6939,
+        "kappa": 0.3336,
+        "confusion": "TP 24 FN 7 FP 8 TN 10"
+      }
+    },
+    "criterion": "MET on both metrics, and canary compatibility was asserted from birth by the ability fixture rather than discovered here.",
+    "predicted_zones": {
+      "modal_wall": "1 of 8 flagged. The experience frame implements BA2 rather than approximating it.",
+      "possession_embedded_in_clinical": "1 of 3 missed (33). The frame is not anchored to sentence-initial position.",
+      "comparative_asserted_conflict": "0 of 1 missed. Segment 17 caught."
+    },
+    "named_limitation_the_minimal_pair_found": {
+      "test": "segment 37 here (modal bisoprolol, labelled n) against held-out 00 (indicative bisoprolol, labelled y?) \u2014 same drug, same effects, different mood.",
+      "result": "v2.2 does NOT split the pair. It calls both circumstantial, so it is correct on 00 and wrong on 37.",
+      "diagnosis": "the modal suppression guards the EXPERIENCE frame only. Modal clinical text carrying a possessive ('my hands', 'my heartbeat') still fires the POSSESSION frame, so BA2 is enforced on one frame and bypassed through another.",
+      "direction": "one-way over-inclusion on modal text containing possessives.",
+      "status": "NAMED LIMITATION, not patched. Extending the modal suppression across frames after seeing which item it fails is fitting to the adoption sheet, and the adoption sheet is now spent for that purpose. It becomes v2.3's registered target, validated on a sheet nobody has seen."
+    },
+    "v3_final_rescoring": {
+      "instrument": "v2.2",
+      "state_coverage": 0.4419,
+      "circumstantial_segments": 43,
+      "state_citing_segments": 23,
+      "gap_citing_label_adjudicated": 2,
+      "state_citation_aptness": 0.913,
+      "reading": "v3 misses the 0.6 floor under the adopted instrument as it did under every other. Instrument history: v1 0.5135, v2 0.6000, v2.1 0.4762, v2.2 0.4419, human labels 0.5263."
+    },
+    "anchor_sentence": "v3 missed the floor under every defensible reading \u2014 shipped instrument, corrected instrument, adopted instrument, and human labels \u2014 and the correction changed the size of the miss, not its existence."
   }
 }
