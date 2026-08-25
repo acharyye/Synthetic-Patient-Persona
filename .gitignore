@@ -27,6 +27,9 @@ evidence/*/_canary.json
 # agent context, not project documentation; the invariants they index are
 # duplicated in module docstrings and tests, which is where they belong.
 CLAUDE.md
+# AGENTS.md is only a pointer to CLAUDE.md, which is ignored above — publishing
+# the pointer would dangle for anyone who clones.
+AGENTS.md
 CLAUDE_HANDOFF.md
 PLAN.md
 spp_vision_and_roadmap.md
