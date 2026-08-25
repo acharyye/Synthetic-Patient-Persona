@@ -179,6 +179,8 @@ def render_counterfactual(report: dict) -> str:
   <div class="stamp">{stamp}</div>
 </header>
 
+{_reading_protocol()}
+
 <div class="headline">
   <div class="big {tone}">{net:+d} net personas {esc(direction)}</div>
   <div class="sub">+{report.get('recovered', 0)} recovered, &minus;{report.get('lost', 0)} lost,
@@ -217,4 +219,123 @@ curves are the picture, not the number.</p>
 <footer>Seeds, versions and the full assumption ledger are rendered above because
 they are part of the result, not metadata about it. Every figure on this page is a
 read over the run artifact — nothing was recomputed for display.</footer>
+</div>"""
+
+
+READING_PROTOCOL = [
+    ("provenance", "Seed, condition, cohort size and versions. If these do not "
+                   "match the run you were told about, stop here."),
+    ("what changed", "The flip table. Which named personas changed outcome and at "
+                     "which event their trajectories diverged."),
+    ("by how much", "Curves and component shifts — the visual, not the number."),
+    ("why", "Attribution. Exact Shapley over the rules that excluded people."),
+    ("how much is judgement", "The assumption ledger, and the entries whose "
+                              "outputs must never be quoted as findings."),
+]
+
+
+def _reading_protocol() -> str:
+    """An ordered protocol, rendered on the page rather than assumed of the reader.
+
+    The evidence bundles have carried one since v0.1 for a reason: a reader who
+    meets the headline first reads everything after it looking for confirmation.
+    This page is the artifact that leaves the room without its author, so the
+    order it should be read in has to travel with it.
+    """
+    items = "".join(
+        f"<li><b>{esc(label)}</b> — {esc(text)}</li>"
+        for label, text in READING_PROTOCOL
+    )
+    return (
+        '<div class="protocol"><h2 style="margin-top:0">Read in this order</h2>'
+        f"<ol>{items}</ol>"
+        "<p class='sub'>Nothing on this page was computed for display. Every "
+        "figure is a read over a stored run artifact, and the seeds above "
+        "reproduce it exactly.</p></div>"
+    )
+
+
+def render_comparison(comparison: dict) -> str:
+    """Render a `CohortComparison` artifact as a standalone page.
+
+    **The identity/distributional invariant is enforced at the renderer, not only
+    upstream.** Within a run, common random numbers make persona `i` on each side
+    the same persona, so a per-persona delta is signal. Across seeds it is a delta
+    between exchangeable strangers, and rendering that in the flip table's visual
+    language would lend sampling noise the authority that table earned. So a
+    distributional comparison emits **no persona rows here**, whatever it was
+    handed — a second enforcement point, because this is the artifact that travels
+    without anyone present to explain the distinction.
+    """
+    mode = comparison.get("mode", "distributional")
+    identity = mode == "identity"
+    marginals = comparison.get("marginals") or []
+    changes = comparison.get("persona_changes") or [] if identity else []
+
+    stamp = "".join([
+        _chip("left", comparison.get("left")),
+        _chip("right", comparison.get("right")),
+        _chip("mode", mode),
+        _chip("n", comparison.get("n")),
+    ])
+
+    drifted = [m for m in marginals if m.get("notable")]
+    rows = "".join(
+        f"<tr><td class='mono'>{esc(m.get('field'))}</td>"
+        f"<td class='num'>{esc(m.get('left_value'))}</td>"
+        f"<td class='num'>{esc(m.get('right_value'))}</td>"
+        f"<td class='num'>{esc(m.get('tolerance'))}</td>"
+        f"<td>{'<span class=bad>outside band</span>' if m.get('notable') else '<span class=good>within band</span>'}</td>"
+        f"</tr>"
+        for m in marginals
+    ) or "<tr><td colspan=5>no marginals compared</td></tr>"
+
+    if identity:
+        persona_rows = "".join(
+            f"<tr><td class='mono'>{esc(c.get('patient_id'))}</td>"
+            f"<td>{esc(c.get('field'))}</td>"
+            f"<td>{esc(c.get('left'))} &rarr; {esc(c.get('right'))}</td></tr>"
+            for c in changes
+        ) or "<tr><td colspan=3>no persona changed</td></tr>"
+        persona_block = (
+            "<h2>Who changed — paired by identity, so these deltas are signal</h2>"
+            "<table><tr><th>persona</th><th>field</th><th>change</th></tr>"
+            f"{persona_rows}</table>"
+        )
+    else:
+        persona_block = (
+            "<h2>Per-persona rows — deliberately absent</h2>"
+            "<p class='sub'>This is a <b>distributional</b> comparison across "
+            "seeds. Persona <i>i</i> on each side is an independent draw, so a "
+            "per-pair delta is a difference between exchangeable strangers. "
+            "Rendering it here would lend sampling noise the authority the paired "
+            "flip table earned, so no rows are emitted.</p>"
+        )
+
+    return f"""<!doctype html><meta charset="utf-8">
+<title>Cohort comparison — {esc(comparison.get("left"))} vs {esc(comparison.get("right"))}</title>
+<style>{STYLE}</style>
+<div class="wrap">
+<header>
+  <h1>Cohort comparison</h1>
+  <p class="sub">{esc(comparison.get("headline", ""))}</p>
+  <div class="stamp">{stamp}</div>
+</header>
+
+{_reading_protocol()}
+
+<h2>Marginals against pack targets — {len(drifted)} of {len(marginals)} outside band</h2>
+<p class="sub">Tolerances are read from each pack entry's own <span class="mono">tolerance</span>
+field. They are not transcribed here, so this table and the contract suite cannot disagree.</p>
+<table><tr><th>field</th><th class="num">left</th><th class="num">right</th>
+<th class="num">tolerance</th><th></th></tr>{rows}</table>
+
+{persona_block}
+
+<p class="sub">{esc(comparison.get("note", ""))}</p>
+
+{_ledger_section()}
+
+<footer>Nothing on this page was recomputed for display. The comparison mode is
+part of the result: identity pairing is exact, cross-seed pairing does not exist.</footer>
 </div>"""
