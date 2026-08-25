@@ -201,5 +201,40 @@
       "distribution_shift": "v1-era text carries the double-contract era's tics. Accepted for ADOPTION because the estimation-with-audits rule dissolves the dilemma: this sheet is the adoption gate on unseen text available now, and the v4 run carries its own fresh audit slice, labelled before the headline is computed, validating the instrument on the distribution it actually measures.",
       "the_fallback_is_now_standing": "v4's first slice stops being a fallback and becomes the per-run audit."
     }
+  },
+  "gap_citing_prediction": {
+    "registered_on": "2026-08-25",
+    "registered_before": "v2.2 exists and before any v4 run",
+    "mechanism": "v4's segmentation lever forces MORE segments to carry citations. Symptom and experience segments still have no apt id. A model obligated to cite with nothing apt to cite reaches for the nearest state id \u2014 which is what segments 33 and 40 already do voluntarily under v3.",
+    "prediction": "state_citation_aptness FALLS at v4, and/or the gap-citing count RISES. Direction registered now so the number cannot be read backwards later.",
+    "why_this_registration_matters": "without it, a falling aptness figure at v4 reads as the model getting worse. It is the metric finally seeing a gap the schema always had.",
+    "schema_gap_rate_arm_amended": {
+      "was": "expected roughly flat, because the schema lever adds no symptom ids",
+      "still_true_at": "the POPULATION level \u2014 the set of segments nothing can cover does not change size because of a segmentation change",
+      "but": "gap members can MOVE BETWEEN BUCKETS under citation pressure: uncited-circumstantial becomes gap-citing. Measured only as the uncited bucket, the flat prediction can fail for a bookkeeping reason.",
+      "amendment": "the schema gap is measured as the UNION of both manifestations \u2014 uncited circumstantial with no apt id, plus gap-citing segments. That union is what is expected flat."
+    }
+  },
+  "aptness_blinding_protocol": {
+    "registered_on": "2026-08-25",
+    "problem": "aptness \u2014 does this id's referent make this claim true of the speaker \u2014 REQUIRES seeing the citation, so it cannot ride along on the circumstantiality pass, which must not see it.",
+    "protocol": "TWO PASSES, ONE SHEET, ORDER FIXED. Pass 1: circumstantiality, text only, blind, by R1-R5 and BA1-BA3. Pass 2: over the state-citing subset ONLY, citations revealed, aptness judged against namespace semantics. Pass 1 labels are submitted before pass 2 begins.",
+    "why_the_order_is_load_bearing": "reversed or merged, the citation leaks into the circumstantial call. Three instruments have now been spent learning what leakage costs."
+  },
+  "v22_construction_constraint": {
+    "rule": "each of the five frames gets its own unit fixture sentence, AUTHORED FROM THE RULE, asserted before the classifier is run on any sheet.",
+    "fixtures": {
+      "possession": "I take X",
+      "experience": "makes me feel Y",
+      "ability": "I cannot get myself to Z",
+      "situation": "the site is far from me",
+      "negated_resource": "I don't have a car"
+    },
+    "negative_controls": [
+      "the R1 clinical class",
+      "the BA1 bare temporal locator",
+      "the have-to obligation"
+    ],
+    "why": "the canary principle at unit level \u2014 every frame watched to fire before any aggregate is computed. It makes the ability-frame-passes-the-canary claim free-and-asserted from birth rather than discovered at the gate."
   }
 }
