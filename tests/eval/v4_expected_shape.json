@@ -3,60 +3,174 @@
   "registered_on": "2026-08-25",
   "registered_before_the_prompt_change_exists": true,
   "registered_before_any_v4_generation": true,
-
   "the_declared_variable": {
     "changed": "prompt v3 -> v4: FINER SEGMENTATION. A segment carrying both a circumstance and a mitigation must split, so 'I work shifts, so evening slots would help' becomes two segments with two citation obligations.",
-    "why_this_lever": "the v3 segment read found ~8 of 18 uncovered segments were compound — a circumstance riding along with a cited mitigation, the scorer unable to split a sentence. That is a segmentation problem, and this is the smallest change that addresses it.",
+    "why_this_lever": "the v3 segment read found ~8 of 18 uncovered segments were compound \u2014 a circumstance riding along with a cited mitigation, the scorer unable to split a sentence. That is a segmentation problem, and this is the smallest change that addresses it.",
     "held": [
       "model and digest (qwen2.5:7b-instruct@845dbda0ea48...)",
       "sampling (seed 42, temperature 0.0, top_p 1.0, num_predict 700, num_ctx 8192)",
       "battery personas and questions",
-      "the P/B/J/E namespaces and PROFILE_FIELDS — no symptom id is added, deliberately",
+      "the P/B/J/E namespaces and PROFILE_FIELDS \u2014 no symptom id is added, deliberately",
       "seeded fact-order permutation STAYS OFF, as at v3"
     ]
   },
-
   "the_baseline": {
     "gold": 0.5263,
     "v22_estimate": 0.4419,
     "stated_deviation": -0.0844,
     "deviation_direction": "under-inclusion via the modal-plus-possessive door",
-    "instrument_history": {"v1": 0.5135, "v2": 0.6000, "v2.1": 0.4762, "v2.2": 0.4419},
-    "anchor_sentence_verbatim": "v3 missed the floor under every defensible reading — shipped instrument, corrected instrument, adopted instrument, and human labels — and the correction changed the size of the miss, not its existence."
+    "instrument_history": {
+      "v1": 0.5135,
+      "v2": 0.6,
+      "v2.1": 0.4762,
+      "v2.2": 0.4419
+    },
+    "anchor_sentence_verbatim": "v3 missed the floor under every defensible reading \u2014 shipped instrument, corrected instrument, adopted instrument, and human labels \u2014 and the correction changed the size of the miss, not its existence."
   },
-
   "how_the_headline_is_answered": {
     "rule": "the pass/fail question is answered AT GOLD SEMANTICS on the audited slice. v2.2's full-run figure is the ESTIMATOR whose error the audit measures.",
     "audit_slice": "the first slice of v4's own output, extracted exhaustively and labelled blind BEFORE any aggregate is read.",
     "ordering_is_the_point": "this is the last untested discipline in the protocol. An audit read after the headline is a check on a number already believed.",
     "double_duty_declared_in_advance": "the audit slice is fresh text nobody has seen, so it also serves as v2.3's held-out sheet. One labelling pass, two registered purposes, both declared before the run rather than discovered convenient afterwards."
   },
-
   "arms": [
-    {"arm": "recovery", "metric": "factual_fraction.burden", "bound": "0.6..0.95", "note": "as at v3, but the recovery must now come WITH CITATIONS ATTACHED — a tag recovering while state_coverage does not is the v3 result repeated, not progress."},
-    {"arm": "recovery", "metric": "factual_fraction.mitigation", "bound": "0.8..1.0", "note": "same condition."},
-    {"arm": "control", "metric": "factual_fraction.ae", "bound": "within 0.10 of v3's 1.0"},
-    {"arm": "control", "metric": "factual_fraction.tx", "bound": "within 0.10 of v3's 1.0"},
-    {"arm": "control", "metric": "factual_fraction.proc", "bound": "within 0.10 of v3's 1.0"},
-    {"arm": "headline", "metric": "state_coverage", "bound": "floor 0.6 at GOLD semantics on the audited slice", "note": "the v2.2 estimate is reported beside it with its audited error, never in place of it."},
-    {"arm": "feeling_floor", "metric": "feeling_fraction", "bound": "floor 0.10", "note": "a persona that never merely feels has been schema'd out of personhood. Finer segmentation raises the citation obligation, which is exactly the pressure that could abolish the feeling kind."},
-    {"arm": "compound", "metric": "compound_miss_count", "bound": "FALLS from v3's ~8", "note": "the lever's direct target. If this does not move, the lever did not act."},
-    {"arm": "graph_recall", "metric": "f_recall_exclusive", "bound": "recovers toward 0.62", "note": "v3 read 0.4615 against 0.6154 with state ids stripped. Splitting compounds should give the graph half its own segment and its own obligation."},
-    {"arm": "graph_recall", "metric": "state_coverage_holds", "bound": "does not fall while f_recall_exclusive rises", "note": "the displacement finding says the two compete for citations. Splitting is the hypothesis that they need not."},
-    {"arm": "schema_gap", "metric": "schema_gap_union", "bound": "roughly flat against v3", "note": "UNION of uncited-circumstantial-with-no-apt-id AND gap-citing. Measured as the union because citation pressure moves members between the two buckets, so either alone can fail for a bookkeeping reason."},
-    {"arm": "schema_gap", "metric": "state_citation_aptness", "bound": "EXPECTED DOWN from v3's 0.913", "note": "the gap's second face. More segments obligated to cite, no apt id added for symptoms and experience, so the model reaches for the nearest state id. A fall here is the schema gap becoming visible, NOT the model regressing — registered in this direction so it cannot be read backwards later."},
-    {"arm": "canary", "metric": "strip_state_ids", "bound": "collapses state_coverage", "note": "must be re-earned UNDER THE v4 SCHEMA. A canary validated on v3's decode contract is presumed, not shown, to detect degradation on v4's."},
-    {"arm": "holds_from_v3", "metric": "citation_validity", "bound": "1.0 hard"},
-    {"arm": "holds_from_v3", "metric": "parse_failure_rate", "bound": "0.0 hard", "note": "the most likely place a schema change breaks: a finer contract is a harder contract to satisfy."},
-    {"arm": "holds_from_v3", "metric": "inline_marker_takes", "bound": "0"},
-    {"arm": "holds_from_v3", "metric": "context_overflow_rate", "bound": "0.0 hard, and MEASURED this time"}
+    {
+      "arm": "recovery",
+      "metric": "factual_fraction.burden",
+      "bound": "0.6..0.95",
+      "note": "as at v3, but the recovery must now come WITH CITATIONS ATTACHED \u2014 a tag recovering while state_coverage does not is the v3 result repeated, not progress."
+    },
+    {
+      "arm": "recovery",
+      "metric": "factual_fraction.mitigation",
+      "bound": "0.8..1.0",
+      "note": "same condition."
+    },
+    {
+      "arm": "control",
+      "metric": "factual_fraction.ae",
+      "bound": "within 0.10 of v3's 1.0"
+    },
+    {
+      "arm": "control",
+      "metric": "factual_fraction.tx",
+      "bound": "within 0.10 of v3's 1.0"
+    },
+    {
+      "arm": "control",
+      "metric": "factual_fraction.proc",
+      "bound": "within 0.10 of v3's 1.0"
+    },
+    {
+      "arm": "headline",
+      "metric": "state_coverage",
+      "bound": "floor 0.6 at GOLD semantics on the audited slice",
+      "note": "the v2.2 estimate is reported beside it with its audited error, never in place of it."
+    },
+    {
+      "arm": "feeling_floor",
+      "metric": "feeling_fraction",
+      "bound": "floor 0.10",
+      "note": "a persona that never merely feels has been schema'd out of personhood. Finer segmentation raises the citation obligation, which is exactly the pressure that could abolish the feeling kind."
+    },
+    {
+      "arm": "compound",
+      "metric": "compound_miss_count",
+      "bound": "FALLS from v3's ~8",
+      "note": "the lever's direct target. If this does not move, the lever did not act."
+    },
+    {
+      "arm": "graph_recall",
+      "metric": "f_recall_exclusive",
+      "bound": "recovers toward 0.62",
+      "note": "v3 read 0.4615 against 0.6154 with state ids stripped. Splitting compounds should give the graph half its own segment and its own obligation."
+    },
+    {
+      "arm": "graph_recall",
+      "metric": "state_coverage_holds",
+      "bound": "does not fall while f_recall_exclusive rises",
+      "note": "the displacement finding says the two compete for citations. Splitting is the hypothesis that they need not."
+    },
+    {
+      "arm": "schema_gap",
+      "metric": "schema_gap_union",
+      "bound": "roughly flat against v3",
+      "note": "UNION of uncited-circumstantial-with-no-apt-id AND gap-citing. Measured as the union because citation pressure moves members between the two buckets, so either alone can fail for a bookkeeping reason."
+    },
+    {
+      "arm": "schema_gap",
+      "metric": "state_citation_aptness",
+      "bound": "EXPECTED DOWN from v3's 0.913",
+      "note": "the gap's second face. More segments obligated to cite, no apt id added for symptoms and experience, so the model reaches for the nearest state id. A fall here is the schema gap becoming visible, NOT the model regressing \u2014 registered in this direction so it cannot be read backwards later."
+    },
+    {
+      "arm": "canary",
+      "metric": "strip_state_ids",
+      "bound": "collapses state_coverage",
+      "note": "must be re-earned UNDER THE v4 SCHEMA. A canary validated on v3's decode contract is presumed, not shown, to detect degradation on v4's."
+    },
+    {
+      "arm": "holds_from_v3",
+      "metric": "citation_validity",
+      "bound": "1.0 hard"
+    },
+    {
+      "arm": "holds_from_v3",
+      "metric": "parse_failure_rate",
+      "bound": "0.0 hard",
+      "note": "the most likely place a schema change breaks: a finer contract is a harder contract to satisfy."
+    },
+    {
+      "arm": "holds_from_v3",
+      "metric": "inline_marker_takes",
+      "bound": "0"
+    },
+    {
+      "arm": "holds_from_v3",
+      "metric": "context_overflow_rate",
+      "bound": "0.0 hard, and MEASURED this time"
+    }
   ],
-
   "falsified_if": "compound_miss_count does not fall. The lever is segmentation; if compounds do not split, nothing downstream of it is evidence about the hypothesis.",
-
   "pre_flight_required_before_recording": [
     "the canary's degraded configurations must be shown to degrade UNDER THE v4 SCHEMA, not assumed to from v3",
     "parse_failure_rate on a null-backend dry run must be 0.0 under the finer contract",
     "PROMPT_VERSION bumped to 4, cassettes re-recorded with --rerecord, v3 cassette archived"
-  ]
+  ],
+  "canary_reading_protocol": {
+    "registered_on": "2026-08-25",
+    "registered_before": "the canary output was read",
+    "outcomes": {
+      "sensitive": "record.",
+      "insensitive_with_low_normal_config": "a MODEL question. Refuse to record, report, iterate the prompt before trusting any comparison.",
+      "PARTIAL": "sensitive on strip_instructions and truncate_context but strip_state_ids no longer collapsing coverage. This is NOT the model breaking. It would mean the v4 instruction changed WHAT THE STATE LEVER MEASURES: finer segmentation can route circumstance into segments that survive on graph citations alone, so removing state ids stops zeroing coverage without anything being wrong. DIAGNOSE BEFORE RECORDING. Do not shrug it into 'sensitive enough'."
+    },
+    "held_lever_by_lever": "the pre-registration's 'shown, not inherited' applies to each lever separately, never to the composite verdict. A canary validated on v3's instruction is presumed, not shown, to detect degradation under v4's.",
+    "friction_hypothesis_third_data_point": {
+      "watch": [
+        "retry_rate",
+        "parse_failure_rate"
+      ],
+      "history": "the double-contract era ran 6.7% retries, which vanished when the contradiction was removed. A SPLIT instruction is not contradictory but it is HARDER.",
+      "why_it_is_recorded_either_way": "a tick up is the earliest and cheapest signal of how far the model is straining against the new contract; a flat reading is the third data point for the friction hypothesis. Both go in the bundle."
+    }
+  },
+  "audit_slice_mechanics": {
+    "registered_on": "2026-08-25",
+    "registered_before": "the record completes",
+    "selection_seed": 20260825,
+    "slice_takes": 15,
+    "of": 30,
+    "selection_rule": "random.Random(SELECTION_SEED).sample(sorted(cassette_keys), 15). Sorted by FINGERPRINT so selection cannot depend on dict insertion order, which is recording order, which is the battery's order.",
+    "why_seeded": "which takes become the audit is decided by the RNG, not by anyone who has seen an aggregate. Reproducible after the fact, so 'we did not pick the flattering takes' is checkable rather than asserted.",
+    "extraction": "EXHAUSTIVE inside the chosen takes \u2014 every segment of every take, hash-shuffled, text only, debris noted if present.",
+    "script": "scripts/extract_audit_slice.py",
+    "labelling": "the full two-pass protocol, first real exercise. Pass 1 circumstantiality blind by R1-R5 and BA1-BA3, submitted before Pass 2. Pass 2 aptness on the state-citing subset with citations revealed. No new rules mid-sheet; segment 48's presupposition-collision class is flagged if it recurs \u2014 one more sighting makes it the next rule.",
+    "three_loops_the_labels_close": [
+      "v4's gold-semantics verdict against the 0.6 floor",
+      "the per-run audit of v2.2's estimate on this run's own text",
+      "v2.3's held-out sheet"
+    ],
+    "sealing_rule": "the aggregates stay unread until the labels come back."
+  }
 }
