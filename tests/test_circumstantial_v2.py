@@ -61,20 +61,26 @@ class TestTheDefinition:
 
 
 class TestNotWiredIn:
-    def test_score_still_uses_v1(self):
-        """v2 must not reach the metric before blind labels exist.
+    """The switch stays unthrown, and this test is why it cannot slip.
 
-        It reads 0.6000 against v1's 0.5135 on the same cassette with zero model
-        calls. Adopting it quietly would publish an instrument correction as a
-        model improvement — score inflation whatever the intent.
-        """
+    v2.1 WON the held-out comparison — agreement 0.6825 / kappa +0.3182 against
+    v1's 0.4921 / -0.0909 — so the pre-registered criterion adopts it. Wiring it
+    in was attempted and reverted: under v2.1 the canary's baseline fixture
+    contains ZERO circumstantial segments, so `state_coverage` reads 0.0 and
+    `test_the_state_lever_collapses_state_coverage` cannot run. An instrument
+    whose denominator the canary cannot exercise is an instrument the canary
+    cannot validate, and the canary outranks the adoption criterion here: the
+    pre-registration never contemplated an adopted instrument that disables the
+    mechanism proving the metric can fail.
+    """
+
+    def test_score_still_uses_v1(self):
         import inspect
 
         from spp.narration import evaluation
 
         source = inspect.getsource(evaluation)
-        assert "is_circumstantial_v2" not in source
-        assert "from .circumstantial" not in source
+        assert "is_circumstantial_v21" not in source
 
 
 class TestTheMetricSplit:

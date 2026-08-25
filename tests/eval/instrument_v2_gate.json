@@ -85,5 +85,44 @@
     "v4_expectation": "roughly flat",
     "why": "the schema lever adds no symptom ids, so the uncoverable population should not move. A cheap no-effect arm that guards the one metric v4 must not touch.",
     "if_it_moves": "something other than the declared variable moved; investigate before reading state_coverage."
+  },
+  "held_out_result": {
+    "on": "2026-08-25",
+    "sheet": "63 segments, archived prompt-v2 cassette, 0 abstentions",
+    "scores": {
+      "v1": {
+        "agreement": 0.4921,
+        "kappa": -0.0909,
+        "confusion": "TP 24 FN 18 FP 14 TN 7"
+      },
+      "v2": {
+        "agreement": 0.4603,
+        "kappa": 0.0,
+        "confusion": "TP 16 FN 26 FP 8 TN 13"
+      },
+      "v2.1": {
+        "agreement": 0.6825,
+        "kappa": 0.3182,
+        "confusion": "TP 30 FN 12 FP 8 TN 13"
+      }
+    },
+    "criterion": "MET. v2.1 beats v1 on agreement and on kappa, held out.",
+    "in_sample_penalty": "v2.1 kappa fell 0.4639 -> 0.3182 between in-sample and held-out, which is the gap the split was built to expose. v2's held-out kappa is EXACTLY 0.0 \u2014 chance.",
+    "named_limitations": {
+      "BA1_locator_over_inclusion": "6 of 7 bare temporal-locator segments ('during my work hours') are called circumstantial. The rater's split between locator and asserted conflict is syntactic-pragmatic and a token matcher cannot see it. Single direction, as predicted before scoring. The asserted-conflict half is caught 6 of 6.",
+      "shared_term_under_inclusion": "8 coverable misses (03, 04, 12, 17, 19, 20, 25, 44) \u2014 cost, distance and transport circumstances whose terms the graph also carries and which sit outside a possession frame. Partly fixed by v2.1, not eliminated.",
+      "own_regimen": "FIXED. 0 of 7 missed, against 8 of 8 missed under v2."
+    },
+    "bias_direction_is_NOT_stable": {
+      "finding": "v2.1 over-counts the denominator on the v3 cassette (42 against gold 38) and UNDER-counts it here (38 counted against 42 labelled).",
+      "consequence": "the conservatism argument recorded under floor_decision.bias_asymmetry DOES NOT HOLD. A floor registered against v2.1 cannot be called conservative, because the sign of its bias changes with the text.",
+      "status": "supersedes the bias_asymmetry entry, which is kept as the record of what was believed when it was written."
+    },
+    "adoption_blocked_by_the_canary": {
+      "what_happened": "v2.1 was wired into score() and the change was reverted. Under v2.1 the canary's baseline fixture contains ZERO circumstantial segments, so state_coverage reads 0.0 and test_the_state_lever_collapses_state_coverage cannot run.",
+      "why_this_outranks_the_criterion": "the canary is the mechanism that proves the metric can fail. An instrument whose denominator the canary cannot exercise is one the canary cannot validate. The pre-registration decided WHICH instrument, and never contemplated an adopted instrument that disables the failure test.",
+      "note": "the fixture text that v2.1 rejects ('I cannot always get myself to the clinic') is a plausible circumstance a human would label y \u2014 the same under-inclusion class as the 8 shared-term misses, surfacing in the canary rather than in the sheet.",
+      "decision_required": "rewrite the canary fixture so it asserts circumstance in a form v2.1 recognises and re-verify the lever collapses; or treat the canary failure as evidence v2.1's under-inclusion is too aggressive and iterate the definition. Rewriting a fixture so an adopted instrument passes its own failure test is not a decision to take quietly."
+    }
   }
 }

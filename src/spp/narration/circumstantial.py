@@ -65,7 +65,7 @@ while who why will with within without would you your yours
 _MIN_LENGTH = 4
 
 
-def _tokens(text: str) -> set[str]:
+def tokens_of(text: str) -> set[str]:
     """Content terms, crudely singularised.
 
     Singularisation is a trailing `s` strip, not a stemmer. A stemmer is a
@@ -99,14 +99,14 @@ def state_only_vocabulary(
     """
     state_terms: set[str] = set()
     for fact in state.facts:
-        state_terms |= _tokens(fact.text)
-        state_terms |= _tokens(fact.detail)
-        state_terms |= _tokens(fact.origin)
+        state_terms |= tokens_of(fact.text)
+        state_terms |= tokens_of(fact.detail)
+        state_terms |= tokens_of(fact.origin)
 
     graph_terms: set[str] = set()
     for fact_id in offered_fact_ids:
         if graph.has_fact(fact_id):
-            graph_terms |= _tokens(graph.render(graph.fact(fact_id)))
+            graph_terms |= tokens_of(graph.render(graph.fact(fact_id)))
 
     return frozenset(state_terms - graph_terms)
 
@@ -116,7 +116,7 @@ def is_circumstantial_v2(text: str, distinctive: frozenset[str]) -> bool:
     lowered = (text or "").casefold()
     if not _FIRST_PERSON.search(lowered):
         return False
-    return bool(_tokens(lowered) & distinctive)
+    return bool(tokens_of(lowered) & distinctive)
 
 
 def coverage_split(
@@ -228,7 +228,7 @@ def is_circumstantial_v21(
     if not _FIRST_PERSON.search(lowered):
         return False
 
-    present = _tokens(lowered)
+    present = tokens_of(lowered)
     state_only = present & (state_terms - graph_terms)
     framed_state = _framed_terms(lowered) & state_terms
     return bool(state_only or framed_state)
