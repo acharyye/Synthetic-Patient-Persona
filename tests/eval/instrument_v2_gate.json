@@ -363,5 +363,66 @@
       "v3": 0.913,
       "expected_at_v4": "DOWN, per the gap-citing prediction"
     }
+  },
+  "LAW_estimator_validity_is_distribution_relative": {
+    "measured_on": "2026-08-25, the v4 run",
+    "statement": "Estimator validity is DISTRIBUTION-RELATIVE. Any lever that changes the output distribution silently re-opens every instrument validated on the old one.",
+    "the_measurement": {
+      "adopted": "is_circumstantial_v22, adopted on a held-out sheet at agreement 0.6939 / kappa 0.3336",
+      "on_v4_text": {
+        "v1": [
+          0.4706,
+          0.092
+        ],
+        "v2.1": [
+          0.6765,
+          0.2609
+        ],
+        "v2.2": [
+          0.5882,
+          0.1765
+        ]
+      },
+      "finding": "THE ADOPTED INSTRUMENT WAS BEATEN BY THE ONE IT REPLACED, on the run's own text. Denominator error -12: v2.2 counted 17 circumstantial where blind labels say 29.",
+      "mechanism": "v2.2's frames were validated on multi-clause text. The SPLIT lever changed the distribution to short single-claim segments, and the estimator's error moved with it. This is not a v2.2 defect; it is a property of validating an instrument on one distribution and running it on another."
+    },
+    "structural_consequences": {
+      "adoption_is_per_distribution_not_permanent": "an instrument's validation carries a DISTRIBUTION STAMP \u2014 prompt version and grain statistics (mean_segments_per_take, single_segment_rate) \u2014 and EXPIRES when a lever moves them. An adoption record without a distribution stamp is a claim about text nobody named.",
+      "per_run_audit_is_promoted": "from 'a check on the estimate' to 'the mechanism that detects instrument expiry'. It did exactly that on its first exercise: without it, state_coverage 0.5 would have shipped as the v4 figure with no sign the instrument had degraded on the text it was measuring.",
+      "v22_stamp": {
+        "prompt_version": 3,
+        "mean_segments_per_take": 1.8,
+        "single_segment_rate": 0.567,
+        "expired_at": "prompt v4, grain 2.23 / 0.30"
+      }
+    },
+    "the_three_failure_modes_now_all_demonstrated": [
+      "pre-registration catches MOTIVATED READING \u2014 a prediction written after the numbers",
+      "canaries catch DEAD INSTRUMENTS \u2014 a metric that cannot fail",
+      "per-run audits catch TRUE INSTRUMENTS DYING QUIETLY OF DISTRIBUTION SHIFT \u2014 an instrument that was valid, still looks valid, and is no longer measuring what it measured"
+    ]
+  },
+  "v23_brief": {
+    "on": "2026-08-25",
+    "inverted": "v2.3 was queued to fix the modal-plus-possessive door, a MULTI-CLAUSE pathology. The audit says the live problem is the opposite end: under-counting on SHORT SINGLE-CLAIM segments, -12 on the denominator.",
+    "registered_target": "BOTH doors, with the distribution stamp deciding which dominates for a given run.",
+    "held_out_sheet": {
+      "source": "the 15 UNAUDITED takes of the v4 run \u2014 33 unique segments",
+      "why_it_is_the_natural_sheet": "unseen by the rater and by every instrument, and it is the same distribution the instrument will measure. Distribution-matched held-out text is now a requirement rather than a convenience, per the law above.",
+      "extraction": "exhaustive, hash-shuffled, text only"
+    },
+    "open_design_question": "whether v2.3 stays a five-frame classifier grown two doors, or restructures the residual detector around SEGMENT LENGTH as a first-class feature. HELD until the failure table on the audit sheet localises which door cost the 12 \u2014 the count alone does not."
+  },
+  "v5_direction": {
+    "pinned_on": "2026-08-25",
+    "direction": "RELIABILITY, NOT EXPRESSIVENESS.",
+    "the_three_faces_of_one_question": [
+      "F3: identical claim shapes intermittently grounded \u2014 'I take metformin, empagliflozin and semaglutide' cites nothing while the four-drug segment cites all four",
+      "the instrument under-counting on those same short segments",
+      "gap-citing as causal-neighbour fallback, now at a measured 4 of 14"
+    ],
+    "the_question": "when the model CAN cite correctly, what makes it actually do so every time?",
+    "lever_class": "decoding / prompt consistency \u2014 NOT a schema lever, so v5 like v4 risks no structural guarantee",
+    "parked_but_real": "the gap story \u2014 symptoms, negatives, B-silence. F5's zero-barrier-citations question unseals with the full run; if barriers truly never speak, that is the expressiveness thread's next pull, AFTER reliability, because F3 says reliability is where the coverage points are."
   }
 }

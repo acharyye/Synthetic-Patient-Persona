@@ -8,12 +8,12 @@ A reader who takes away "v4 failed" has been misinformed exactly as badly as one
 who takes away "v4 passed."
 
 **The lever worked.** The displacement barrier broke. State and graph citation
-coexisted on the same run —  0.4419 → 0.50 **while**
- 0.4615 → 0.5897. That conjunction is what nineteen sessions
+coexisted on the same run — `state_coverage` 0.4419 → 0.50 **while**
+`f_recall_exclusive` 0.4615 → 0.5897. That conjunction is what nineteen sessions
 were chasing: either number alone is buyable by sacrificing the other, which is
 precisely why it was pre-registered as a conjunction, and it landed as one.
-Compounds fell ( 0.567 → 0.30, 
-1.8 → 2.23, two real compounds in 34 blind-read segments), so the falsification
+Compounds fell (`single_segment_rate` 0.567 → 0.30,
+`mean_segments_per_take` 1.8 → 2.23, two real compounds in 34 blind-read segments), so the falsification
 condition was not met. Nothing structural was spent: validity 1.0, parse 0.0,
 retry 0.0, quarantine 0.
 
