@@ -153,3 +153,82 @@ def coverage_split(
         if coverable else 0.0
     )
     return state_coverage, round(gap / len(circumstantial), 4)
+
+
+# Possession / experience predicates. A term inside one of these frames is
+# asserted ABOUT the speaker, so graph overlap does not disqualify it: "metformin"
+# in "I take metformin" is evidence of circumstance even though the graph knows
+# the word, while the same token in "metformin can cause nausea" is not. Declared
+# as a list rather than inferred, and derived from the rater's committed R1
+# ("I take X" asserts own medication state; "for the X, I need a test" asserts a
+# property of X) rather than from the segments v2 missed.
+_FRAME_CUES: frozenset[str] = frozenset({
+    "take", "taking", "took", "taken", "use", "using", "used",
+    "have", "has", "had", "got", "getting", "get",
+    "live", "living", "work", "working", "manage", "managing",
+    "struggle", "struggling", "depend", "afford", "own", "wake", "feel",
+})
+
+# "I have to go in person" is an obligation, not a possession. Without this the
+# frame swallows most of the protocol vocabulary and v2.1 collapses back toward
+# v1's over-inclusion.
+_HAVING = frozenset({"have", "has", "had"})
+
+_FRAME_WINDOW = 8
+_POSSESSIVE_WINDOW = 3
+
+
+def _framed_terms(text: str) -> set[str]:
+    """Terms asserted about the speaker: after a first-person predicate, or after
+    a possessive. Window-based rather than parsed — a dependency parse is a new
+    dependency and this is an offline eval, where the failure mode is a missed
+    frame, which shrinks the denominator."""
+    lowered = (text or "").casefold()
+    words = _WORD.findall(lowered)
+
+    framed: set[str] = set()
+    for index, word in enumerate(words):
+        following = words[index + 1] if index + 1 < len(words) else ""
+        window = 0
+        if word in ("my", "our", "mine"):
+            window = _POSSESSIVE_WINDOW
+        elif word in _HAVING and following == "to":
+            window = 0                      # obligation, not possession
+        elif word in _FRAME_CUES:
+            window = _FRAME_WINDOW
+        if not window:
+            continue
+        for candidate in words[index + 1: index + 1 + window]:
+            if len(candidate) < _MIN_LENGTH or candidate in _STOPWORDS:
+                continue
+            framed.add(
+                candidate[:-1]
+                if candidate.endswith("s") and len(candidate) > _MIN_LENGTH
+                else candidate
+            )
+    return framed
+
+
+def is_circumstantial_v21(
+    text: str, state_terms: frozenset[str], graph_terms: frozenset[str]
+) -> bool:
+    """v2.1 — the subtraction applies only OUTSIDE a possession/experience frame.
+
+    v2 treated graph overlap as disqualifying regardless of assertion frame, and
+    its two validated miss classes were both that one flaw: own-regimen segments
+    ("I take salbutamol PRN and tiotropium") and shared-term compounds ("I work
+    shifts, so evening slots would help"). Both lose the term that carries the
+    circumstance because the graph happens to use the same word.
+
+    **Scoring this against the 53 labels that motivated it is in-sample by
+    construction** and proves little; the adoption evidence is a held-out sheet
+    from the archived prompt-v2 cassette, labelled blind by the same five rules.
+    """
+    lowered = (text or "").casefold()
+    if not _FIRST_PERSON.search(lowered):
+        return False
+
+    present = _tokens(lowered)
+    state_only = present & (state_terms - graph_terms)
+    framed_state = _framed_terms(lowered) & state_terms
+    return bool(state_only or framed_state)

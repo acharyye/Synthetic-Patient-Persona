@@ -105,3 +105,45 @@ class TestTheMetricSplit:
         from spp.narration.circumstantial import coverage_split
 
         assert coverage_split([]) == (0.0, 0.0)
+
+
+class TestV21FrameRule:
+    """The possession/experience frame, on the rater's own R1 exemplars.
+
+    These are the boundary R1 states, not segments picked from v2's misses: "I
+    take X" asserts own medication state, "for the X, I need a test" asserts a
+    property of X, and "I have to go" is an obligation wearing possession's verb.
+    """
+
+    def test_possession_frames_the_term(self):
+        from spp.narration.circumstantial import _framed_terms
+
+        assert "salbutamol" in _framed_terms("I take salbutamol PRN and tiotropium.")
+
+    def test_a_clinical_requirement_frames_nothing(self):
+        from spp.narration.circumstantial import _framed_terms
+
+        assert _framed_terms(
+            "For the metformin, I need to do fasting blood tests."
+        ) == set()
+
+    def test_have_to_is_obligation_not_possession(self):
+        """Without this the frame swallows the protocol vocabulary and v2.1
+        collapses back toward v1's over-inclusion."""
+        from spp.narration.circumstantial import _framed_terms
+
+        assert _framed_terms("I have to go see the doctor every few weeks.") == set()
+        assert "carer" in _framed_terms("I have a paid carer who helps.")
+
+    def test_graph_overlap_no_longer_disqualifies_inside_a_frame(self):
+        """The whole v2.1 amendment in one assertion."""
+        from spp.narration.circumstantial import is_circumstantial_v2, is_circumstantial_v21
+
+        state = frozenset({"metformin"})
+        graph = frozenset({"metformin"})
+
+        assert not is_circumstantial_v2("I take metformin.", state - graph)
+        assert is_circumstantial_v21("I take metformin.", state, graph)
+        assert not is_circumstantial_v21(
+            "For the metformin, I need fasting blood tests.", state, graph
+        )

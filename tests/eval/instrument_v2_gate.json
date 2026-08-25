@@ -3,7 +3,6 @@
   "registered_on": "2026-08-25",
   "registered_before_labels_exist": true,
   "what_is_being_decided": "whether the state_coverage denominator moves from is_circumstantial v1 (first person + factual marker) to v2 (first person + a term the persona's P/B/J facts carry that no offered graph fact does).",
-
   "adoption_criterion": {
     "rule": "v2 is adopted IFF it agrees with the blind labels BETTER than v1 does, over the same 53 segments.",
     "why_comparative": "an absolute figure is uninterpretable. 'v2 agrees 85%' means nothing without knowing whether v1 agrees 70% or 90%, and the question on the table is not whether v2 is good but whether it is better than what ships today.",
@@ -13,28 +12,68 @@
       "every disagreement, BOTH directions, enumerated with its segment text"
     ],
     "read_the_disagreements": "a v2 miss that is a principled edge case is a different object from one that is a hole in the definition. The enumeration is not decoration; it is how that distinction gets made.",
-    "clustering_clause": "if v2 beats v1 but its misses CLUSTER in one identifiable class, that class is recorded as a NAMED LIMITATION of instrument v2 — never as a silent tolerance, and never fixed by editing the classifier until it stops missing them, which would be fitting to the labels."
+    "clustering_clause": "if v2 beats v1 but its misses CLUSTER in one identifiable class, that class is recorded as a NAMED LIMITATION of instrument v2 \u2014 never as a silent tolerance, and never fixed by editing the classifier until it stops missing them, which would be fitting to the labels."
   },
-
   "metric_split": {
     "rule": "instrument v2 reports TWO numbers, never one.",
     "state_coverage": "over circumstantial segments that a P/B/J id COULD cover.",
     "schema_gap_rate": "share of circumstantial segments that no id in the declared surface can cover.",
     "derivation": "from principle, not from the eight segments that raised it: a coverage metric computed over segments nothing in the schema can express measures the SCHEMA, not the model. Blending the two produces a number that falls when the model gets worse and also when the surface gets narrower, and cannot say which happened.",
     "known_uncoverable_class": "symptoms. PROFILE_FIELDS does not carry them and biomarkers are deliberately outside it, so 'I feel breathless most days' asserts a circumstance with no available id. That is a coverage finding to log, exactly as the module docstring already says for an unsimulated persona's missing event log.",
-    "who_adjudicates": "the labels. The rater labels the CONCEPT — does this segment assert a fact about the speaker's own circumstances, and could the declared surface support it — and the classifier's job is to approximate that, never to define it."
+    "who_adjudicates": "the labels. The rater labels the CONCEPT \u2014 does this segment assert a fact about the speaker's own circumstances, and could the declared surface support it \u2014 and the classifier's job is to approximate that, never to define it."
   },
-
   "floors_are_instrument_relative": {
     "rule": "a coverage floor is stamped with the instrument version it was registered against, and does not transfer across an instrument change.",
-    "v3_floor": {"value": 0.6, "instrument": "is_circumstantial v1", "status": "unchanged, and v0.4 remains adjudicated under it"},
+    "v3_floor": {
+      "value": 0.6,
+      "instrument": "is_circumstantial v1",
+      "status": "unchanged, and v0.4 remains adjudicated under it"
+    },
     "consequence": "v2 reading 0.6000 on the v3 cassette is NOT a pass against the v3 floor. It is a number from a different denominator that happens to land on the old bar, which is the most suspicious shape a rewritten metric can take and is reported as a coincidence rather than a result.",
     "before_v4": "adopting v2 re-registers the floor against the label-validated denominator, in its own commit, BEFORE any v4 run exists. A bar that silently survives an instrument change is a bar that means nothing."
   },
-
   "conflicts_of_interest": {
     "classifier_author_has_read_the_segments": true,
-    "consequence": "the author cannot rate. Labels come from an independent rater working from segment text alone — no personas, no citations, no kinds, no classifier verdicts — so the validation cannot inherit the classifier's token-match logic.",
+    "consequence": "the author cannot rate. Labels come from an independent rater working from segment text alone \u2014 no personas, no citations, no kinds, no classifier verdicts \u2014 so the validation cannot inherit the classifier's token-match logic.",
     "sheet": "53 segments, hash-shuffled so the classes are not grouped."
+  },
+  "amendments": [
+    {
+      "on": "2026-08-25",
+      "what": "v2 adopted on the comparative criterion, then immediately superseded as a CANDIDATE by v2.1; adoption of v2.1 requires HELD-OUT labels, and no floor is set under any biased instrument.",
+      "why_v2_is_not_shipped_into_v4": "v2's two validated miss classes are own-regimen segments and shared-circumstance-term compounds. The compound class is exactly the population v4's schema lever is designed to act on: if finer segmentation splits 'I work shifts, so evening slots would help' into two segments, the circumstance half is the kind v2 drops. Running v4 under v2 would measure the treatment with an instrument blind in the treated region, so the correction is the experiment's precondition rather than optional pre-work.",
+      "v21_definition": "the subtraction applies only OUTSIDE a possession/experience frame. A term inside such a frame is asserted about the speaker, so graph overlap does not disqualify it \u2014 'metformin' in 'I take metformin' is circumstance, the same token in 'metformin can cause nausea' is not. Operationalises the rater's committed R1; derived from the rules, not from the fifteen misses.",
+      "in_sample_is_reported_not_relied_on": "scoring v2.1 against the 53 labels that motivated it is in-sample by construction. It reads agreement 0.8462, kappa 0.4639 against v2's 0.6923 / 0.3113. Reported, labelled in-sample, and NOT the adoption evidence.",
+      "held_out_design": {
+        "source": "tests/cassettes/archive/narration_battery.20260823T170152Z \u2014 the prompt-v2 cassette, 30 takes, 63 unique segments. Different text, same model.",
+        "protocol": "the rater labels the sheet blind by the same five decision rules before seeing any classifier verdict; v2.1 is adopted on those numbers under the same comparative criterion and the same clustering clause.",
+        "mapping": "each archived take maps to a battery case by question text (30/30 verified), so per-persona state terms and per-case graph terms are recoverable for scoring."
+      },
+      "rater_blinding_disclosure": "NEAR-TOTAL, NOT TOTAL. The rater has previously seen a handful of prompt-v2 cassette excerpts quoted in reports (a bus segment, a medication list). Recorded here beside the classifier-author conflict rather than left implicit, because a disclosed partial blind is evidence and an undisclosed one is not."
+    }
+  ],
+  "floor_decision": {
+    "rule": "NO floor is registered under an instrument with a known directional bias.",
+    "why": "a floor under a biased instrument forces every future reader to carry a mental correction term, which is the blended-number failure in bar form.",
+    "v3_baseline_at_gold_semantics": {
+      "state_coverage": 0.5263,
+      "n": "20/38",
+      "schema_gap_rate": 0.1364,
+      "gap_n": "6/44"
+    },
+    "instrument_history_preserved": {
+      "v1": 0.5135,
+      "v2": 0.6,
+      "v21_in_sample": 0.4762
+    },
+    "floor": "0.6 is re-registered as a GOLD-SEMANTICS bar, attached to whichever instrument passes held-out validation, in its own commit before any v4 run.",
+    "anchor_sentence_for_the_v4_baseline_section": "v3 missed the floor under every defensible reading \u2014 shipped instrument, corrected instrument, and human labels \u2014 and the correction changed the size of the miss, not its existence."
+  },
+  "schema_gap_rate_arm": {
+    "registered_on": "2026-08-25",
+    "v3_observed": 0.1364,
+    "v4_expectation": "roughly flat",
+    "why": "the schema lever adds no symptom ids, so the uncoverable population should not move. A cheap no-effect arm that guards the one metric v4 must not touch.",
+    "if_it_moves": "something other than the declared variable moved; investigate before reading state_coverage."
   }
 }
