@@ -5,7 +5,7 @@
   "endWeek": 44,
   "year": 2026,
   "todayWeek": 34,
-  "lastModified": "2026-08-24",
+  "lastModified": "2026-08-25",
   "stages": [
     {
       "id": "S1",
@@ -591,6 +591,36 @@
           "deps": [
             "I"
           ],
+          "assignees": [],
+          "knowledge": []
+        },
+        {
+          "id": "O",
+          "title": "Boundary tests for the three uncovered narration endpoints",
+          "status": "done",
+          "progress": 100,
+          "startWeek": 34,
+          "endWeek": 34,
+          "aufgabe": "Cover /persona/narrate, /panel/run and /persona/interview at the HTTP boundary. The narration internals are tested hard — prompt goldens, the citation gate, cassettes, memory semantics under permutation — but all three endpoints in front of them had no test touching them at all.",
+          "ziel": "Every production endpoint is exercised at its boundary, and each new assertion is shown to fail when the behaviour it names is broken.",
+          "stand": "Done 2026-08-25. tests/test_narration_api.py, 11 tests; suite 935 -> 946. Endpoint coverage 15/18 -> 18/18. Every assertion was mutation-checked and one was rewritten after the check proved it vacuous.",
+          "meetingNotes": "",
+          "achievements": [
+            "tests/test_narration_api.py — 11 boundary tests over /persona/narrate, /panel/run and /persona/interview: cited-skeleton shape offline, the check/grounded split, out-of-range persona_index, panel size bounds, mechanical theme attribution, offline determinism, and PatientDNA validation.",
+            "Endpoint coverage is now 18 of 18; it was 15 of 18, and the three missing were exactly the narration surface — the one nondeterministic layer in the system."
+          ],
+          "validations": [
+            "pytest: 946 passed, 19 skipped (was 935 passed).",
+            "Mutation canary, 7 of 7 caught: leaking the checker internals, 404 instead of 400 on a bad persona_index, accepting a one-person panel, hard-wiring ungrounded_statements to 0, attributing a theme to a persona who never spoke, dropping the disclaimer, and claiming an offline reply was model-written."
+          ],
+          "decisions": [
+            "test_panel_ungrounded_count was rewritten after the mutation canary proved it VACUOUS: offline every statement grounds, so recomputing the count from the returned statements compares 0 to 0 and passes against an endpoint hard-wired to report 0. It now monkeypatches run_panel to return a transcript that actually contains an ungrounded statement. Same species as a pass bar supplied as a literal — an assertion that cannot discriminate is not coverage.",
+            "Linked to KR2.1 rather than to a new KR: this is suite-integrity work, so it widens what 'the suite' covers without moving a grade that was already met."
+          ],
+          "links": [
+            "KR2.1"
+          ],
+          "deps": [],
           "assignees": [],
           "knowledge": []
         }
