@@ -182,5 +182,15 @@
         "Grain patterns noticed while rating go in a POST-LABELS observation block, written after the labels are frozen \u2014 same discipline as the consistency pairs."
       ]
     }
+  },
+  "canary_finding_unconstrained_ids_changed_meaning": {
+    "on": "2026-08-25",
+    "recorded_before": "the record run's aggregates were read",
+    "observation": "the unconstrained_ids control means something different at v4 than it did at v2.",
+    "v2": "removing the fact-id enum moved almost nothing \u2014 0.51 against 0.52. The model barely fabricated when unconstrained, so the constraint's value was a GUARANTEE: it made fabrication ungrammatical rather than merely rare.",
+    "v4": "removing the enum drops citation_validity to 0.97 and produces a 3% hard-failure rate. The harder citation contract creates pressure the enum now actively contains.",
+    "reading": "the design claim \u2014 that the enum converts 'happens not to' into 'cannot' \u2014 was measured as a LATENT guarantee at v2 and is measured as a LOAD-BEARING one at v4. Same control condition, run twice, different answer, and both answers strengthen the argument rather than either weakening it.",
+    "why_it_is_not_a_blemish": "97% under a DEGRADED configuration is the control working. The number to read is the contrast with the constrained baseline's 100%, not the 97% alone.",
+    "mechanism_hypothesis": "a model obligated to split claims has more segments needing citations, and fabrication is the escape valve when nothing apt is available \u2014 the same pressure the gap-citing prediction describes, arriving through a different door. NOT tested by this run; stated as the reading, not as a finding."
   }
 }
