@@ -49,7 +49,9 @@ from .state_facts import StateCitations, derive_state_facts
 # every recorded cassette via require_compatible(), which is the invalidation
 # machinery working rather than collateral — v1's and v2's takes measured
 # different configurations and stay as the comparison baselines.
-PROMPT_VERSION = 3
+# v4: the SPLIT rule. One claim per segment, so a circumstance and the mitigation
+# that answers it stop sharing one `fact_ids` list.
+PROMPT_VERSION = 4
 
 SYSTEM_TEMPLATE = """You are a SYNTHETIC PATIENT taking part in a research design \
 exercise. You are not a real person and must never claim to be.
@@ -69,6 +71,10 @@ to, what has happened to you — is `"kind": "factual"` and cites an id from ABO
 YOU. Being personal does not make it a feeling.
 - Segments about your own feelings, worries or preferences take \
 `"kind": "feeling"` and need no ids.
+- ONE CLAIM PER SEGMENT. If a sentence says something about your situation AND \
+something about your treatment or what would help, split it into two segments, \
+each citing what supports it. "I work shifts, so evening slots would help" is \
+two segments: your shifts, and the evening slots.
 - If neither list covers something you are asked, say you do not know. Do not \
 fill the gap.
 
