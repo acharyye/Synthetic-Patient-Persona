@@ -49,7 +49,11 @@
         "protocol": "the rater labels the sheet blind by the same five decision rules before seeing any classifier verdict; v2.1 is adopted on those numbers under the same comparative criterion and the same clustering clause.",
         "mapping": "each archived take maps to a battery case by question text (30/30 verified), so per-persona state terms and per-case graph terms are recoverable for scoring."
       },
-      "rater_blinding_disclosure": "NEAR-TOTAL, NOT TOTAL. The rater has previously seen a handful of prompt-v2 cassette excerpts quoted in reports (a bus segment, a medication list). Recorded here beside the classifier-author conflict rather than left implicit, because a disclosed partial blind is evidence and an undisclosed one is not."
+      "rater_blinding_disclosure": "NEAR-TOTAL, NOT TOTAL. The rater has previously seen a handful of prompt-v2 cassette excerpts quoted in reports (a bus segment, a medication list). Recorded here beside the classifier-author conflict rather than left implicit, because a disclosed partial blind is evidence and an undisclosed one is not. ADDITIONALLY: the held-out sheet carries prompt-v2 inline-marker debris (trailing 'Fact 190' / 'Fact_ids: [...]' on three segments). The rater is instructed to rate the sentence and ignore it, and discloses that the debris itself un-blinds slightly \u2014 it marks those segments as v2-era takes and hints they were factual-kind.",
+      "rater_pre_commitments": {
+        "no_new_rules_mid_sheet": "the rater labels by R1-R5 verbatim. A segment forcing a distinction the five rules do not cover gets '?' with its reason, never a rule minted on the spot \u2014 a rule invented on the validation set contaminates it exactly as a definition tuned on it would. If the '?' pile CLUSTERS, that cluster becomes the next rule, adopted before whatever sheet comes after.",
+        "consistency_probe": "near-duplicate pairs are labelled independently as encountered and their agreement reported. Unlike the first sheet the rater does not know which pairs exist, which makes it a better probe."
+      }
     }
   ],
   "floor_decision": {
@@ -67,7 +71,13 @@
       "v21_in_sample": 0.4762
     },
     "floor": "0.6 is re-registered as a GOLD-SEMANTICS bar, attached to whichever instrument passes held-out validation, in its own commit before any v4 run.",
-    "anchor_sentence_for_the_v4_baseline_section": "v3 missed the floor under every defensible reading \u2014 shipped instrument, corrected instrument, and human labels \u2014 and the correction changed the size of the miss, not its existence."
+    "anchor_sentence_for_the_v4_baseline_section": "v3 missed the floor under every defensible reading \u2014 shipped instrument, corrected instrument, and human labels \u2014 and the correction changed the size of the miss, not its existence.",
+    "bias_asymmetry": {
+      "v2": "denominator too SMALL (misses) -> inflates coverage. Observed 0.6000 against gold 0.5263.",
+      "v21_in_sample": "denominator too LARGE (false positives) -> deflates coverage. Observed 0.4762 against gold 0.5263.",
+      "consequence": "the two instruments are not symmetric risks. A floor registered against v2.1 is CONSERVATIVE: a pass under v2.1 implies a pass under gold, not the reverse. A floor under v2 would have been the opposite and would have passed runs gold fails.",
+      "does_not_change_decision_1": "the bar is still gold-semantics and the held-out gate still decides. Recorded here because the asymmetry belongs where the floor is."
+    }
   },
   "schema_gap_rate_arm": {
     "registered_on": "2026-08-25",
