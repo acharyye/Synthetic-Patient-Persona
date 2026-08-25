@@ -493,6 +493,41 @@
             "docs/okf/decisions/one-generation-one-sample.md",
             "docs/okf/decisions/gate-must-be-able-to-fail.md"
           ]
+        },
+        {
+          "id": "P",
+          "title": "Read the uncovered circumstantial segments",
+          "status": "done",
+          "progress": 100,
+          "startWeek": 34,
+          "endWeek": 34,
+          "aufgabe": "state_coverage missed its floor and the adjudication branch named the cause as relabelling. That phrase was never measured. Read all 18 uncovered segments over the committed cassette, offline.",
+          "ziel": "Know what the uncovered segments actually are, so the next pre-registration fixes the right thing.",
+          "stand": "Done 2026-08-25. 18 of 37 circumstantial segments carry no state id. 17 of the 18 cite graph facts and are valid; 1 is relabelling. The verdict stands; the mechanism named in it does not.",
+          "meetingNotes": "",
+          "achievements": [
+            "Pure read over tests/cassettes/narration_battery.json — 30 takes, no model run, no network. Replay gives state_coverage 0.5135 over 37 circumstantial segments.",
+            "Of the 18 uncovered: 17 cite graph facts only and are kind `factual`; 1 cites nothing and is kind `feeling`; 0 lacked an offered state id. Not one is an uncited factual claim.",
+            "docs/okf/concepts/state-coverage-denominator.md records the read, and v3-reading.md now says the branch label's stated cause did not hold."
+          ],
+          "validations": [
+            "Human read of all 18 segment texts: ~9 are denominator false positives (clinical claims in the first person, correctly citing graph facts), ~8 are compound segments citing their mitigation half and not the circumstance riding along with it, 1 is relabelling.",
+            "0 of 18 had no state id available, so no miss is explained by 'never had one to cite'."
+          ],
+          "decisions": [
+            "The pre-registered shape file is NOT edited. The floor was missed on both readings, the branch is unchanged, and an expectation revised after seeing results is not an expectation. The denominator fix belongs in the next pre-registration.",
+            "is_circumstantial cannot separate a first-person CLINICAL claim from a first-person CIRCUMSTANTIAL one, and that gap is most of this miss. Its bias toward including is deliberate and sound; the instrument, not the bias, is what needs the change."
+          ],
+          "links": [
+            "KR1.1"
+          ],
+          "deps": [
+            "I"
+          ],
+          "assignees": [],
+          "knowledge": [
+            "docs/okf/concepts/state-coverage-denominator.md"
+          ]
         }
       ]
     },
