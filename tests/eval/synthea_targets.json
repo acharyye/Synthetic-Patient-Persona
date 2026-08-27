@@ -66,5 +66,22 @@
       "below_it": "the entry stays EXPERT_GUESS and is annotated 'Synthea n too small' \u2014 a THIRD visible state in the split pack, not a silent fallback",
       "why_registered_now": "this is pass-bars discipline applied to sample size. A threshold chosen after seeing which entries clear it is not a threshold."
     }
+  },
+  "deceased_patients": {
+    "registered_on": "2026-08-27",
+    "registered_before": "the calibration run",
+    "the_fact": "`-p 100` counts LIVING patients. The structural run shipped 113, of which 13 are deceased.",
+    "why_it_is_a_decision": "prevalence-by-age shifts depending on the answer. Including the deceased weights the old tail with people who died of the conditions being modelled; excluding them models a population that never dies, which is also wrong.",
+    "DECISION": "EXCLUDE patients with a non-empty DEATHDATE from derivation.",
+    "reason": "the packs describe a population being RECRUITED INTO A TRIAL. A trial screens living candidates, so the marginals should describe living candidates. This is a product decision, not a statistical one, and it is the reason it can be made before seeing any number.",
+    "consequence_accepted": "the derived age marginal will be younger than a true prevalence-weighted one, because condition-related mortality is removed from the tail. Recorded here so the effect is a known property rather than a later surprise.",
+    "the_loader_must": "count and report how many patients it excluded, per run, in the diff table."
+  },
+  "jar_pinning": {
+    "registered_on": "2026-08-27",
+    "rule": "the Synthea jar is pinned by CONTENT, never by tag.",
+    "why": "`master-branch-latest` is a mutable pointer \u2014 the same lesson as pinning a model by digest rather than by tag. A jar that changes underneath the same URL changes every target derived from it.",
+    "structural_run_jar_sha256": "018ad7f04f7aacb995804d7d4781c76d5fc714f7f23257ba50daa9eefae224ac",
+    "calibration_run_must": "cite the same hash, or record that it used a different one and why. Download once, hash, record BEFORE generating."
   }
 }

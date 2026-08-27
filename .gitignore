@@ -11,6 +11,14 @@ data/*
 # authored, not downloaded. Losing these loses the cohort generator's priors.
 !data/prior_packs/
 !data/knowledge/
+# The Synthea structural export is neither a corpus nor a dump: it is the
+# EVIDENCE that the fixtures match reality, and test_synthea_structure.py reads
+# it. "Regenerable" is the usual reason to ignore data, and it does not hold here
+# — regenerating needs the exact jar, and the jar is fetched from a MUTABLE tag
+# (`master-branch-latest`). Its sha256 is pinned in the MANIFEST precisely
+# because the source it came from can change underneath the same URL. Losing this
+# loses the only proof the loader was built against the real schema.
+!data/synthea/
 .pytest_cache/
 *.egg-info/
 .DS_Store

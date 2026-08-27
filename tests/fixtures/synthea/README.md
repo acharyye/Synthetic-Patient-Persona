@@ -27,3 +27,25 @@ fail *here* rather than in the real run:
 The last row is the load-bearing one. `Jordan Vance` appears twice with different
 UUIDs and different conditions, so any join that keys on a name rather than an id
 produces a patient with both conditions and no error.
+
+
+## What the first structural diff caught — 2026-08-27
+
+The fixtures were authored from the published data dictionary. A real export
+(113 patients, seed 11, jar `018ad7f0…`) arrived and the diff fired **twice**:
+
+| | fixture said | reality says |
+|---|---|---|
+| `patients.csv` | no `MIDDLE` column | `MIDDLE` sits between `FIRST` and `LAST` |
+| `conditions.SYSTEM` | `http://snomed.info/sct` | `SNOMED-CT` |
+
+Both fixtures were wrong and both are corrected. The `SYSTEM` one is the more
+instructive: it *parsed*, it looked like a plausible SNOMED identifier, and it
+would have had the loader tested against a vocabulary that does not exist. A
+column that goes missing announces itself; an invented enum value does not.
+
+Three columns the manifest flagged as likely misses — `SYSTEM`, `FIPS`, `INCOME` —
+were already present and correct. So the dictionary this was written from was
+current in structure and wrong in two details, which is roughly the failure rate
+a documentation page earns and exactly why the diff is the deliverable rather
+than the fixtures.

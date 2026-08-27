@@ -1,0 +1,22 @@
+{
+  "tool": "synthea-with-dependencies.jar",
+  "source": "https://github.com/synthetichealth/synthea/releases/download/master-branch-latest/synthea-with-dependencies.jar",
+  "jar_sha256": "018ad7f04f7aacb995804d7d4781c76d5fc714f7f23257ba50daa9eefae224ac",
+  "population_flag": "-p 100",
+  "seed": 11,
+  "clinician_seed": 11,
+  "patients_generated": 113,
+  "generated_on": "2026-08-27",
+  "java": "OpenJDK 21.0.10, Ubuntu 24.04 container",
+  "purpose": "structural-validation run ONLY \u2014 feeds the structural diff test, feeds NO calibration target per the registered two-run rule",
+  "note_for_diff": "conditions.csv includes SYSTEM column; patients.csv includes MIDDLE, FIPS, INCOME \u2014 verify against fixture assumptions",
+  "truncation": {
+    "file": "observations.csv",
+    "reason": "14MB of observations in git history is a permanent cost for a file the structural diff reads the first 5000 rows of. Truncated so the export can be committed rather than kept on one machine \u2014 which is the failure mode this project fixed in v0.3.",
+    "rows_kept": 5000,
+    "rows_in_full_export": 81612,
+    "full_file_sha256": "10cd35b6d1c8f0f8b4ab8e9a1bbe555ff4230a2c91d3df464b9c7074c2d6c6de",
+    "every_other_table_is_complete": true,
+    "note": "the truncation is recorded rather than silent. A 'real export' that was quietly altered is not one."
+  }
+}
