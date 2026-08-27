@@ -25,7 +25,13 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from spp.report import compare_cohorts, render_comparison, render_counterfactual  # noqa: E402
+from spp.report import (  # noqa: E402
+    compare_cohorts,
+    render_bundle,
+    render_comparison,
+    render_counterfactual,
+    render_verdict,
+)
 
 
 def _counterfactual(args: argparse.Namespace) -> str:
@@ -50,6 +56,33 @@ def _comparison(args: argparse.Namespace) -> str:
     payload = comparison.model_dump(mode="json")
     payload["headline"] = comparison.headline()
     return render_comparison(payload)
+
+
+def _verdict(args: argparse.Namespace) -> str:
+    import json
+
+    return render_verdict(json.loads(args.verdict.read_text(encoding="utf-8")))
+
+
+def _bundle(args: argparse.Namespace) -> str:
+    """Read a bundle directory. Missing parts render as missing, never as absent.
+
+    A bundle that was never adjudicated must say so on the page rather than
+    quietly omit the section — the reader cannot tell those apart, and one of them
+    means the verdict does not exist yet.
+    """
+    import json
+
+    def load(name: str) -> dict:
+        path = args.bundle / name
+        return json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+
+    adjudication = load("adjudication_v4.json") or load("adjudication.json")
+    return render_bundle({
+        "manifest": load("manifest.json"),
+        "compliance": load("compliance.json"),
+        "adjudication": adjudication,
+    })
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -82,7 +115,15 @@ def main(argv: list[str] | None = None) -> int:
     cp.add_argument("--right-seed", type=int, default=7)
     cp.set_defaults(func=_comparison)
 
-    for p in (cf, cp):
+    vd = sub.add_parser("verdict", help="a protocol-CI verdict JSON")
+    vd.add_argument("--verdict", type=Path, required=True)
+    vd.set_defaults(func=_verdict)
+
+    bd = sub.add_parser("bundle", help="an evidence bundle directory")
+    bd.add_argument("--bundle", type=Path, required=True)
+    bd.set_defaults(func=_bundle)
+
+    for p in (cf, cp, vd, bd):
         p.add_argument("--out", type=Path, required=True)
 
     args = parser.parse_args(argv)

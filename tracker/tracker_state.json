@@ -611,27 +611,34 @@
         {
           "id": "M",
           "title": "Scenario comparison views + exportable reports",
-          "status": "in-progress",
-          "progress": 55,
+          "status": "done",
+          "progress": 100,
           "startWeek": 41,
           "endWeek": 44,
           "aufgabe": "Add scenario comparison output and exportable reports on top of Scenario Lab, Interview Room and Cohort Studio.",
           "ziel": "A stakeholder can run a comparison and take an artifact away without the author present.",
-          "stand": "Exportable reports done: render_comparison, a reading protocol on both pages, and scripts/export_report.py writing self-contained files with no server. Remaining: an exportable form for the protocol-CI verdict and the evidence bundle summary.",
+          "stand": "Done 2026-08-25. Four exportable artifact types — counterfactual, cohort comparison, protocol-CI verdict, evidence bundle — each a self-contained file written by scripts/export_report.py with no server, no JavaScript and no network.",
           "meetingNotes": "",
           "achievements": [
             "report/html.py gains render_comparison — the cohort comparison had an artifact (compare.py) and no renderer, so it could not leave the room.",
             "READING_PROTOCOL rendered on BOTH pages. The evidence bundles have carried an ordered protocol since v0.1; a page that travels further than a bundle needs one more, not less.",
             "scripts/export_report.py — the actual 'walks out of the room' piece. The renderer already produced a self-contained page; the only way to obtain one was to run the API and POST to it, so the artifact could not be emailed.",
-            "The CLI refuses to ship a page containing <script, src= or an http(s) URL. A file:// page that reaches for the network breaks in the meeting it was written for."
+            "The CLI refuses to ship a page containing <script, src= or an http(s) URL. A file:// page that reaches for the network breaks in the meeting it was written for.",
+            "render_verdict — the protocol-CI verdict as a page, with sign stability rendered NEXT TO the outcome so the FAIL-to-WARN downgrade is visible rather than resolved away.",
+            "render_bundle — the evidence bundle in its OWN reading order: canary, raw takes, quarantine, aggregates, adjudication last. An unadjudicated bundle renders 'not adjudicated' rather than omitting the section.",
+            "Four `export_report.py` subcommands. The v0.5 bundle renders to a 9.8KB self-contained page a manager can open."
           ],
           "validations": [
             "987 passed, 19 skipped (was 981).",
-            "Mutation canary: removing the renderer's suppression of persona rows in distributional mode turns TestTheInvariantSurvivesRendering red."
+            "Mutation canary: removing the renderer's suppression of persona rows in distributional mode turns TestTheInvariantSurvivesRendering red.",
+            "991 passed, 19 skipped.",
+            "Mutation canary, 2 of 2 caught: moving the adjudication to the top of the bundle page, and removing the downgrade explanation from the verdict page."
           ],
           "decisions": [
             "The identity/distributional invariant is enforced AT THE RENDERER as a second point, not only in compare_cohorts. The test smuggles a persona row into a distributional payload by hand and requires it not to appear — because the export CLI's author is exactly the caller who would build a payload by hand, and nobody is present to explain the distinction to whoever opens the file.",
-            "Linked to KR2.3 ('an evidence bundle supports its own reading protocol without external files'). The KR was written about bundles; an exported report is the same claim carried further, so the KR is applied rather than a new one invented."
+            "Linked to KR2.3 ('an evidence bundle supports its own reading protocol without external files'). The KR was written about bundles; an exported report is the same claim carried further, so the KR is applied rather than a new one invented.",
+            "The bundle page keeps the protocol ORDER as an asserted property, not a styling choice. A summary that opened with the verdict would be a nicer document and a worse artifact — the whole reason the bundles carry an ordered protocol is that a reader who meets the headline first reads everything above it looking for confirmation.",
+            "'Not adjudicated' is rendered rather than omitted. Missing and absent look identical to a reader, and one of them means the verdict does not exist yet."
           ],
           "links": [
             "KR2.3"

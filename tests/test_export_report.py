@@ -109,3 +109,67 @@ class TestTheCLIWritesAFile:
         assert out.exists()
         assert "self-contained" in result.stdout
         assert out.read_text().startswith("<!doctype html>")
+
+
+class TestTheBundlePageKeepsTheReadingOrder:
+    """The order is the constraint, not the styling.
+
+    A bundle's protocol is canary → takes → quarantine → aggregates →
+    adjudication, and it exists because a reader who meets the verdict first reads
+    everything above it looking for confirmation. A summary page that opened with
+    the headline would be a nicer document and a worse artifact, so the order is
+    asserted rather than trusted to whoever edits the template next.
+    """
+
+    def page(self):
+        from spp.report import render_bundle
+
+        return render_bundle({
+            "manifest": {"release": "v0.5", "canary_sensitive": True,
+                         "accepted_takes": 30, "battery_cases": 30,
+                         "quarantined_takes": 0},
+            "compliance": {"report": {}, "verdict": {"bars": []}},
+            "adjudication": {"verdict": "THE LEVER ACTED AND THE FLOOR WAS MISSED",
+                             "arms": [{"metric": "state_coverage", "bound": "floor 0.6",
+                                       "observed": 0.556, "passed": False}]},
+        })
+
+    def test_sections_appear_in_the_protocol_order(self):
+        page = self.page()
+        positions = [page.find(marker) for marker in
+                     ("1 · Canary", "2 · Raw takes", "3 · Quarantine",
+                      "4 · Aggregates", "5 · Adjudication")]
+
+        assert all(p >= 0 for p in positions), "a protocol section is missing"
+        assert positions == sorted(positions)
+
+    def test_the_verdict_does_not_appear_before_the_canary(self):
+        page = self.page()
+        head = page[:page.find("1 · Canary")]
+
+        assert "FLOOR WAS MISSED" not in head
+
+    def test_an_unadjudicated_bundle_says_so_rather_than_omitting(self):
+        """Missing and absent are different, and a reader cannot tell them apart."""
+        from spp.report import render_bundle
+
+        page = render_bundle({"manifest": {"release": "v0.1"}})
+
+        assert "not adjudicated" in page
+
+
+class TestTheVerdictPageShowsTheDowngrade:
+    def test_sign_stability_is_rendered_next_to_the_outcome(self):
+        """A FAIL downgraded to WARN for want of sign stability is the gate
+        refusing to assert what its method cannot distinguish. A page showing only
+        the final word hides the most defensible thing about it."""
+        from spp.report import render_verdict
+
+        page = render_verdict({
+            "outcome": "warn", "scenario_name": "s", "reason": "r",
+            "sign_stability": {"seeds": [42, 7], "net_flips": [3, -1], "stable": False},
+        })
+
+        assert "not stable" in page
+        assert "downgrades it to WARN" in page
+        assert ">42<" in page and ">7<" in page

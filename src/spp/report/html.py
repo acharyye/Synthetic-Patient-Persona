@@ -339,3 +339,233 @@ field. They are not transcribed here, so this table and the contract suite canno
 <footer>Nothing on this page was recomputed for display. The comparison mode is
 part of the result: identity pairing is exact, cross-seed pairing does not exist.</footer>
 </div>"""
+
+
+def render_verdict(verdict: dict) -> str:
+    """Render a protocol-CI `Verdict` as a standalone page.
+
+    **The downgrade is rendered, not resolved.** A FAIL requires the drop to
+    exceed its gate AND to be sign-stable across two master seeds; a drop that
+    flips direction when the population is redrawn is below the paired design's
+    resolution and becomes a WARN. That rule is the gate refusing to assert what
+    its own method cannot distinguish, and a page showing only the final word
+    would hide the most defensible thing about it. So the sign-stability line sits
+    next to the outcome, with the per-seed net flips visible.
+    """
+    outcome = str(verdict.get("outcome", "")).upper()
+    tone = {"PASS": "good", "FAIL": "bad", "WARN": "warn"}.get(outcome, "")
+    stability = verdict.get("sign_stability") or {}
+    config = verdict.get("config") or {}
+    recovered = verdict.get("recovered") or []
+    lost = verdict.get("lost") or []
+    warnings = verdict.get("environment_warnings") or []
+
+    stamp = "".join([
+        _chip("scenario", verdict.get("scenario_name")),
+        _chip("condition", config.get("condition")),
+        _chip("pack", f"{config.get('pack_id')}@{config.get('pack_version')}"),
+        _chip("seed", config.get("cohort_seed")),
+        _chip("cohort", config.get("cohort_size")),
+        _chip("engine", f"v{config.get('engine_version')}"),
+        _chip("baseline", str(verdict.get("baseline_hash", ""))[:12]),
+        _chip("candidate", str(verdict.get("candidate_hash", ""))[:12]),
+    ])
+
+    seeds = stability.get("seeds") or []
+    nets = stability.get("net_flips") or []
+    stable = stability.get("stable")
+    stability_rows = "".join(
+        f"<tr><td class='mono'>{esc(s)}</td><td class='num'>{esc(n):}</td></tr>"
+        for s, n in zip(seeds, nets)
+    ) or "<tr><td colspan=2>not re-run</td></tr>"
+
+    flips = "".join(
+        f"<tr><td class='mono'>{esc(f.get('patient_id'))}</td>"
+        f"<td>{esc(f.get('direction'))}</td>"
+        f"<td>{esc(f.get('baseline_exit_reason') or '—')}</td>"
+        f"<td class='num'>day {esc(f.get('diverged_at_day'))}</td></tr>"
+        for f in [*recovered, *lost]
+    ) or "<tr><td colspan=4>no outcome changed</td></tr>"
+
+    attribution = "".join(
+        f"<tr><td class='mono'>{esc(a.get('criterion'))}</td>"
+        f"<td>{esc(a.get('kind'))}</td>"
+        f"<td class='num'>{esc(a.get('baseline_share'))}</td>"
+        f"<td class='num'>{esc(a.get('candidate_share'))}</td>"
+        f"<td class='num'>{esc(a.get('baseline_sole_reason'))} &rarr; "
+        f"{esc(a.get('candidate_sole_reason'))}</td></tr>"
+        for a in (verdict.get("attribution_deltas") or [])
+    ) or "<tr><td colspan=5>no criterion moved</td></tr>"
+
+    warn_block = (
+        "<h2>Environment</h2><ul>"
+        + "".join(f"<li class='warn'>{esc(w)}</li>" for w in warnings)
+        + "</ul>"
+    ) if warnings else ""
+
+    return f"""<!doctype html><meta charset="utf-8">
+<title>Protocol CI — {esc(verdict.get("scenario_name"))} — {esc(outcome)}</title>
+<style>{STYLE}</style>
+<div class="wrap">
+<header>
+  <h1>Protocol CI verdict</h1>
+  <p class="sub">{esc(verdict.get("reason", ""))}</p>
+  <div class="stamp">{stamp}</div>
+</header>
+
+{_reading_protocol()}
+
+<div class="headline">
+  <div class="big {tone}">{esc(outcome)}</div>
+  <div class="sub">{len(recovered)} recovered, {len(lost)} lost,
+  {esc(verdict.get("perturbed", 0))} perturbed without changing outcome,
+  {esc(verdict.get("unchanged", 0))} untouched &nbsp;·&nbsp;
+  retention {esc(verdict.get("baseline_retention"))} &rarr;
+  {esc(verdict.get("candidate_retention"))}
+  ({esc(verdict.get("retention_delta_pp"))} pp)</div>
+</div>
+
+<h2>Sign stability — why this outcome and not a stronger one</h2>
+<p class="sub">A FAIL requires the drop to exceed its gate <b>and</b> to keep its
+sign when the population is redrawn under a second master seed. A drop that flips
+direction is below this design's resolution, and the gate downgrades it to WARN
+rather than assert what its method cannot distinguish. Stability here:
+<b class="{'good' if stable else 'warn'}">{'stable' if stable else 'not stable'}</b>.</p>
+<table><tr><th>master seed</th><th class="num">net flips</th></tr>{stability_rows}</table>
+
+<h2>Who changed</h2>
+<p class="sub">Runs are paired per persona under common random numbers, so these
+are exact flips rather than a difference of two aggregates.</p>
+<table><tr><th>persona</th><th>direction</th><th>baseline exit</th>
+<th class="num">diverged</th></tr>{flips}</table>
+
+<h2>Eligibility attribution — exact Shapley</h2>
+<table><tr><th>criterion</th><th>kind</th><th class="num">baseline share</th>
+<th class="num">candidate share</th><th class="num">sole reason</th></tr>{attribution}</table>
+
+{warn_block}
+
+{_ledger_section()}
+
+<footer>Gates are pre-registered in <span class="mono">ci/gates.json</span>, chosen
+before any verdict existed. Nothing on this page was recomputed for display.</footer>
+</div>"""
+
+
+BUNDLE_READING_ORDER = [
+    ("canary", "Did the instrument demonstrate it can fail? An eval that cannot "
+               "fail is not evidence, so this comes first."),
+    ("raw takes", "The seed-chosen sampled responses, in full. No aggregate here "
+                  "catches degeneracy; only reading does."),
+    ("quarantine", "Every rejected response with its reason. This file is the "
+                   "compliance dataset, and its size relative to the cassette is "
+                   "the headline result."),
+    ("aggregates", "Scores and the pre-registered pass-bar verdicts."),
+    ("adjudication", "The arms registered before the run, read against what "
+                     "happened. Last, because meeting the verdict first colours "
+                     "the reading of everything above it."),
+]
+
+
+def render_bundle(bundle: dict) -> str:
+    """Render an evidence bundle summary, **in the bundle's own reading order**.
+
+    The order is the constraint, not the styling. A bundle that let a reader skip
+    to the numbers would defeat the protocol it ships with, so the aggregates sit
+    fourth and the adjudication last on this page exactly as they do in the
+    directory's README. A summary page that led with the verdict would be a nicer
+    document and a worse artifact.
+    """
+    manifest = bundle.get("manifest") or {}
+    report = (bundle.get("compliance") or {}).get("report") or {}
+    verdict = (bundle.get("compliance") or {}).get("verdict") or {}
+    adjudication = bundle.get("adjudication") or {}
+    runtime = manifest.get("runtime") or {}
+
+    identity = manifest.get("model", "")
+    if manifest.get("model_digest"):
+        identity = f"{identity}@{str(manifest['model_digest'])[:19]}"
+
+    stamp = "".join([
+        _chip("release", manifest.get("release")),
+        _chip("model", identity),
+        _chip("prompt", f"v{manifest.get('prompt_version')}"),
+        _chip("recorded", manifest.get("recorded_at", "")),
+        _chip("python", runtime.get("python_version")),
+        _chip("numpy", runtime.get("numpy_version")),
+        _chip("lock", runtime.get("lock_hash")),
+    ])
+
+    order = "".join(
+        f"<li><b>{esc(label)}</b> — {esc(text)}</li>"
+        for label, text in BUNDLE_READING_ORDER
+    )
+
+    bars = "".join(
+        f"<tr><td class='mono'>{esc(b.get('metric'))}</td>"
+        f"<td>{esc(b.get('kind'))}</td>"
+        f"<td class='num'>{esc(b.get('observed'))}</td>"
+        f"<td class='num'>{esc(b.get('bar'))}</td>"
+        f"<td>{'<span class=good>pass</span>' if b.get('passed') else '<span class=bad>MISS</span>'}</td></tr>"
+        for b in (verdict.get("bars") or [])
+    ) or "<tr><td colspan=5>no bars recorded</td></tr>"
+
+    arms = "".join(
+        f"<tr><td class='mono'>{esc(a.get('metric'))}</td>"
+        f"<td>{esc(a.get('bound'))}</td>"
+        f"<td class='num'>{esc(a.get('observed'))}</td>"
+        f"<td>{'<span class=good>pass</span>' if a.get('passed') else ('<span class=bad>MISS</span>' if a.get('passed') is False else '<span class=warn>not adjudicable</span>')}</td></tr>"
+        for a in (adjudication.get("arms") or [])
+    ) or "<tr><td colspan=4>not adjudicated</td></tr>"
+
+    quarantined = manifest.get("quarantined_takes", 0)
+    return f"""<!doctype html><meta charset="utf-8">
+<title>Evidence bundle — {esc(manifest.get("release"))}</title>
+<style>{STYLE}</style>
+<div class="wrap">
+<header>
+  <h1>Evidence bundle — {esc(manifest.get("release"))}</h1>
+  <p class="sub">One run of the compliance battery, against one configuration.</p>
+  <div class="stamp">{stamp}</div>
+</header>
+
+<div class="protocol"><h2 style="margin-top:0">Read in this order</h2>
+<ol>{order}</ol>
+<p class="sub">This ordering is the protocol the bundle ships with, reproduced
+here rather than replaced. A summary page that opened with the verdict would be a
+nicer document and a worse artifact.</p></div>
+
+<h2>1 · Canary — could the instrument fail?</h2>
+<p class="sub">Degraded configurations were scored alongside the real one and the
+run refuses to record unless they score worse.
+<b class="{'good' if manifest.get('canary_sensitive') else 'bad'}">
+{'sensitive — the eval detects degradation' if manifest.get('canary_sensitive') else 'NOT DEMONSTRATED for this run'}</b></p>
+
+<h2>2 · Raw takes</h2>
+<p class="sub">{esc(manifest.get("accepted_takes", 0))} accepted of
+{esc(manifest.get("battery_cases", 0))} cases. The seed-chosen sample is in
+<span class="mono">takes/</span> and is meant to be read in full — no metric on
+this page catches degeneracy. Segments per take {esc(report.get("mean_segments_per_take"))},
+single-segment rate {esc(report.get("single_segment_rate"))}.</p>
+
+<h2>3 · Quarantine</h2>
+<p class="sub"><b class="{'good' if not quarantined else 'bad'}">{esc(quarantined)}</b>
+responses failed the citation gate and were not recorded. Only responses that pass
+may persist; a recording made from a non-compliant response would replay
+<span class="mono">grounded: true</span> forever.</p>
+
+<h2>4 · Aggregates and pre-registered bars</h2>
+<p class="sub">Bars were registered {esc(verdict.get("registered_on", "before the first live run"))}.</p>
+<table><tr><th>metric</th><th>kind</th><th class="num">observed</th>
+<th class="num">bar</th><th></th></tr>{bars}</table>
+
+<h2>5 · Adjudication — the arms registered before the run</h2>
+<p class="sub">{esc(adjudication.get("verdict", adjudication.get("reading", "")))}</p>
+<table><tr><th>metric</th><th>bound</th><th class="num">observed</th><th></th></tr>{arms}</table>
+
+<div class="caveat">{esc(manifest.get("caveat", ""))}</div>
+
+<footer>The bundle directory is the record. This page is a read over it, and the
+directory stays authoritative — including anything the bundle says it could not
+fix about itself.</footer>
+</div>"""
