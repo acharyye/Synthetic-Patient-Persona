@@ -29,6 +29,7 @@ import math
 
 import json
 from datetime import date
+from enum import Enum
 from pathlib import Path
 from typing import Any, Literal
 
@@ -43,16 +44,80 @@ PACK_DIR = Path(__file__).resolve().parents[3] / "data" / "prior_packs"
 MarginalFamily = Literal["normal", "categorical", "bernoulli_set", "ladder", "scalar"]
 
 
+class ProvenanceKind(str, Enum):
+    """WHAT KIND of claim a number is. Deliberately **not** an ordered scale.
+
+    `Confidence` is ordered weakest-to-strongest and stays that way for the
+    assumption ledger, where "how much weight can this bear" is the question. This
+    is a different axis and needs its own field, because an expert guess and a
+    Synthea-derived value can both be wrong and they are wrong *differently*:
+
+    * `EXPERT_GUESS` — unknown provenance. Someone typed a plausible number.
+    * `SYNTHEA_CALIBRATED` — **known synthetic** provenance. Traceable to Synthea's
+      care maps and published statistics, which carry their own documented biases:
+      US-centric, care-pathway-shaped, and thin on social determinants.
+    * `CUSTOMER_DATA_FITTED` — fitted to a real population's aggregates.
+
+    Ranking Synthea above guess on the *confidence* scale would eventually be read
+    as "quotable once high enough", and that is the inflation path: synthetic
+    calibration is a better-documented assumption, not a weaker one. So `quotable`
+    keys on KIND, and **only the third kind ever crosses the line.**
+
+    The demo sentence this protects: *"51 entries, all expert guesses today; watch
+    this one move to Synthea-calibrated, per entry, with the version stamped."*
+    Visible per-entry movement is the feature. A scale would blur it.
+    """
+
+    EXPERT_GUESS = "expert_guess"
+    SYNTHEA_CALIBRATED = "synthea_calibrated"
+    CUSTOMER_DATA_FITTED = "customer_data_fitted"
+
+
+# The one kind whose outputs may be presented as findings.
+QUOTABLE_KINDS: frozenset[ProvenanceKind] = frozenset({
+    ProvenanceKind.CUSTOMER_DATA_FITTED
+})
+
+
 class Provenance(BaseModel):
-    """Where a number came from and how much weight it can bear."""
+    """Where a number came from, what kind of claim it is, and what it may bear."""
 
     source: str
     confidence: Confidence = Confidence.EXPERT_GUESS
+    kind: ProvenanceKind = ProvenanceKind.EXPERT_GUESS
     as_of: date | None = None
+    # Synthea is deterministic given (version, seed). A calibration target that
+    # cannot name the run that produced it is the digest-pinning lesson forgotten:
+    # a tag is a mutable pointer, and so is "generated from Synthea".
+    synthea_version: str = ""
+    synthea_seed: int | None = None
 
     @property
     def quotable(self) -> bool:
-        return self.confidence not in {Confidence.EXPERT_GUESS}
+        return self.kind in QUOTABLE_KINDS
+
+    @property
+    def caveat(self) -> str:
+        """The sentence this entry can be described with, without flinching."""
+        if self.kind is ProvenanceKind.CUSTOMER_DATA_FITTED:
+            return "fitted to real population aggregates"
+        if self.kind is ProvenanceKind.SYNTHEA_CALIBRATED:
+            stamp = f"{self.synthea_version or 'unversioned'}"
+            if self.synthea_seed is not None:
+                stamp += f", seed {self.synthea_seed}"
+            return (f"calibrated against Synthea-generated populations ({stamp}); "
+                    "not real-world epidemiology")
+        return "expert guess; not fitted to any dataset"
+
+    @model_validator(mode="after")
+    def _synthea_entries_name_their_run(self) -> Provenance:
+        if self.kind is ProvenanceKind.SYNTHEA_CALIBRATED and not self.synthea_version:
+            raise ValueError(
+                "a SYNTHEA_CALIBRATED entry must name the Synthea version that "
+                "produced it — an unversioned calibration target cannot be "
+                "reproduced or audited"
+            )
+        return self
 
 
 class MarginalSpec(BaseModel):
