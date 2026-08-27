@@ -83,5 +83,74 @@
     "why": "`master-branch-latest` is a mutable pointer \u2014 the same lesson as pinning a model by digest rather than by tag. A jar that changes underneath the same URL changes every target derived from it.",
     "structural_run_jar_sha256": "018ad7f04f7aacb995804d7d4781c76d5fc714f7f23257ba50daa9eefae224ac",
     "calibration_run_must": "cite the same hash, or record that it used a different one and why. Download once, hash, record BEFORE generating."
+  },
+  "medication_ladder_is_membership_not_order": {
+    "registered_on": "2026-08-27",
+    "registered_before": "the loader emits a single number",
+    "the_distinction": "every other calibratable entry is a MARGINAL. medication_ladder is a STRUCTURE \u2014 which drugs, in what escalation order, per condition.",
+    "DECISION": "Synthea may calibrate drug PREVALENCE per condition. It may NOT calibrate ladder ORDER. The ladder stays EXPERT_GUESS, annotated 'Synthea informs membership, not order'.",
+    "reason_1_the_data": "dispenses carry START dates, so a temporal sequence is technically recoverable per patient. Recovering a canonical ladder from those sequences is a much stronger claim than counting membership.",
+    "reason_2_the_sharper_one": "the order is Synthea's PROTOCOL ASSUMPTION, not a population fact. Its care maps encode a US clinical escalation pathway and then emit dispenses consistent with it. Calibrating a ladder against that output would re-derive Synthea's own protocol logic and stamp it SYNTHEA_CALIBRATED \u2014 a care-map decision wearing a data label. Prevalence is a count of what the simulated population received; order is a restatement of the rule that generated them.",
+    "if_this_is_revisited": "ladder order needs its own justification and its own provenance kind, not an extension of this one."
+  },
+  "condition_mapping": {
+    "registered_on": "2026-08-27",
+    "problem": "Synthea's condition vocabulary is GRANULAR \u2014 'Diabetes mellitus type 2 (disorder)' plus complications as separate rows \u2014 and the packs are COARSE, five conditions. Mapping is lossy by construction.",
+    "requirements": [
+      "an EXPLICIT code -> pack-condition table, committed, never inferred from description substrings at runtime",
+      "a per-run report of UNMAPPED condition rows: how many matched no pack condition, and the top unmapped codes by frequency"
+    ],
+    "why_the_report_is_the_important_half": "a mapping that quietly drops 60% of condition rows produces clean-looking marginals from a population fragment. Same species as the deceased count: exclusions are visible, always, and a derivation that cannot say what it discarded is not auditable.",
+    "no_threshold_yet": "what fraction of unmapped rows is acceptable is NOT registered here, because it depends on what the codes turn out to be \u2014 complications of a mapped condition are a different loss from unrelated conditions. The report comes first, the threshold after reading it, and that ordering is stated so the threshold cannot be chosen to fit."
+  },
+  "calibration_run_parameters": {
+    "registered_on": "2026-08-27",
+    "registered_before": "the loader can compute a single target",
+    "population_flag": "-p 1000",
+    "seed": 20260827,
+    "clinician_seed": 20260827,
+    "jar_sha256": "018ad7f04f7aacb995804d7d4781c76d5fc714f7f23257ba50daa9eefae224ac",
+    "n_threshold": 50,
+    "why_committed_now": "pass-bars discipline applied to data generation. Nobody gets to size the population after seeing which entries almost clear the threshold, and nobody gets to reroll the seed after an inconvenient draw.",
+    "deceased": "excluded from derivation, counted and reported \u2014 see deceased_patients",
+    "manifest_required": "the calibration export ships its own MANIFEST citing these parameters and the jar hash it actually used."
+  },
+  "PRE_RUN_FINDING_prevalence_is_the_binding_constraint": {
+    "found_on": "2026-08-27",
+    "found_before": "the calibration run, and before the loader emitted any number",
+    "status": "REPORTED, NOT ACTED ON. calibration_run_parameters is unchanged pending an explicit amendment \u2014 the parameters were registered hours ago and editing them on the strength of a convenient discovery is the thing pre-registration exists to prevent.",
+    "measured_on": "the structural export: 113 patients, 100 living, 4,207 condition rows, 187 distinct codes",
+    "table": {
+      "type 2 diabetes": {
+        "living_patients": 6,
+        "per_1000": 60.0,
+        "population_for_n50": 833
+      },
+      "breast cancer": {
+        "living_patients": 3,
+        "per_1000": 30.0,
+        "population_for_n50": 1666
+      },
+      "COPD": {
+        "living_patients": 2,
+        "per_1000": 20.0,
+        "population_for_n50": 2500,
+        "note": "emphysema + chronic obstructive bronchitis combined"
+      },
+      "heart failure": {
+        "living_patients": 0,
+        "per_1000": 0.0,
+        "note": "one CHF patient in 113, and they are deceased \u2014 so zero LIVING, under the registered exclusion"
+      },
+      "rheumatoid arthritis": {
+        "living_patients": 0,
+        "per_1000": 0.0,
+        "note": "the string 'rheumatoid' does not appear in any of the 4,207 condition rows. This looks like a MODELLING limit, not a sample-size problem."
+      }
+    },
+    "consequence_1": "the registered `-p 1000` clears the n=50 threshold for type 2 diabetes ONLY. Breast cancer needs ~1,700, COPD ~2,500, heart failure far more.",
+    "consequence_2": "rheumatoid arthritis may have no Synthea path at all. If Synthea has no RA module, that pack stays entirely EXPERT_GUESS regardless of population size \u2014 which is a fact about the tool, not a failure of the loader, and belongs in the split-pack story rather than being worked around.",
+    "what_this_does_NOT_change": "the n-threshold of 50. Lowering it because the conditions are rare would be choosing a bar to fit the data, which is precisely the move the threshold was registered early to block.",
+    "the_decision_this_needs": "an amendment to calibration_run_parameters naming a larger population, and an explicit finding on whether Synthea models RA at all. Both belong to the owner, before the run."
   }
 }
