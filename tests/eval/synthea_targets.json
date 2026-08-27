@@ -2,8 +2,7 @@
   "$comment": "WHICH pack entries Synthea may calibrate, committed BEFORE the loader is built. A target list discovered during implementation is a target list shaped by what turned out to be easy. Fields absent here stay EXPERT_GUESS no matter what a Synthea run appears to say about them, and tests/test_synthea_targets.py enforces that.",
   "registered_on": "2026-08-25",
   "registered_before_the_loader_exists": true,
-  "$location": "tests/eval/ with the other pre-registrations — pass_bars.json, v3_expected_shape.json, instrument_v2_gate.json. It lived in data/prior_packs/ for about four minutes, where available_packs() globs *.json and every pack load failed. A commitment is not data.",
-
+  "$location": "tests/eval/ with the other pre-registrations \u2014 pass_bars.json, v3_expected_shape.json, instrument_v2_gate.json. It lived in data/prior_packs/ for about four minutes, where available_packs() globs *.json and every pack load failed. A commitment is not data.",
   "synthea_can_calibrate": {
     "age": "demographics are Synthea's strongest surface",
     "sex": "same",
@@ -11,7 +10,6 @@
     "comorbidities": "co-occurrence is modelled by the care maps",
     "medication_ladder": "medication assignment follows the care maps"
   },
-
   "synthea_cannot_calibrate": {
     "health_literacy": "not modelled by Synthea at all",
     "base_adherence": "Synthea does not simulate adherence behaviour",
@@ -20,22 +18,53 @@
     "goals": "not a Synthea concept",
     "constraints": "not a Synthea concept"
   },
-
   "the_honest_post_synthea_state": "a SPLIT pack. Clinical marginals Synthea-calibrated with a version and seed stamped; SDOH, literacy and adherence entries still EXPERT_GUESS, visibly. The pack listing shows precisely that split.",
-
   "why_the_split_is_a_sharper_demo_line_not_a_weaker_one": "'clinical structure calibrated against a named synthetic population, social context declared as assumption' is more credible than uniform anything, because it tells a reviewer exactly where to push.",
-
   "diff_before_adopt": {
     "rule": "a Synthea-vs-current-prior table is REPORTED for every target entry before any value is adopted.",
     "why": "the same reading discipline as every other migration in this repo. A ballpark that survives calibration is itself worth knowing, and a ballpark that does not is worth knowing louder.",
-    "never": "silently overwriting a prior with a calibrated value because the calibration exists."
+    "never": "silently overwriting a prior with a calibrated value because the calibration exists.",
+    "reading_rule": {
+      "registered_on": "2026-08-25",
+      "why_now": "one row of that table is going to be far from the current ballpark, and adopting everything is one command. Without this line written before the table exists, the biggest outlier gets adopted with the rest precisely because it is inconvenient to single out.",
+      "rule": "a LARGE disagreement is INVESTIGATED BEFORE ADOPTED, never adopted because the calibration exists.",
+      "investigate_what": "Synthea's care-map assumptions for that entry. Its documented US-centricity and pathway-shaping are exactly the kind of cause, and they are checkable rather than speculative.",
+      "adoption_may_be_DECLINED": "per entry, with the reason recorded. The entry stays EXPERT_GUESS and is annotated 'Synthea disagrees, see note'.",
+      "the_distinction": "the target list says what Synthea MAY calibrate. This rule says it does not get to AUTOMATICALLY."
+    }
   },
-
   "provenance_stamp_required": [
     "kind = synthea_calibrated",
-    "synthea_version — Synthea is deterministic given (version, seed); a target that cannot name its run cannot be reproduced",
+    "synthea_version \u2014 Synthea is deterministic given (version, seed); a target that cannot name its run cannot be reproduced",
     "synthea_seed"
   ],
-
-  "quotability": "UNCHANGED by any of this. SYNTHEA_CALIBRATED is not quotable. Only CUSTOMER_DATA_FITTED crosses that line, and that gate opens when a customer's own aggregates go through the calibration harness — a sales conversation, not a build item."
+  "quotability": "UNCHANGED by any of this. SYNTHEA_CALIBRATED is not quotable. Only CUSTOMER_DATA_FITTED crosses that line, and that gate opens when a customer's own aggregates go through the calibration harness \u2014 a sales conversation, not a build item.",
+  "fixture_design": {
+    "registered_on": "2026-08-25",
+    "rule": "fixtures must exercise the JOINS, not just the columns.",
+    "why": "the structural diff catches schema drift. It cannot catch join-logic bugs that only appear under realistic cardinality \u2014 and join-by-a-key-that-is-not-unique has now appeared FOUR times in this repo. Synthea's CSVs join on PATIENT UUIDs across files, so the fixtures must make a positional or name-based join fail loudly IN THE FIXTURES, before the real run.",
+    "required_cases": [
+      "a patient with ZERO conditions",
+      "a patient with MULTIPLE CONCURRENT conditions \u2014 the comorbidity join's real case",
+      "a medication with NO matching condition",
+      "a condition with NO medications",
+      "duplicate-looking rows that are legitimately distinct encounters",
+      "two patients sharing a display name but not a UUID \u2014 a name-based join must break here"
+    ]
+  },
+  "sample_size_discipline": {
+    "registered_on": "2026-08-25",
+    "registered_before": "any target is computed",
+    "problem": "condition-conditional marginals are noisy at small n. Age-by-condition from 100 patients might rest on 12 diabetics, and a loader that smooths that silently is inventing precision.",
+    "two_runs": {
+      "structural": "~100 patients. Validates that the fixtures match reality \u2014 columns, types, enum values. Feeds NO target.",
+      "derivation": "1000+ patients, seeded. Feeds targets. Still minutes, not hours."
+    },
+    "n_threshold": {
+      "value": 50,
+      "applies_to": "the count of patients contributing to a given condition-conditional entry",
+      "below_it": "the entry stays EXPERT_GUESS and is annotated 'Synthea n too small' \u2014 a THIRD visible state in the split pack, not a silent fallback",
+      "why_registered_now": "this is pass-bars discipline applied to sample size. A threshold chosen after seeing which entries clear it is not a threshold."
+    }
+  }
 }

@@ -1,0 +1,8 @@
+START,STOP,PATIENT,ENCOUNTER,SYSTEM,CODE,DESCRIPTION
+2015-04-02,,p-0001,e-0001,http://snomed.info/sct,44054006,Type 2 diabetes mellitus
+2016-08-11,,p-0001,e-0002,http://snomed.info/sct,59621000,Essential hypertension
+2019-02-20,,p-0001,e-0003,http://snomed.info/sct,431855005,Chronic kidney disease stage 1
+2011-06-15,,p-0002,e-0010,http://snomed.info/sct,87433001,Pulmonary emphysema
+2009-01-05,2013-03-01,p-0003,e-0020,http://snomed.info/sct,254837009,Malignant neoplasm of breast
+2018-12-01,,p-0005,e-0030,http://snomed.info/sct,44054006,Type 2 diabetes mellitus
+2020-03-17,,p-0006,e-0040,http://snomed.info/sct,69896004,Rheumatoid arthritis

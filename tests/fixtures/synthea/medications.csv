@@ -1,0 +1,6 @@
+START,STOP,PATIENT,PAYER,ENCOUNTER,CODE,DESCRIPTION,BASE_COST,PAYER_COVERAGE,DISPENSES,TOTALCOST,REASONCODE,REASONDESCRIPTION
+2015-04-02,,p-0001,pay-1,e-0001,860975,24 HR Metformin hydrochloride 500 MG Extended Release Oral Tablet,12.5,10.0,24,300.0,44054006,Type 2 diabetes mellitus
+2016-08-11,,p-0001,pay-1,e-0002,314076,Lisinopril 10 MG Oral Tablet,4.0,3.0,24,96.0,59621000,Essential hypertension
+2017-01-09,,p-0001,pay-1,e-0050,860975,24 HR Metformin hydrochloride 500 MG Extended Release Oral Tablet,12.5,10.0,24,300.0,44054006,Type 2 diabetes mellitus
+2012-02-02,,p-0002,pay-2,e-0011,745679,Albuterol 0.09 MG/ACTUAT Metered Dose Inhaler,18.0,12.0,12,216.0,,
+2019-05-04,,p-0005,pay-3,e-0031,860975,24 HR Metformin hydrochloride 500 MG Extended Release Oral Tablet,12.5,9.0,12,150.0,44054006,Type 2 diabetes mellitus
