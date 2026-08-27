@@ -1,0 +1,33 @@
+{
+  "name": "Keep Rheumatoid Arthritis",
+  "remarks": [
+    "KEEP MODULE \u2014 rejection sampling from Synthea's own generative process.",
+    "Kept patients are conditioned on an ACTIVE (unstopped) condition, so 'matched' is a committed definition rather than a vibe.",
+    "The deceased exclusion and every other derivation filter still apply AFTERWARDS: this selects a candidate pool, it does not pre-approve it.",
+    "NOT observed in the structural export \u2014 0.25% living prevalence explains that. The code is written from the standard SNOMED value and is UNVERIFIED against this jar's RA module: if the keep-run yields nothing, the code is the first suspect, not the prevalence.",
+    "AUTHORED FROM THE DOCUMENTED MODULE FORMAT, not verified against a run. The first execution is this file's structural diff."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Keep_Guard"
+    },
+    "Keep_Guard": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Active Condition",
+        "codes": [
+          {
+            "system": "SNOMED-CT",
+            "code": "69896004",
+            "display": "Rheumatoid arthritis (disorder)"
+          }
+        ]
+      },
+      "direct_transition": "Terminal"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

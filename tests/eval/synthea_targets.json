@@ -140,17 +140,57 @@
       "heart failure": {
         "living_patients": 0,
         "per_1000": 0.0,
-        "note": "one CHF patient in 113, and they are deceased \u2014 so zero LIVING, under the registered exclusion"
+        "note": "one CHF patient in 113, and they are deceased \u2014 so zero LIVING, under the registered exclusion Same shape as RA once the deceased exclusion applies: rare and remitting-or-fatal, not absent."
       },
       "rheumatoid arthritis": {
         "living_patients": 0,
         "per_1000": 0.0,
-        "note": "the string 'rheumatoid' does not appear in any of the 4,207 condition rows. This looks like a MODELLING limit, not a sample-size problem."
+        "note": "0 living in 113 \u2014 EXPECTED. Synthea models RA at ~1% lifetime incidence with ~75% remission under DMARDs, so ~0.25% live with active disease. See CORRECTION_2026_08_27: the earlier 'not modelled' reading was wrong."
       }
     },
     "consequence_1": "the registered `-p 1000` clears the n=50 threshold for type 2 diabetes ONLY. Breast cancer needs ~1,700, COPD ~2,500, heart failure far more.",
     "consequence_2": "rheumatoid arthritis may have no Synthea path at all. If Synthea has no RA module, that pack stays entirely EXPERT_GUESS regardless of population size \u2014 which is a fact about the tool, not a failure of the loader, and belongs in the split-pack story rather than being worked around.",
     "what_this_does_NOT_change": "the n-threshold of 50. Lowering it because the conditions are rare would be choosing a bar to fit the data, which is precisely the move the threshold was registered early to block.",
-    "the_decision_this_needs": "an amendment to calibration_run_parameters naming a larger population, and an explicit finding on whether Synthea models RA at all. Both belong to the owner, before the run."
+    "the_decision_this_needs": "an amendment to calibration_run_parameters naming a larger population, and an explicit finding on whether Synthea models RA at all. Both belong to the owner, before the run.",
+    "CORRECTION_2026_08_27": {
+      "what_was_wrong": "the finding read RA's absence as a MODELLING LIMIT \u2014 'the string rheumatoid does not appear', therefore possibly no module. That inference was wrong.",
+      "what_is_true": "Synthea DOES model rheumatoid arthritis: ~1% lifetime incidence, and ~75% of cases REMIT under DMARDs, so roughly 0.25% of the population is living with active RA. Zero-in-113 was the expectation, not an absence.",
+      "how_it_was_settled": "module inspection against the same pinned jar, not by argument.",
+      "the_reclassification": "RA is not a tool limit. It is the EXTREME CASE of the prevalence problem, with a module-level mechanism behind it \u2014 and heart failure has the same shape once the deceased exclusion applies.",
+      "the_consequence_that_matters": "flat sampling cannot reach the rarer packs at any practical population size. Even -p 5000 expects ~12 active RA patients, below the n=50 threshold. This is now a measured fact with a mechanism, not a sample-size guess."
+    }
+  },
+  "keep_run_supplement": {
+    "registered_on": "2026-08-27",
+    "status": "AMENDMENT \u2014 registered before the run it governs, and before any target exists. Legal on the same terms as the E-/J- namespace amendment before v3 recorded: the window closes at first record, not at first registration.",
+    "amending_evidence": [
+      "the prevalence table measured on the structural export",
+      "module inspection showing RA is modelled at ~1% incidence with ~75% remission"
+    ],
+    "nothing_is_replaced": "the registered `-p 1000, seed 20260827` flat run EXECUTES AS WRITTEN. It validates the pipeline end to end, feeds type 2 diabetes \u2014 the one condition it covers \u2014 and produces the unmapped-code report at scale. One thing visibly grows; nothing silently moves.",
+    "the_supplement": {
+      "mechanism": "`-k keepMatchingPatientsPath` \u2014 Synthea generates until N patients match a criteria module. This is REJECTION SAMPLING from the same generative process, so it is unbiased for CONDITION-CONDITIONAL marginals.",
+      "why_that_is_the_right_object": "each pack describes people WITH the condition. A giant flat run would be filtered down to condition patients anyway; keep-runs arrive there directly, without generating millions of irrelevant patients.",
+      "runs": 5,
+      "kept_per_run": 60,
+      "why_60": "buffer over the registered n=50 threshold, so the deceased exclusion and any active-condition filter can remove patients without silently dropping the entry below its bar.",
+      "seeds": "derived per condition from the registered master seed 20260827, not chosen freely",
+      "jar": "018ad7f04f7aacb995804d7d4781c76d5fc714f7f23257ba50daa9eefae224ac \u2014 the same hash, or the run records why not"
+    },
+    "matched_is_a_definition": {
+      "rule": "keep-module criteria are COMMITTED per condition, in data/synthea/keep_modules/*.json.",
+      "criterion": "an ACTIVE (unstopped) condition carrying a named SNOMED code.",
+      "what_still_applies_afterwards": "keep-run patients are conditioned on EVER matching. The deceased filter and every derivation filter run AFTER selection \u2014 the module selects a candidate pool, it does not pre-approve one.",
+      "unverified": "the modules are authored from the documented format and have never been executed. The first run is their structural diff, and the same verdict applies: if the run contradicts a module, the module was the bug. The RA code 69896004 is the least verified thing here \u2014 if that keep-run yields nothing, the code is the first suspect, not the prevalence."
+    }
+  },
+  "sdoh_findings_deferred": {
+    "on": "2026-08-27",
+    "decision": "DEFER. No amendment to the target list.",
+    "the_discovery": "Synthea's conditions.csv carries SDOH as condition findings \u2014 full-time employment (318 rows), social isolation (130), limited social contact (110), higher education (51), intimate partner abuse (91).",
+    "reason_1": "amending a target list after seeing what happens to be available is the trap the list was committed early to avoid.",
+    "reason_2": "these are MODULE OUTPUTS \u2014 the medication-ladder argument verbatim. A US social-assumption wearing a data label.",
+    "reason_3_the_decisive_one": "the semantic mapping is poor exactly where the product needs it. Employment maps loosely; TRANSPORT, CAREGIVER SUPPORT and HEALTH LITERACY \u2014 the barrier-generating fields \u2014 are absent from all 187 codes. So even a future adoption would calibrate the fields that matter least.",
+    "when_revisited": "as its own registered decision, written before any derivation touches these fields."
   }
 }
