@@ -275,9 +275,6 @@ class PackError(ValueError):
     """A pack could not be loaded."""
 
 
-_CACHE: dict[str, PriorPack] = {}
-
-
 def load_pack(path: str | Path) -> PriorPack:
     """Read and validate one pack from disk."""
     path = Path(path)
@@ -296,18 +293,36 @@ def available_packs(directory: Path = PACK_DIR) -> list[Path]:
     return sorted(directory.glob("*.json")) if directory.exists() else []
 
 
+# Keyed by DIRECTORY. It used to be a single global cache, which meant
+# `load_all_packs(some_other_dir)` returned the DEFAULT directory's packs as soon
+# as anything had loaded once — the argument was accepted, honoured on a cold
+# call and silently ignored on a warm one. That is the same species as keying on
+# position: a parameter that is believed sometimes is worse than one missing,
+# because the caller has written the code that looks correct. Tests that point at
+# a fitted pack in a temp directory are the first consumers to hit it, and a
+# canary that reads the wrong pack is a canary that cannot fail.
+_CACHE: dict[Path, dict[str, PriorPack]] = {}
+
+
 def load_all_packs(directory: Path = PACK_DIR, refresh: bool = False) -> dict[str, PriorPack]:
-    """Load every pack, keyed by condition. Cached; `refresh` re-reads disk."""
+    """Load every pack in `directory`, keyed by condition. Cached per directory;
+    `refresh` re-reads disk."""
     global _CACHE
-    if _CACHE and not refresh:
-        return _CACHE
+    directory = Path(directory)
+    if directory in _CACHE and not refresh:
+        return _CACHE[directory]
 
     packs: dict[str, PriorPack] = {}
     for path in available_packs(directory):
         pack = load_pack(path)
         packs[pack.condition.casefold()] = pack
-    _CACHE = packs
+    _CACHE[directory] = packs
     return packs
+
+
+def clear_pack_cache() -> None:
+    """Drop every cached directory. For tests that write packs as they go."""
+    _CACHE.clear()
 
 
 def pack_for(condition: str, directory: Path = PACK_DIR) -> PriorPack | None:

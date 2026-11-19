@@ -11,7 +11,7 @@
   ],
   "cohort": {
     "cached": true,
-    "identity": "type_2_diabetes@v1 seed=42 n=200 as_of=2026-08-02",
+    "identity": "type_2_diabetes@v1 seed=42 n=200 as_of=2026-11-19",
     "size": 200
   },
   "criteria_impact": [
@@ -36,15 +36,60 @@
       "column": 17,
       "index": 1,
       "kind": "inclusion",
-      "message": "unknown field 'bmi_at_screening'. Known fields: adherence_baseline, age, ancestry, biomarkers.<key>, condition, health_literacy, mean_medication_adherence, n_comorbidities, n_medications, sdoh.<key>, sex, stage",
+      "message": "unknown field 'bmi_at_screening'. Known fields: adherence_baseline, age, ancestry, biomarkers.<key>, condition, health_literacy, mean_medication_adherence, n_comorbidities, n_medications, sdoh.<key>, sex, stage, traits.<key>",
       "ok": false,
       "text": "bmi_at_screening > 30"
     }
   ],
   "eligibility_rate": 0.85,
   "eligible": 170,
+  "population": {
+    "condition": "type 2 diabetes",
+    "generic": false,
+    "pack_version": 1,
+    "population_label": "type 2 diabetes",
+    "population_note": "Prevalent-population skew, not incident cases; US surveillance ballpark.",
+    "prior_pack": "type_2_diabetes",
+    "quotable": false,
+    "unquotable_fields": [
+      "age",
+      "age|caregiver_support",
+      "age|comorbidity_load",
+      "age|digital_literacy",
+      "age|financial_security",
+      "age|mobility",
+      "age|transport_access",
+      "base_adherence",
+      "biomarker:BMI",
+      "biomarker:HbA1c_pct",
+      "biomarker:eGFR",
+      "comorbidities",
+      "comorbidity_load|caregiver_support",
+      "comorbidity_load|financial_security",
+      "comorbidity_load|health_literacy",
+      "comorbidity_load|mobility",
+      "comorbidity_load|transport_access",
+      "digital_literacy|financial_security",
+      "digital_literacy|mobility",
+      "dx_delay_months",
+      "financial_security|caregiver_support",
+      "financial_security|mobility",
+      "financial_security|transport_access",
+      "health_literacy",
+      "health_literacy|caregiver_support",
+      "health_literacy|digital_literacy",
+      "health_literacy|financial_security",
+      "health_literacy|transport_access",
+      "medication_ladder",
+      "mobility|caregiver_support",
+      "sex",
+      "stage",
+      "transport_access|mobility"
+    ],
+    "why_not_quotable": "33 of the pack's marginals are not CUSTOMER_DATA_FITTED, so numbers derived from them are simulated under stated assumptions, never findings."
+  },
   "screened": 200,
   "sequence": 2,
   "stale": true,
-  "stale_reason": "1 rule has errors \u2014 showing results for the 1 that parse. First problem: unknown field 'bmi_at_screening'. Known fields: adherence_baseline, age, ancestry, biomarkers.<key>, condition, health_literacy, mean_medication_adherence, n_comorbidities, n_medications, sdoh.<key>, sex, stage"
+  "stale_reason": "1 rule has errors \u2014 showing results for the 1 that parse. First problem: unknown field 'bmi_at_screening'. Known fields: adherence_baseline, age, ancestry, biomarkers.<key>, condition, health_literacy, mean_medication_adherence, n_comorbidities, n_medications, sdoh.<key>, sex, stage, traits.<key>"
 }

@@ -271,11 +271,24 @@ NARRATION_MODEL = register(Assumption(
     params={
         "backend": "ollama",
         "model": "qwen2.5:7b-instruct",
-        # Filled in at record time by scripts/record_narration.py. A tag is a
-        # mutable pointer: a registry update can change weights and quantization
-        # under the same name, so the digest is the identity that counts.
-        "model_digest": "",
-        "prompt_version": 1,
+        # Pinned by content. A tag is a mutable pointer: a registry update can
+        # change weights and quantization under the same name, so the digest is
+        # the identity that counts. This is the digest every bundle from v0.1 to
+        # v0.5 carries — one model, four prompt versions, four readings.
+        #
+        # Declared here, NOT derived at import: the model choice is a decision,
+        # and a registry that does disk I/O at import time is a registry whose
+        # contents depend on the working tree. tests/
+        # test_ledger_agrees_with_evidence.py asserts this declaration agrees
+        # with the newest committed bundle, which is the same guarantee without
+        # the import cost. A re-recording that moves the prompt or the weights
+        # fails that test and must move these values in the same commit.
+        "model_digest": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e",
+        "prompt_version": 4,
+        "measured_release": "v0.5",
+        "bundles_measured": 4,
+        "compliance_rate": 1.0,
+        "bars_passed": True,
         "max_regenerations": 1,
         # num_ctx MUST be explicit — Ollama's default is small and it truncates
         # the prompt head silently, which is indistinguishable downstream from a
@@ -287,15 +300,31 @@ NARRATION_MODEL = register(Assumption(
         "seed": 42,
     },
     source=(
-        "Chosen for local, offline-first operation. NOT yet exercised against a "
-        "live model: every compliance number to date comes from scripted stub "
-        "models written to test the instrument, so this model's actual citation "
-        "compliance is UNMEASURED. Pass bars are pre-registered in "
-        "tests/eval/pass_bars.json (before any live run); run "
-        "scripts/record_narration.py --canary then --record to measure."
+        "Chosen for local, offline-first operation. MEASURED, not assumed: four "
+        "live batteries against this digest — v0.1 (prompt 1, compliance 0.8333, "
+        "5 quarantined), v0.3 (prompt 2, 1.0), v0.4 (prompt 3, 1.0), v0.5 "
+        "(prompt 4, 1.0, 0 quarantined) — all bars pre-registered before the run "
+        "and all met, with the canary proving the instrument could fail. Read "
+        "them in evidence/<release>/<timestamp>/, in the order each README gives."
+        "\n\nWHAT THE CONFIDENCE TAG STILL MEANS. The *choice* of model is "
+        "judgement, so this entry stays EXPERT_GUESS and stays in "
+        "LEDGER.unsupported(). That is not a leftover: the measurements are "
+        "evidence about ONE (prompt, model, sampling) configuration, not a "
+        "validation of the model in general, and require_compatible() "
+        "invalidates every recording the moment any of the three changes. Quote "
+        "the bundles with their manifests attached; never quote 'compliance 1.0' "
+        "as a property of the model."
+        "\n\nA FOURTH AXIS THE BUNDLE CAVEAT DOES NOT NAME. The battery's "
+        "expected facts were RE-AUTHORED for v0.4 (must/may sets with "
+        "alternation groups, replacing retrieval's own top ranks), so recall is "
+        "not comparable across that boundary and the bundle says so in its own "
+        "description. Three axes plus one battery."
+        "\n\nPass bars: tests/eval/pass_bars.json (registered before any live "
+        "run). Re-measure with scripts/record_narration.py --canary then "
+        "--record, and move the params above in the same commit."
     ),
     confidence=Confidence.EXPERT_GUESS,
-    tags=["narration", "known-limitation"],
+    tags=["narration", "measured", "known-limitation"],
 ))
 
 PANEL_SPEAKING_ORDER = register(Assumption(

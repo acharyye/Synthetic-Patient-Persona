@@ -138,6 +138,52 @@ def _load_canary(release: str, key: str | None = None):
     return payload.get(key) if key else payload
 
 
+def _ledger_disagreement(entry, digest: str, sampling) -> str | None:
+    """Return a refusal message if the ledger's declaration does not match the
+    run about to happen.
+
+    Compared fields are the ones a reader of `GET /assumptions` would take as a
+    description of the evidence: prompt version, model digest, and the decode
+    settings. The model NAME is not compared — the digest is the identity, and a
+    tag can move under it, which is the whole reason the digest is recorded.
+    """
+    params = entry.params
+    drift = []
+
+    if params["prompt_version"] != PROMPT_VERSION:
+        drift.append(
+            f"prompt_version: ledger declares {params['prompt_version']}, "
+            f"narration/prompt.py is at {PROMPT_VERSION}"
+        )
+    if digest and params["model_digest"] != digest:
+        drift.append(
+            f"model_digest: ledger declares {params['model_digest'][:19] or '(empty)'}, "
+            f"the resolved weights are {digest[:19]}… — the tag moved, or the "
+            f"ledger was never filled in"
+        )
+    recorded = sampling.as_options()
+    for key in ("temperature", "top_p", "seed", "num_predict", "num_ctx"):
+        if params[key] != recorded[key]:
+            drift.append(
+                f"{key}: ledger declares {params[key]!r}, this run uses {recorded[key]!r}"
+            )
+
+    if not drift:
+        return None
+
+    return (
+        "Refusing to run: the assumption ledger does not describe this run.\n"
+        + "".join(f"  - {line}\n" for line in drift)
+        + (
+            "\nnarration.model is a DECLARATION, not a log. Move it in its own "
+            "edit, in its own commit, so the pre-registration stays distinguishable "
+            "from the result — then re-run. tests/"
+            "test_ledger_agrees_with_evidence.py holds the ledger and the newest "
+            "bundle to the same standard between runs."
+        )
+    )
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--canary", action="store_true",
@@ -168,6 +214,26 @@ def main(argv: list[str] | None = None) -> int:
         print(f"could not resolve a digest for {model!r} — is Ollama running?")
         print("Refusing to record: a cassette that cannot name its weights is "
               "not evidence about a model.")
+        return 1
+
+    # The ledger DECLARES what we run against; it is not filled in afterwards.
+    #
+    # It used to be claimed that record_narration.py writes the digest and prompt
+    # version back at record time. That mechanism never existed, and the entry
+    # rotted: it told users via GET /assumptions that compliance was UNMEASURED
+    # at prompt v1 with an empty digest, while four bundles said otherwise.
+    #
+    # Auto-writing it back would have fixed the staleness by destroying the
+    # point. The declared prompt version and sampling are the pre-registration —
+    # what we committed to before the numbers existed. A layer that rewrites them
+    # from the result measures the run and then grades it against its own
+    # description, which is the motivated reading pass_bars.json exists to stop.
+    # So a disagreement REFUSES, and moving the declaration is its own edit in
+    # its own commit. tests/test_ledger_agrees_with_evidence.py holds the same
+    # pair together between runs.
+    refusal = _ledger_disagreement(NARRATION_MODEL, digest, sampling)
+    if refusal:
+        print(refusal)
         return 1
 
     print(f"backend={settings.llm_backend} model={model_identity(model, digest)}")

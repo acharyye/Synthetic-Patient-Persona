@@ -42,8 +42,24 @@ export interface RuleAttribution {
   sole_reason: number;
 }
 
+/** Which priors this cohort was sampled from. Server-computed, never inferred
+ *  here — `generic` is the fact that a condition had no prior pack and the
+ *  population was invented from a generic chronic-disease shape. */
+export interface Population {
+  condition: string;
+  generic: boolean;
+  prior_pack: string | null;
+  pack_version: number;
+  population_label: string;
+  population_note: string;
+  quotable: boolean;
+  unquotable_fields: string[];
+  why_not_quotable: string;
+}
+
 export interface PreviewResult {
   sequence: number;
+  population: Population;
   cohort: { identity: string; size: number; cached: boolean };
   diagnostics: Diagnostic[];
   stale: boolean;

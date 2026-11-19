@@ -44,8 +44,19 @@ OKF_DIR = next((p for p in OKF_CANDIDATES if p.is_dir()), OKF_CANDIDATES[0])
 TRACKER_HTML = ROOT / "tracker" / "tracker.html"
 STATE_JSON = ROOT / "tracker" / "tracker_state.json"
 
-# Markdown-Link auf eine .md-Datei: [Titel](pfad.md) — Anker/Query werden abgeschnitten.
-MD_LINK = re.compile(r"\[[^\]]*\]\(\s*([^)\s]+\.md)(?:#[^)\s]*)?\s*\)")
+# Jeder relative Link, nicht nur .md: [Titel](pfad) — Anker/Query abgeschnitten.
+#
+# Es gab hier einen MD_LINK, der nur `.md`-Endungen erkannte. Er ist entfernt,
+# weil ANY_LINK ihn ersetzt und ein zweiter Regex dieselbe Garantie schwächer
+# formuliert hätte als der erste. Der Befund, der ihn ersetzt hat: die
+# Wissensbasis verweist auf Nicht-Markdown — `concepts/instrument-v2.md` ->
+# `tests/eval/instrument_v2_gate.json`, und `index.md` -> `../../tracker/
+# tracker.html`. Beides war unsichtbar, und `tracker.html` ist GENERIERT und
+# ignoriert, also war der Zeiger der OKF auf das kanonische Steering-Artefakt für
+# jeden Klonenden tot — der Prüfer blind dafür per Konstruktion. Ein Prüfer, der
+# schmaler ist als die Garantie, die er behauptet, ist derselbe Defekt-Typ, den
+# Phase A geschlossen hat (docs/okf/concepts/verification-locus.md).
+ANY_LINK = re.compile(r"\[[^\]]*\]\(\s*([^)\s]+)(?:#[^)\s]*)?\s*\)")
 # Frontmatter-Feld auf oberster Ebene: `key: value`
 FM_FIELD = re.compile(r"^([A-Za-z_][A-Za-z0-9_]*)\s*:\s*(.*)$")
 # Code-Fences (``` … ```) und Inline-Code (`…`)
@@ -111,17 +122,30 @@ def build_graph(docs: list[dict]) -> tuple[dict, list[tuple[str, str]]]:
 
     for doc in docs:
         src_dir = (OKF_DIR / doc["id"]).parent
-        for m in MD_LINK.finditer(strip_code(doc["md"])):
+        text = strip_code(doc["md"])
+
+        # Kanten nur zwischen .md-Dokumenten (Nur Markdown kann Knoten sein) —
+        # Existenzpruefung fuer ALLE relativen Links. Zwei Regime, ein Scan:
+        # ein Nicht-md-Ziel ist kein Knoten, aber es kann trotzdem tot sein.
+        for m in ANY_LINK.finditer(text):
             target = m.group(1)
             # Platzhalter aus den Vorlagen (`<ordner>/<datei>.md`) ignorieren
             if "<" in target or target.startswith(("http://", "https://")):
                 continue
             resolved = (src_dir / target).resolve()
+            is_md = target.endswith(".md")
             try:
                 rel = resolved.relative_to(OKF_DIR.resolve()).as_posix()
             except ValueError:
                 # Link zeigt aus der Wissensbasis heraus — kein Graph-Knoten,
                 # aber pruefen, ob das Ziel ueberhaupt existiert.
+                if not resolved.exists():
+                    dead.append((doc["id"], target))
+                continue
+            if not is_md:
+                # Innerhalb der OKF, aber kein Markdown: kann kein Knoten sein,
+                # muss aber existieren. Genau der Fall, den der alte MD_LINK
+                # Scanner nie gesehen hat.
                 if not resolved.exists():
                     dead.append((doc["id"], target))
                 continue

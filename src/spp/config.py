@@ -1,3 +1,4 @@
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -34,6 +35,25 @@ class Settings(BaseSettings):
     # When False, external calls (LLM, graph) are replaced by deterministic stubs
     # so the whole pipeline runs offline. Flip to True once creds are in place.
     spp_live: bool = False
+
+    @field_validator("spp_live", mode="before")
+    @classmethod
+    def _tolerate_an_empty_flag(cls, value):
+        """`SPP_LIVE=` is absent, not false-with-a-typo.
+
+        Shell users write `unset FOO` and `FOO=` interchangeably, and pydantic
+        rejects an empty string for a bool outright. That produced 33 collection
+        errors across the whole suite — a red run that means nothing about the
+        code — from one character in one environment variable. Treating empty as
+        unset is the only reading that matches what the person meant.
+
+        Anything else still fails loudly. `SPP_LIVE=yes` is a typo worth a
+        traceback; silently accepting it would make a live run look offline,
+        which is the failure direction that actually costs something.
+        """
+        if isinstance(value, str) and not value.strip():
+            return False
+        return value
 
 
 settings = Settings()

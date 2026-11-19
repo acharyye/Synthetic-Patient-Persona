@@ -8,12 +8,15 @@ regulatory evidence, a virtual control arm, or a decision about a real person.
 """
 from __future__ import annotations
 
+from pathlib import Path
+
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
 
 from ..assumptions import BURDEN_THRESHOLDS
 from ..cohort import cohort_summary, generate_cohort
+from ..cohort.packs import PACK_DIR
 from ..cohort.residency import RESIDENT
 from ..config import settings
 from ..foundation import LEDGER
@@ -65,6 +68,61 @@ DISCLAIMER = (
 )
 
 
+def population_provenance(condition: str, pack_dir: Path | None = None) -> dict:
+    """Which priors this cohort was actually sampled from, stated as a field.
+
+    A condition with no prior pack falls back to `GENERIC_EPI` — broad adult
+    chronic-disease shape, invented. That used to be visible only inside the
+    identity string (`generic:glaucoma@v0 …`), so a typo'd or unsupported
+    indication returned a confident 200 with a plausible number and the same
+    rendering as a real pack. For a tool whose thesis is that every number
+    traces to a seed, a pack and a ledger entry, inventing a population and not
+    saying so is the worst thing it can do to a reader's trust.
+
+    `generic` is therefore a first-class field the UI can style, not a substring
+    a human has to notice. It comes from `resolve_priors`, the single resolver,
+    so no consumer re-implements the match.
+
+    `pack_dir` exists so a test can point at a FITTED pack. Without it the
+    quotability canary would silently re-read the shipped packs and assert the
+    wrong thing about its own fixture — which is how a canary becomes vacuous.
+    """
+    from ..cohort import resolve_priors
+
+    epi, pack = resolve_priors(condition, directory=pack_dir or PACK_DIR)
+
+    # Derived from the pack, never asserted. `synthea_targets.json` already
+    # decided that SYNTHEA_CALIBRATED does not cross the quotable line and only
+    # CUSTOMER_DATA_FITTED does — so hard-coding `False` here would be true today
+    # and a lie the moment a calibrated pack ships, which is the exact drift this
+    # whole change exists to stop.
+    unquotable_fields = pack.unquotable() if pack else []
+
+    return {
+        "condition": condition,
+        "generic": pack is None,
+        "prior_pack": pack.name if pack else None,
+        "pack_version": pack.schema_version if pack else 0,
+        "population_label": epi.label,
+        # The pack's own description, or the fallback's admission. Rendered, not
+        # hovered: this is the sentence a reviewer needs next to the number.
+        "population_note": epi.source_note,
+        "quotable": bool(pack) and not unquotable_fields,
+        "unquotable_fields": unquotable_fields,
+        "why_not_quotable": (
+            (
+                "No prior pack covers this condition, so the cohort was sampled "
+                "from a generic chronic-disease shape rather than from anything "
+                "about this disease."
+                if pack is None else
+                f"{len(unquotable_fields)} of the pack's marginals are not "
+                "CUSTOMER_DATA_FITTED, so numbers derived from them are "
+                "simulated under stated assumptions, never findings."
+            )
+        ),
+    }
+
+
 class InterviewRequest(BaseModel):
     dna: PatientDNA
     message: str
@@ -92,15 +150,98 @@ class ProtocolRequest(BaseModel):
 
 @app.get("/health")
 def health() -> dict:
-    """Reports whether grounding is real. `graph_live: false` means personas are
-    running on the offline stub subgraph, not the knowledge graph.
+    """What is real, and what is a stub — for the subsystems actually in use.
+
+    This used to report `_engine.graph`, the OPTIONAL Neo4j client, so a fully
+    healthy install answered `{graph_live: false, graph_nodes: 0}` while the
+    graph narration really grounds on held 141 nodes. An alert on that endpoint
+    would page on a working system and stay SILENT if `data/knowledge/core.json`
+    were corrupted or failed its load-time integrity gate — the exact failure
+    monitoring exists to catch.
+
+    `neo4j` is still reported, separately and clearly as optional, because the
+    Hetionet backend exists and someone enabling it wants to know whether it
+    loaded. It is not the grounding path and no longer gets to define the word
+    "graph" in a health check.
     """
-    stats = _engine.graph.stats()
+    from ..cohort import load_all_packs
+    from ..knowledge import load_graph
+
+    kg = load_graph()
+    stats = kg.stats()
+    packs = load_all_packs()
+    unsupported = LEDGER.unsupported()
+    narration = LEDGER.get("narration.model").params
+
+    # Every marginal in every shipped pack. The point is the AND: as soon as one
+    # pack carries a fitted entry this flips, instead of waiting for someone to
+    # remember to edit a string here.
+    marginals = [m for pack in packs.values() for m in pack.marginals]
+
     return {
         "status": "ok",
-        "graph_live": _engine.graph.live,
-        "graph_nodes": stats.get("nodes", 0),
-        "graph_relationships": stats.get("relationships", 0),
+        "version": __version__,
+
+        # The grounding substrate narration actually uses.
+        "grounding": {
+            "kind": "owned-graph",
+            "live": stats["live"],
+            "nodes": stats["nodes"],
+            "facts": stats["facts"],
+            "by_kind": stats["by_kind"],
+            "by_predicate": stats["by_predicate"],
+        },
+
+        # Population priors. Coverage is the honest measure: a condition with no
+        # pack falls back to a generic invented shape.
+        "priors": {
+            "packs_loaded": len(packs),
+            "conditions": sorted(packs),
+            "marginals": len(marginals),
+            "quotable_marginals": sum(1 for m in marginals if m.provenance.quotable),
+            "any_number_quotable": bool(marginals) and all(
+                m.provenance.quotable for m in marginals
+            ),
+            "caveat": (
+                "Prior packs are literature ballparks registered EXPERT_GUESS. "
+                "No number derived from them is a finding. See "
+                "tests/eval/synthea_targets.json for what would change that, and "
+                "note that SYNTHEA_CALIBRATED does not."
+            ),
+        },
+
+        "ledger": {
+            "assumptions": len(LEDGER),
+            "unsupported": len(unsupported),
+            "unsupported_names": sorted(a.name for a in unsupported),
+        },
+
+        "narration": {
+            "backend": settings.llm_backend,
+            "live": settings.spp_live,
+            "model": narration["model"],
+            "model_digest": narration["model_digest"],
+            "prompt_version": narration["prompt_version"],
+            # The ledger is a declaration; this is whether a recording exists.
+            "measured_release": narration["measured_release"],
+            "bundles_measured": narration["bundles_measured"],
+        },
+
+        # Optional, and not the grounding path.
+        "neo4j": {
+            "live": _engine.graph.live,
+            "graph_nodes": _engine.graph.stats().get("nodes", 0),
+            "graph_relationships": _engine.graph.stats().get("relationships", 0),
+            "note": "Optional Hetionet backend. Grounding does not use it unless "
+                    "SPP_LIVE=true; the owned graph above is the default.",
+        },
+
+        # Kept at top level because existing callers and the E2E specs read them,
+        # and because "graph" in this payload now means one thing everywhere.
+        "graph_live": stats["live"],
+        "graph_nodes": stats["nodes"],
+        "graph_relationships": stats["facts"],
+        "disclaimer": DISCLAIMER,
     }
 
 
@@ -144,6 +285,7 @@ def run_simulation(req: SimulationRequest) -> dict:
 
     return {
         "condition": req.condition,
+        "population": population_provenance(req.condition),
         "schedule": {"visits": len(schedule), "duration_days": schedule.duration_days},
         "funnel": attrition_funnel(logs, screened=len(cohort)),
         "retention": retention_summary(logs),
@@ -259,7 +401,12 @@ def counterfactual(req: CounterfactualRequest) -> dict:
         sign_stability=stability,
         sensitivity=sensitivity,
     )
-    return artifact.model_dump()
+    # Additive rather than a new DiffReport field: the artifact model is the
+    # committed contract that `export_schema.py` codegens from, and widening it
+    # here would churn `artifacts.ts` for a provenance banner. It belongs in the
+    # model when Phase B's pack provenance lands, not as a drive-by.
+    return {**artifact.model_dump(),
+            "population": population_provenance(req.condition)}
 
 
 class NarratedInterviewRequest(BaseModel):
@@ -287,7 +434,9 @@ def narrate(req: NarratedInterviewRequest) -> dict:
     turn = narration_interview(
         cohort[req.persona_index], req.question, strict=req.strict
     )
-    return {**turn.model_dump(exclude={"check"}), "disclaimer": DISCLAIMER}
+    return {**turn.model_dump(exclude={"check"}),
+            "population": population_provenance(req.condition),
+            "disclaimer": DISCLAIMER}
 
 
 class PanelRequest(BaseModel):
@@ -311,6 +460,7 @@ def panel(req: PanelRequest) -> dict:
     return {
         **transcript.model_dump(),
         "ungrounded_statements": len(transcript.ungrounded()),
+        "population": population_provenance(req.condition),
         "disclaimer": DISCLAIMER,
     }
 
@@ -350,6 +500,7 @@ def scenario_preview(req: PreviewRequest) -> dict:
 
     return {
         "sequence": req.sequence,
+        "population": population_provenance(req.condition),
         "cohort": {
             "identity": key.describe(),
             "size": len(cohort),
@@ -431,6 +582,7 @@ def room_session(req: RoomRequest) -> dict:
         "questions": [q.model_dump() for q in questions],
         "free_text": free_text_state(cassette, live=settings.spp_live),
         "memory_semantics": MEMORY_SEMANTICS,
+        "population": population_provenance(req.condition),
         "disclaimer": DISCLAIMER,
     }
 
@@ -496,6 +648,7 @@ def studio_marginals(req: StudioRequest) -> dict:
         **view.model_dump(),
         "headline": view.headline(),
         "out_of_band": [b.field for b in view.out_of_band],
+        "population": population_provenance(req.condition),
         "disclaimer": DISCLAIMER,
     }
 
@@ -526,6 +679,7 @@ def studio_diff(req: CohortDiffRequest) -> dict:
     return {
         "left": comparison.left, "right": comparison.right,
         "mode": comparison.mode,
+        "population": population_provenance(req.condition),
         "headline": comparison.headline(),
         "note": comparison.note,
         "n": comparison.n,
@@ -589,6 +743,7 @@ def cohort(req: CohortRequest) -> dict:
     people = generate_cohort(req.condition, req.n, seed=req.seed)
     return {
         "n": len(people),
+        "population": population_provenance(req.condition),
         "summary": cohort_summary(people),
         "cohort": [p.model_dump(mode="json") for p in people],
         "disclaimer": DISCLAIMER,
@@ -625,6 +780,7 @@ def stress_test(req: ProtocolRequest) -> dict:
 
     return {
         "condition": req.condition,
+        "population": population_provenance(req.condition),
         "screening": {
             "n_screened": result.n_screened,
             "n_eligible": result.n_eligible,

@@ -120,6 +120,13 @@ jobs:
 
       # Generated types are committed so schema drift is a visible diff. tsc
       # catches a stale artifacts.ts that a passing test suite would not.
+      #
+      # The committed FIXTURES under tests/fixtures/ are held by pytest instead,
+      # not by a regeneration step: tests/test_scenario_lab.py compares each one
+      # against the live endpoint by shape, so a widened artifact whose fixture
+      # was never re-exported fails here rather than shipping a diff nobody read.
+      # That gap was live for four releases — see TestRecursiveShapeGuard.
+      # Regenerate locally with: PYTHONPATH=src python scripts/export_schema.py
       - name: SPA typecheck
         working-directory: ui
         run: npm run typecheck

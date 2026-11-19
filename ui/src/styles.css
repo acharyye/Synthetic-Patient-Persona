@@ -245,6 +245,29 @@ h2 + h2 { margin-top: calc(var(--step) * 6); }
 .tag.never { color: var(--integrity); background: var(--integrity-soft); }
 .tag.ok { color: var(--recovered); background: transparent; border: 1px solid var(--rule); }
 
+/* ---- provenance banners -------------------------------------------------- */
+
+/* Amber for cost, never red. --integrity is reserved for never-quote / parse
+   error / ungrounded; a condition with no prior pack is a coverage gap, and
+   rendering it in the ledger's red would spend the one distinction this design
+   commits to. See the header note in styles.css rule 3. */
+.banner {
+  margin: var(--step) 0 calc(var(--step) * 2);
+  padding: calc(var(--step) * 2);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--muted);
+  background: var(--panel);
+  font: 12px/1.45 var(--sans);
+  color: var(--ink-2);
+}
+.banner.cost { border-left-color: var(--lost); background: #fffaf0; }
+.banner.muted { border-left-color: var(--rule); }
+.banner strong { font-weight: 650; color: var(--ink); }
+.banner p { margin: var(--step) 0 0; }
+.banner .note { color: var(--muted); font: 11px/1.4 var(--sans); }
+
+:root[data-theme="dark"] .banner.cost { background: #2a2113; }
+
 /* ---- share bar ---------------------------------------------------------- */
 
 .share {

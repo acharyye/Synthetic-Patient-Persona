@@ -149,6 +149,32 @@ GENERIC_EPI = ConditionEpi(
 HEALTH_LITERACY_WEIGHTS: dict[str, float] = {"low": 0.30, "medium": 0.52, "high": 0.18}
 
 
+def resolve_priors(condition: str, directory: Path | None = None):
+    """Resolve a free-text condition to `(epi, pack_or_None)`.
+
+    **The single resolver.** `pack is None` means the cohort was sampled from
+    `GENERIC_EPI` — an invented population, not one anyone wrote. That fact used
+    to be recoverable only by reading `pack_for()` yourself and re-implementing
+    the case-fold/alias/substring match, which is how a consumer ends up
+    disagreeing with the source it is describing. So one function holds the
+    resolution and every consumer that needs to know takes it from here.
+
+    `directory` is a seam for tests, not a feature: a quotability canary has to
+    point at a FITTED pack, and the only fitted packs in existence are ones a
+    test wrote to a temp directory. Production callers leave it alone. It is
+    `None`-defaulted and resolved inside because `PACK_DIR` comes from `packs`,
+    which imports this module — a module-level default would be a circular import.
+    """
+    from .packs import PACK_DIR, pack_for
+
+    key = (condition or "").strip().casefold()
+    if not key:
+        return GENERIC_EPI, None
+
+    pack = pack_for(key, directory=directory or PACK_DIR)
+    return (ConditionEpi.from_pack(pack) if pack is not None else GENERIC_EPI), pack
+
+
 def for_condition(condition: str) -> ConditionEpi:
     """Resolve a free-text condition to its priors.
 
@@ -161,12 +187,10 @@ def for_condition(condition: str) -> ConditionEpi:
     Matching is deliberately forgiving (case-insensitive, alias-aware, substring)
     because `condition` arrives from an API caller, not a controlled vocabulary.
     Swap this for KG node resolution once the graph is loaded.
+
+    Callers that need to KNOW whether a pack matched — every API response that a
+    stakeholder reads — use `resolve_priors` instead. A generic fallback is not
+    an error and this keeps returning one, but it is a different fact about the
+    cohort and it must not be invisible.
     """
-    from .packs import pack_for
-
-    key = (condition or "").strip().casefold()
-    if not key:
-        return GENERIC_EPI
-
-    pack = pack_for(key)
-    return ConditionEpi.from_pack(pack) if pack is not None else GENERIC_EPI
+    return resolve_priors(condition)[0]

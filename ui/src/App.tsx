@@ -69,7 +69,14 @@ export function App() {
       .then((r) => r.json())
       .then((data) => {
         setAssumptions(data.assumptions ?? []);
-        setUnquotable(data.unquotable ?? []);
+        // The server's key is `unsupported` (main.py, GET /assumptions). This
+        // read `unquotable` for a full release, so the set was always empty and
+        // every expert-guess heuristic rendered in the same green styling as the
+        // measured ones — the product's one differentiating claim, silently
+        // inverted. Both halves were tested; the seam was not.
+        // ui/tests/app-fetch.test.tsx now pins the seam against the SAME
+        // committed fixture the Python tests read.
+        setUnquotable(data.unsupported ?? []);
       })
       .catch(() => undefined);
   }, []);

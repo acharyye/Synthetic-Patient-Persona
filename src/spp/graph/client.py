@@ -11,6 +11,11 @@ The live traversals walk the Hetionet-derived graph loaded by
 
 Every returned edge carries a `cite` naming the source graph and the Hetionet
 metaedge it came from, because grounding without provenance is just a prompt.
+
+The offline stub returns PLACEHOLDERS, and each one says so on itself
+(`synthetic: True`) because the edge list is the part of an interview that gets
+copied out of the response and onto a slide, while the response-level flags do
+not travel. See `_stub_neighborhood`.
 """
 from __future__ import annotations
 
@@ -227,10 +232,39 @@ class GraphClient:
 
 
 def _stub_neighborhood(entity: str) -> list[dict]:
+    """The offline subgraph, and it is FAKE.
+
+    Every edge carries `synthetic: True` on the edge object itself, not only in
+    the surrounding response. The reason is a consumer problem, not a tidiness
+    problem: `grounded_edges` is the part of an interview that gets printed by
+    `scripts/quickstart.py`, copied into a slide, and pasted into a design
+    review, while the flags that explain it live one level up in the response. A
+    marker that does not travel with the fact is a marker that gets separated
+    from the fact.
+
+    The edges are also **schema-valid**, which they were not. They used to cite
+    `kg:opentargets`, `kg:sider` and `kg:reactome` — three sources this module
+    never queries — with no metaedge code, so the string did not even match
+    `schema.citation()`'s format, and they used rel types absent from
+    `schema.py` (`TREATED_BY`, `CAUSES_AE`, `ASSOCIATED_PATHWAY`). That is the
+    exact failure `CLAUDE.md` warns about: a loader, a traversal and a validator
+    that disagree make the system cite edges that do not exist. So the stub now
+    speaks the real vocabulary, and the only thing lying about it is the
+    `synthetic` flag, which is the honest part.
+
+    Placeholder *targets* stay generic on purpose. Naming real drugs and real
+    side effects would make these edges citable-looking facts rather than shape
+    demonstrations, and a grounded citation on a fabricated edge is worse than a
+    flagged one.
+    """
     e = entity or "condition"
     return [
-        {"source": e, "rel": "PRESENTS_SYMPTOM", "target": "fatigue", "cite": "kg:hetionet"},
-        {"source": e, "rel": "TREATED_BY", "target": "first-line therapy", "cite": "kg:opentargets"},
-        {"source": "first-line therapy", "rel": "CAUSES_AE", "target": "nausea", "cite": "kg:sider"},
-        {"source": e, "rel": "ASSOCIATED_PATHWAY", "target": "example pathway", "cite": "kg:reactome"},
+        {"source": e, "rel": "PRESENTS_SYMPTOM", "target": "a symptom",
+         "cite": citation("DpS"), "synthetic": True},
+        {"source": "a therapy", "rel": "TREATS", "target": e,
+         "cite": citation("CtD"), "synthetic": True},
+        {"source": "a therapy", "rel": "CAUSES_SIDE_EFFECT", "target": "an effect",
+         "cite": citation("CcSE"), "synthetic": True},
+        {"source": "a gene", "rel": "PARTICIPATES_PATHWAY", "target": "a pathway",
+         "cite": citation("GpPW"), "synthetic": True},
     ]

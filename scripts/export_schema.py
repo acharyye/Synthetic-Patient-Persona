@@ -108,6 +108,22 @@ def write_fixtures() -> list[Path]:
     FIXTURE_DIR.mkdir(parents=True, exist_ok=True)
     written: list[Path] = []
 
+    # GET routes carry no body; the ledger snapshot is the one artifact the SPA
+    # reads that is not a simulation result. It is here because `unsupported` is
+    # a key name, and a key name is a contract — the SPA read `unquotable` for a
+    # whole release against a server that returned `unsupported`, and both sides
+    # passed their own tests. A committed fixture the two suites share is what
+    # makes that seam testable at all.
+    get_cases = {
+        "assumptions.json": "/assumptions",
+    }
+    for filename, route in get_cases.items():
+        response = client.get(route)
+        response.raise_for_status()
+        path = FIXTURE_DIR / filename
+        path.write_text(json.dumps(response.json(), indent=2, sort_keys=True) + "\n")
+        written.append(path)
+
     cases = {
         "counterfactual_run.json": ("/counterfactual/run", {
             "condition": "type 2 diabetes", "n": 120, "seed": 42,

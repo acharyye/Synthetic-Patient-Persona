@@ -1,13 +1,61 @@
 {
   "disclaimer": "Synthetic personas for design and stakeholder simulation. Not medical advice, not regulatory evidence, not a statistical virtual control arm.",
   "panel_size": 6,
+  "population": {
+    "condition": "type 2 diabetes",
+    "generic": false,
+    "pack_version": 1,
+    "population_label": "type 2 diabetes",
+    "population_note": "Prevalent-population skew, not incident cases; US surveillance ballpark.",
+    "prior_pack": "type_2_diabetes",
+    "quotable": false,
+    "unquotable_fields": [
+      "age",
+      "age|caregiver_support",
+      "age|comorbidity_load",
+      "age|digital_literacy",
+      "age|financial_security",
+      "age|mobility",
+      "age|transport_access",
+      "base_adherence",
+      "biomarker:BMI",
+      "biomarker:HbA1c_pct",
+      "biomarker:eGFR",
+      "comorbidities",
+      "comorbidity_load|caregiver_support",
+      "comorbidity_load|financial_security",
+      "comorbidity_load|health_literacy",
+      "comorbidity_load|mobility",
+      "comorbidity_load|transport_access",
+      "digital_literacy|financial_security",
+      "digital_literacy|mobility",
+      "dx_delay_months",
+      "financial_security|caregiver_support",
+      "financial_security|mobility",
+      "financial_security|transport_access",
+      "health_literacy",
+      "health_literacy|caregiver_support",
+      "health_literacy|digital_literacy",
+      "health_literacy|financial_security",
+      "health_literacy|transport_access",
+      "medication_ladder",
+      "mobility|caregiver_support",
+      "sex",
+      "stage",
+      "transport_access|mobility"
+    ],
+    "why_not_quotable": "33 of the pack's marginals are not CUSTOMER_DATA_FITTED, so numbers derived from them are simulated under stated assumptions, never findings."
+  },
   "probes": [
-    "Several of you have raised the same thing \u2014 you must attend the site in person is difficult if you have no reliable way to get to the site. For Could you attend the clinic twice a month?, what would actually have to change there?",
-    "Several of you have raised the same thing \u2014 you must attend the site in person is difficult if you have no reliable way to get to the site. For Could you attend the clinic twice a month?, what would actually have to change there?"
+    "Several of you have raised the same thing \u2014 that point. For Could you attend the clinic twice a month?, what would actually have to change there?",
+    "Several of you have raised the same thing \u2014 that point. For Could you attend the clinic twice a month?, what would actually have to change there?"
   ],
   "statements": [
     {
       "cited_fact_ids": [
+        "B-adherence",
+        "B-mobility",
+        "B-comprehension",
         "F012",
         "F011",
         "F013",
@@ -18,10 +66,13 @@
       "order": 0,
       "patient_id": "type-2-diabetes-s42-0004",
       "prompt": "Could you attend the clinic twice a month?",
-      "text": "[offline] You asked: Could you attend the clinic twice a month?\nSpeaking from what's on file for me:\n- you must attend the site in person is difficult if travelling and waiting are physically hard\n- you must attend the site in person is difficult if you have no reliable way to get to the site\n- you must attend the site in person is difficult if the site is a long journey away\n- you must attend the site in person is difficult if your journey depends on public transport running\nI feel like that's a lot to manage on top of everything else."
+      "text": "[offline] You asked: Could you attend the clinic twice a month?\nSpeaking about my own situation:\n- Adherence gets in your way \u2014 a minor problem for you\n- Mobility gets in your way \u2014 a minor problem for you\n- Comprehension gets in your way \u2014 a minor problem for you\nAnd from what's on file about the condition:\n- you must attend the site in person is difficult if travelling and waiting are physically hard\n- you must attend the site in person is difficult if you have no reliable way to get to the site\n- you must attend the site in person is difficult if the site is a long journey away\n- you must attend the site in person is difficult if your journey depends on public transport running\nI feel like that's a lot to manage on top of everything else."
     },
     {
       "cited_fact_ids": [
+        "B-cost",
+        "B-mobility",
+        "B-distance",
         "F012",
         "F013",
         "F015",
@@ -32,10 +83,13 @@
       "order": 1,
       "patient_id": "type-2-diabetes-s42-0002",
       "prompt": "Could you attend the clinic twice a month?",
-      "text": "[offline] You asked: Could you attend the clinic twice a month?\nSpeaking from what's on file for me:\n- you must attend the site in person is difficult if travelling and waiting are physically hard\n- you must attend the site in person is difficult if the site is a long journey away\n- you must attend the site in person is difficult if travel and time off work cost money you do not have\n- you must attend the site in person is difficult if you have no reliable way to get to the site\nI feel like that's a lot to manage on top of everything else."
+      "text": "[offline] You asked: Could you attend the clinic twice a month?\nSpeaking about my own situation:\n- Cost gets in your way \u2014 a minor problem for you\n- Mobility gets in your way \u2014 a minor problem for you\n- Distance gets in your way \u2014 a minor problem for you\nAnd from what's on file about the condition:\n- you must attend the site in person is difficult if travelling and waiting are physically hard\n- you must attend the site in person is difficult if the site is a long journey away\n- you must attend the site in person is difficult if travel and time off work cost money you do not have\n- you must attend the site in person is difficult if you have no reliable way to get to the site\nI feel like that's a lot to manage on top of everything else."
     },
     {
       "cited_fact_ids": [
+        "B-scheduling",
+        "B-unsupported",
+        "B-competing_care",
         "F011",
         "F012",
         "F013",
@@ -46,38 +100,47 @@
       "order": 2,
       "patient_id": "type-2-diabetes-s42-0005",
       "prompt": "Could you attend the clinic twice a month?",
-      "text": "[offline] You asked: Could you attend the clinic twice a month?\nSpeaking from what's on file for me:\n- you must attend the site in person is difficult if you have no reliable way to get to the site\n- you must attend the site in person is difficult if travelling and waiting are physically hard\n- you must attend the site in person is difficult if the site is a long journey away\n- you must attend the site in person is difficult if your journey depends on public transport running\nI feel like that's a lot to manage on top of everything else."
+      "text": "[offline] You asked: Could you attend the clinic twice a month?\nSpeaking about my own situation:\n- Scheduling gets in your way \u2014 a minor problem for you\n- Unsupported gets in your way \u2014 a minor problem for you\n- Competing care gets in your way \u2014 a minor problem for you\nAnd from what's on file about the condition:\n- you must attend the site in person is difficult if you have no reliable way to get to the site\n- you must attend the site in person is difficult if travelling and waiting are physically hard\n- you must attend the site in person is difficult if the site is a long journey away\n- you must attend the site in person is difficult if your journey depends on public transport running\nI feel like that's a lot to manage on top of everything else."
     },
     {
       "cited_fact_ids": [
-        "F011",
-        "F012",
-        "F013",
-        "F014"
+        "B-adherence",
+        "B-mobility",
+        "B-comprehension",
+        "F002",
+        "F004",
+        "F001",
+        "F003"
       ],
       "grounded": true,
       "is_probe": true,
       "order": 3,
       "patient_id": "type-2-diabetes-s42-0004",
-      "prompt": "Several of you have raised the same thing \u2014 you must attend the site in person is difficult if you have no reliable way to get to the site. For Could you attend the clinic twice a month?, what would actually have to change there?",
-      "text": "[offline] You asked: Several of you have raised the same thing \u2014 you must attend the site in person is difficult if you have no reliable way to get to the site. For Could you attend the clinic twice a month?, what would actually have to change there?\nSpeaking from what's on file for me:\n- you must attend the site in person is difficult if you have no reliable way to get to the site\n- you must attend the site in person is difficult if travelling and waiting are physically hard\n- you must attend the site in person is difficult if the site is a long journey away\n- you must attend the site in person is difficult if your journey depends on public transport running\nI feel like that's a lot to manage on top of everything else."
+      "prompt": "Several of you have raised the same thing \u2014 that point. For Could you attend the clinic twice a month?, what would actually have to change there?",
+      "text": "[offline] You asked: Several of you have raised the same thing \u2014 that point. For Could you attend the clinic twice a month?, what would actually have to change there?\nSpeaking about my own situation:\n- Adherence gets in your way \u2014 a minor problem for you\n- Mobility gets in your way \u2014 a minor problem for you\n- Comprehension gets in your way \u2014 a minor problem for you\nAnd from what's on file about the condition:\n- fasting blood tests means you must attend the site in person\n- regular monitoring appointments means you must attend the site in person\n- fasting blood tests means you must not eat beforehand\n- fasting blood tests means appointments are during working hours\nI feel like that's a lot to manage on top of everything else."
     },
     {
       "cited_fact_ids": [
-        "F011",
-        "F012",
-        "F013",
-        "F015"
+        "B-cost",
+        "B-mobility",
+        "B-distance",
+        "F002",
+        "F004",
+        "F001",
+        "F003"
       ],
       "grounded": true,
       "is_probe": true,
       "order": 4,
       "patient_id": "type-2-diabetes-s42-0002",
-      "prompt": "Several of you have raised the same thing \u2014 you must attend the site in person is difficult if you have no reliable way to get to the site. For Could you attend the clinic twice a month?, what would actually have to change there?",
-      "text": "[offline] You asked: Several of you have raised the same thing \u2014 you must attend the site in person is difficult if you have no reliable way to get to the site. For Could you attend the clinic twice a month?, what would actually have to change there?\nSpeaking from what's on file for me:\n- you must attend the site in person is difficult if you have no reliable way to get to the site\n- you must attend the site in person is difficult if travelling and waiting are physically hard\n- you must attend the site in person is difficult if the site is a long journey away\n- you must attend the site in person is difficult if travel and time off work cost money you do not have\nI feel like that's a lot to manage on top of everything else."
+      "prompt": "Several of you have raised the same thing \u2014 that point. For Could you attend the clinic twice a month?, what would actually have to change there?",
+      "text": "[offline] You asked: Several of you have raised the same thing \u2014 that point. For Could you attend the clinic twice a month?, what would actually have to change there?\nSpeaking about my own situation:\n- Cost gets in your way \u2014 a minor problem for you\n- Mobility gets in your way \u2014 a minor problem for you\n- Distance gets in your way \u2014 a minor problem for you\nAnd from what's on file about the condition:\n- fasting blood tests means you must attend the site in person\n- regular monitoring appointments means you must attend the site in person\n- fasting blood tests means you must not eat beforehand\n- fasting blood tests means appointments are during working hours\nI feel like that's a lot to manage on top of everything else."
     },
     {
       "cited_fact_ids": [
+        "B-adherence",
+        "B-comprehension",
+        "B-competing_care",
         "F011",
         "F012",
         "F013",
@@ -88,10 +151,13 @@
       "order": 5,
       "patient_id": "type-2-diabetes-s42-0000",
       "prompt": "Could you attend the clinic twice a month?",
-      "text": "[offline] You asked: Could you attend the clinic twice a month?\nSpeaking from what's on file for me:\n- you must attend the site in person is difficult if you have no reliable way to get to the site\n- you must attend the site in person is difficult if travelling and waiting are physically hard\n- you must attend the site in person is difficult if the site is a long journey away\n- you must attend the site in person is difficult if your journey depends on public transport running\nI feel like that's a lot to manage on top of everything else."
+      "text": "[offline] You asked: Could you attend the clinic twice a month?\nSpeaking about my own situation:\n- Adherence gets in your way \u2014 a minor problem for you\n- Comprehension gets in your way \u2014 a minor problem for you\n- Competing care gets in your way \u2014 a minor problem for you\nAnd from what's on file about the condition:\n- you must attend the site in person is difficult if you have no reliable way to get to the site\n- you must attend the site in person is difficult if travelling and waiting are physically hard\n- you must attend the site in person is difficult if the site is a long journey away\n- you must attend the site in person is difficult if your journey depends on public transport running\nI feel like that's a lot to manage on top of everything else."
     },
     {
       "cited_fact_ids": [
+        "B-unsupported",
+        "J-symptom_onset",
+        "J-first_contact",
         "F011",
         "F012",
         "F013",
@@ -102,10 +168,13 @@
       "order": 6,
       "patient_id": "type-2-diabetes-s42-0003",
       "prompt": "Could you attend the clinic twice a month?",
-      "text": "[offline] You asked: Could you attend the clinic twice a month?\nSpeaking from what's on file for me:\n- you must attend the site in person is difficult if you have no reliable way to get to the site\n- you must attend the site in person is difficult if travelling and waiting are physically hard\n- you must attend the site in person is difficult if the site is a long journey away\n- you must attend the site in person is difficult if your journey depends on public transport running\nI feel like that's a lot to manage on top of everything else."
+      "text": "[offline] You asked: Could you attend the clinic twice a month?\nSpeaking about my own situation:\n- Unsupported gets in your way \u2014 a minor problem for you\n- You first noticed something was wrong on 2022-06-15\n- You first saw someone about it on 2023-05-17\nAnd from what's on file about the condition:\n- you must attend the site in person is difficult if you have no reliable way to get to the site\n- you must attend the site in person is difficult if travelling and waiting are physically hard\n- you must attend the site in person is difficult if the site is a long journey away\n- you must attend the site in person is difficult if your journey depends on public transport running\nI feel like that's a lot to manage on top of everything else."
     },
     {
       "cited_fact_ids": [
+        "B-competing_care",
+        "J-symptom_onset",
+        "J-first_contact",
         "F011",
         "F012",
         "F013",
@@ -116,35 +185,41 @@
       "order": 7,
       "patient_id": "type-2-diabetes-s42-0001",
       "prompt": "Could you attend the clinic twice a month?",
-      "text": "[offline] You asked: Could you attend the clinic twice a month?\nSpeaking from what's on file for me:\n- you must attend the site in person is difficult if you have no reliable way to get to the site\n- you must attend the site in person is difficult if travelling and waiting are physically hard\n- you must attend the site in person is difficult if the site is a long journey away\n- you must attend the site in person is difficult if your journey depends on public transport running\nI feel like that's a lot to manage on top of everything else."
+      "text": "[offline] You asked: Could you attend the clinic twice a month?\nSpeaking about my own situation:\n- Competing care gets in your way \u2014 a minor problem for you\n- You first noticed something was wrong on 2018-04-25\n- You first saw someone about it on 2019-09-24\nAnd from what's on file about the condition:\n- you must attend the site in person is difficult if you have no reliable way to get to the site\n- you must attend the site in person is difficult if travelling and waiting are physically hard\n- you must attend the site in person is difficult if the site is a long journey away\n- you must attend the site in person is difficult if your journey depends on public transport running\nI feel like that's a lot to manage on top of everything else."
     },
     {
       "cited_fact_ids": [
-        "F011",
-        "F012",
-        "F013",
-        "F014"
+        "B-adherence",
+        "B-mobility",
+        "B-comprehension",
+        "F002",
+        "F004",
+        "F001",
+        "F003"
       ],
       "grounded": true,
       "is_probe": true,
       "order": 8,
       "patient_id": "type-2-diabetes-s42-0004",
-      "prompt": "Several of you have raised the same thing \u2014 you must attend the site in person is difficult if you have no reliable way to get to the site. For Could you attend the clinic twice a month?, what would actually have to change there?",
-      "text": "[offline] You asked: Several of you have raised the same thing \u2014 you must attend the site in person is difficult if you have no reliable way to get to the site. For Could you attend the clinic twice a month?, what would actually have to change there?\nSpeaking from what's on file for me:\n- you must attend the site in person is difficult if you have no reliable way to get to the site\n- you must attend the site in person is difficult if travelling and waiting are physically hard\n- you must attend the site in person is difficult if the site is a long journey away\n- you must attend the site in person is difficult if your journey depends on public transport running\nI feel like that's a lot to manage on top of everything else."
+      "prompt": "Several of you have raised the same thing \u2014 that point. For Could you attend the clinic twice a month?, what would actually have to change there?",
+      "text": "[offline] You asked: Several of you have raised the same thing \u2014 that point. For Could you attend the clinic twice a month?, what would actually have to change there?\nSpeaking about my own situation:\n- Adherence gets in your way \u2014 a minor problem for you\n- Mobility gets in your way \u2014 a minor problem for you\n- Comprehension gets in your way \u2014 a minor problem for you\nAnd from what's on file about the condition:\n- fasting blood tests means you must attend the site in person\n- regular monitoring appointments means you must attend the site in person\n- fasting blood tests means you must not eat beforehand\n- fasting blood tests means appointments are during working hours\nI feel like that's a lot to manage on top of everything else."
     },
     {
       "cited_fact_ids": [
-        "F011",
-        "F012",
-        "F013",
-        "F015"
+        "B-cost",
+        "B-mobility",
+        "B-distance",
+        "F002",
+        "F004",
+        "F001",
+        "F003"
       ],
       "grounded": true,
       "is_probe": true,
       "order": 9,
       "patient_id": "type-2-diabetes-s42-0002",
-      "prompt": "Several of you have raised the same thing \u2014 you must attend the site in person is difficult if you have no reliable way to get to the site. For Could you attend the clinic twice a month?, what would actually have to change there?",
-      "text": "[offline] You asked: Several of you have raised the same thing \u2014 you must attend the site in person is difficult if you have no reliable way to get to the site. For Could you attend the clinic twice a month?, what would actually have to change there?\nSpeaking from what's on file for me:\n- you must attend the site in person is difficult if you have no reliable way to get to the site\n- you must attend the site in person is difficult if travelling and waiting are physically hard\n- you must attend the site in person is difficult if the site is a long journey away\n- you must attend the site in person is difficult if travel and time off work cost money you do not have\nI feel like that's a lot to manage on top of everything else."
+      "prompt": "Several of you have raised the same thing \u2014 that point. For Could you attend the clinic twice a month?, what would actually have to change there?",
+      "text": "[offline] You asked: Several of you have raised the same thing \u2014 that point. For Could you attend the clinic twice a month?, what would actually have to change there?\nSpeaking about my own situation:\n- Cost gets in your way \u2014 a minor problem for you\n- Mobility gets in your way \u2014 a minor problem for you\n- Distance gets in your way \u2014 a minor problem for you\nAnd from what's on file about the condition:\n- fasting blood tests means you must attend the site in person\n- regular monitoring appointments means you must attend the site in person\n- fasting blood tests means you must not eat beforehand\n- fasting blood tests means appointments are during working hours\nI feel like that's a lot to manage on top of everything else."
     }
   ],
   "themes": [
@@ -166,13 +241,9 @@
         0,
         1,
         2,
-        3,
-        4,
         5,
         6,
-        7,
-        8,
-        9
+        7
       ]
     },
     {
@@ -193,13 +264,9 @@
         0,
         1,
         2,
-        3,
-        4,
         5,
         6,
-        7,
-        8,
-        9
+        7
       ]
     },
     {
@@ -220,13 +287,9 @@
         0,
         1,
         2,
-        3,
-        4,
         5,
         6,
-        7,
-        8,
-        9
+        7
       ]
     },
     {
@@ -245,11 +308,192 @@
       "statement_orders": [
         0,
         2,
-        3,
         5,
         6,
-        7,
+        7
+      ]
+    },
+    {
+      "fact_ids": [
+        "B-competing_care"
+      ],
+      "id": "T5",
+      "label": "B-competing_care",
+      "patient_ids": [
+        "type-2-diabetes-s42-0000",
+        "type-2-diabetes-s42-0001",
+        "type-2-diabetes-s42-0005"
+      ],
+      "statement_orders": [
+        2,
+        5,
+        7
+      ]
+    },
+    {
+      "fact_ids": [
+        "B-adherence"
+      ],
+      "id": "T6",
+      "label": "B-adherence",
+      "patient_ids": [
+        "type-2-diabetes-s42-0000",
+        "type-2-diabetes-s42-0004"
+      ],
+      "statement_orders": [
+        0,
+        3,
+        5,
         8
+      ]
+    },
+    {
+      "fact_ids": [
+        "B-comprehension"
+      ],
+      "id": "T7",
+      "label": "B-comprehension",
+      "patient_ids": [
+        "type-2-diabetes-s42-0000",
+        "type-2-diabetes-s42-0004"
+      ],
+      "statement_orders": [
+        0,
+        3,
+        5,
+        8
+      ]
+    },
+    {
+      "fact_ids": [
+        "B-mobility"
+      ],
+      "id": "T8",
+      "label": "B-mobility",
+      "patient_ids": [
+        "type-2-diabetes-s42-0002",
+        "type-2-diabetes-s42-0004"
+      ],
+      "statement_orders": [
+        0,
+        1,
+        3,
+        4,
+        8,
+        9
+      ]
+    },
+    {
+      "fact_ids": [
+        "B-unsupported"
+      ],
+      "id": "T9",
+      "label": "B-unsupported",
+      "patient_ids": [
+        "type-2-diabetes-s42-0003",
+        "type-2-diabetes-s42-0005"
+      ],
+      "statement_orders": [
+        2,
+        6
+      ]
+    },
+    {
+      "fact_ids": [
+        "F001"
+      ],
+      "id": "T10",
+      "label": "fasting blood tests means you must not eat beforehand",
+      "patient_ids": [
+        "type-2-diabetes-s42-0002",
+        "type-2-diabetes-s42-0004"
+      ],
+      "statement_orders": [
+        3,
+        4,
+        8,
+        9
+      ]
+    },
+    {
+      "fact_ids": [
+        "F002"
+      ],
+      "id": "T11",
+      "label": "fasting blood tests means you must attend the site in person",
+      "patient_ids": [
+        "type-2-diabetes-s42-0002",
+        "type-2-diabetes-s42-0004"
+      ],
+      "statement_orders": [
+        3,
+        4,
+        8,
+        9
+      ]
+    },
+    {
+      "fact_ids": [
+        "F003"
+      ],
+      "id": "T12",
+      "label": "fasting blood tests means appointments are during working hours",
+      "patient_ids": [
+        "type-2-diabetes-s42-0002",
+        "type-2-diabetes-s42-0004"
+      ],
+      "statement_orders": [
+        3,
+        4,
+        8,
+        9
+      ]
+    },
+    {
+      "fact_ids": [
+        "F004"
+      ],
+      "id": "T13",
+      "label": "regular monitoring appointments means you must attend the site in person",
+      "patient_ids": [
+        "type-2-diabetes-s42-0002",
+        "type-2-diabetes-s42-0004"
+      ],
+      "statement_orders": [
+        3,
+        4,
+        8,
+        9
+      ]
+    },
+    {
+      "fact_ids": [
+        "J-first_contact"
+      ],
+      "id": "T14",
+      "label": "J-first_contact",
+      "patient_ids": [
+        "type-2-diabetes-s42-0001",
+        "type-2-diabetes-s42-0003"
+      ],
+      "statement_orders": [
+        6,
+        7
+      ]
+    },
+    {
+      "fact_ids": [
+        "J-symptom_onset"
+      ],
+      "id": "T15",
+      "label": "J-symptom_onset",
+      "patient_ids": [
+        "type-2-diabetes-s42-0001",
+        "type-2-diabetes-s42-0003"
+      ],
+      "statement_orders": [
+        6,
+        7
       ]
     }
   ],

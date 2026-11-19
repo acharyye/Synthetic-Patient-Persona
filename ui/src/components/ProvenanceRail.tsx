@@ -1,6 +1,5 @@
 import type { PreviewResult } from "../lib/preview";
 import type { LabState } from "../lib/urlState";
-
 interface Assumption {
   name: string;
   confidence: string;
@@ -23,6 +22,7 @@ interface Props {
  */
 export function ProvenanceRail({ state, result, assumptions, unquotable }: Props) {
   const unquotableSet = new Set(unquotable);
+  const population = result?.population;
 
   return (
     <div>
@@ -34,6 +34,32 @@ export function ProvenanceRail({ state, result, assumptions, unquotable }: Props
         <Row k="identity" v={result?.cohort.identity ?? "—"} />
         <Row k="resident" v={result ? (result.cohort.cached ? "cached" : "generated") : "—"} />
       </div>
+
+      {/* Amber, never red. --integrity means never-quote / parse error /
+          ungrounded and NOTHING ELSE; a condition with no prior pack is a
+          coverage cost, and spending the ledger's red on it would blur the one
+          distinction this design commits to. */}
+      {population?.generic && (
+        <div className="banner cost" data-testid="generic-population">
+          <strong>No prior pack for “{population.condition}”.</strong>
+          <p>
+            This cohort was sampled from a generic adult chronic-disease shape,
+            not from anything about this condition. The numbers are internally
+            consistent and say nothing about {population.population_label}.
+          </p>
+          <p className="note">{population.why_not_quotable}</p>
+        </div>
+      )}
+      {population && !population.generic && !population.quotable && (
+        <div className="banner muted" data-testid="population-note">
+          <strong>{population.prior_pack}</strong> <span>v{population.pack_version}</span>
+          <p>{population.population_note}</p>
+          <p className="note">
+            {population.unquotable_fields.length} marginals are unfitted —{" "}
+            {population.why_not_quotable.toLowerCase()}
+          </p>
+        </div>
+      )}
 
       <h2>
         Assumptions · {assumptions.length}

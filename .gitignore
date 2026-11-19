@@ -44,15 +44,17 @@ spp_vision_and_roadmap.md
 Brief.txt
 protocol_ci_plan.md
 
-# The OKF knowledge base indexes the same invariants, so it follows the same
-# rule as CLAUDE.md: agent context, kept local. The tracker does NOT — steering
-# is a claim about the project and belongs where a reader can check it.
-docs/okf/
-
-# tracker.html is GENERATED (build_tracker.py embeds state + the full OKF text
-# into it). Committing it would publish the knowledge base the line above keeps
-# local, and a rendering is not a source. Source is tracker_state.json; run
-# `python3 tracker/build_tracker.py` to rebuild the view.
+# The OKF knowledge base is TRACKED, on the owner's 2026-11-19 decision. It was
+# previously ignored on the theory that it is agent context like CLAUDE.md — but
+# CLAUDE.md and AGENTS.md both declare `docs/okf/` canonical FOR PROJECT STATUS,
+# and a canonical surface that a cloner cannot read is not a surface. The
+# distinction is the one this file already draws for the tracker: agent context
+# stays local, claims about the project are published. Status is a claim.
+#
+# tracker.html stays ignored for a different and still-valid reason: it is a
+# RENDERING, and it embeds the full OKF text, so committing it would publish a
+# second copy of a source that is now tracked directly.
+# `python3 tracker/build_tracker.py` rebuilds the view.
 tracker/tracker.html
 
 # Write-ups about the project are not the project. Drafts live locally; the

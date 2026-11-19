@@ -1,16 +1,35 @@
 import { describe, expect, it, vi } from "vitest";
 import { PreviewChannel, type PreviewRequest, type PreviewResult } from "../src/lib/preview";
+import clean from "../../tests/fixtures/scenario_preview.json";
 
 const base: PreviewRequest = {
   condition: "type 2 diabetes", n: 100, seed: 42, inclusion: [], exclusion: [],
 };
 
+/**
+ * Built by SPREADING the committed fixture, not by listing fields by hand.
+ *
+ * It used to hand-build a full PreviewResult, which meant this test — about
+ * request sequencing, not about the response shape — had to be edited every
+ * time the server added a field, and `tsc` failed the whole leg when it wasn't.
+ * Deriving from the fixture the Python suite also asserts against keeps the
+ * sequence semantics under test and lets the shape move without waking this file.
+ */
+const TEMPLATE = clean as unknown as PreviewResult;
+
 function reply(sequence: number, eligible: number): PreviewResult {
   return {
-    sequence, eligible, screened: 100, eligibility_rate: eligible / 100,
-    cohort: { identity: "t2d@v1", size: 100, cached: true },
-    diagnostics: [], stale: false, stale_reason: "",
-    criteria_impact: [], attribution: [],
+    ...TEMPLATE,
+    sequence,
+    eligible,
+    screened: 100,
+    eligibility_rate: eligible / 100,
+    cohort: { ...TEMPLATE.cohort, identity: "t2d@v1", size: 100, cached: true },
+    diagnostics: [],
+    stale: false,
+    stale_reason: "",
+    criteria_impact: [],
+    attribution: [],
   };
 }
 

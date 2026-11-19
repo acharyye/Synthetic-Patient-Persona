@@ -5,11 +5,24 @@
 With SPP_LIVE=false the persona replies are deterministic stubs and the graph
 returns a small canned subgraph — the shapes are identical to live mode, so the
 whole flow is demoable with nothing running.
+
+The `sys.path` line below is not decoration. Without it the documented first
+command fails on a clean machine with `ModuleNotFoundError: No module named
+'spp'`, because the package is not installed (there is no `[build-system]` yet)
+and the README's `export PYTHONPATH=src` exists purely to work around that.
+`scripts/export_report.py` already self-inserts; this brings quickstart, the
+thing every reader runs first, up to the same standard. One line, and the
+workaround stops being a prerequisite for the demo.
 """
-from spp.cohort import cohort_summary, generate_cohort
-from spp.persona import PersonaEngine
-from spp.protocol import ProtocolBurden, burden_report, rank_by_burden, screen
-from spp.schemas import Medication, PatientDNA
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+
+from spp.cohort import cohort_summary, generate_cohort  # noqa: E402
+from spp.persona import PersonaEngine  # noqa: E402
+from spp.protocol import ProtocolBurden, burden_report, rank_by_burden, screen  # noqa: E402
+from spp.schemas import Medication, PatientDNA  # noqa: E402
 
 CONDITION = "type 2 diabetes"
 engine = PersonaEngine()
