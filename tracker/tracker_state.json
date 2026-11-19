@@ -2,10 +2,10 @@
   "version": 2,
   "project": "Synthetic Patient Persona (SPP)",
   "startWeek": 31,
-  "endWeek": 44,
+  "endWeek": 52,
   "year": 2026,
-  "todayWeek": 34,
-  "lastModified": "2026-08-25",
+  "todayWeek": 47,
+  "lastModified": "2026-11-19",
   "stages": [
     {
       "id": "S1",
@@ -198,8 +198,8 @@
     },
     {
       "id": "S2",
-      "title": "v0.4 — State-citation (P/B/J/E namespaces)",
-      "desc": "The active workstream. v2's factual_fraction collapse on burden and mitigation is claimed to be a state-citation gap; the pre-registered shape says what would falsify that.",
+      "title": "v0.4–v0.5 — State-citation and the segmentation lever",
+      "desc": "Shipped. v0.4 read OVER-CORRECTION; v0.5 read 'the lever worked and the floor was missed' (gold coverage 0.556 against 0.6). Instrument work is FROZEN per the 2026-11 review until a calibrated pack exists.",
       "tasks": [
         {
           "id": "F",
@@ -528,6 +528,45 @@
           "knowledge": [
             "docs/okf/concepts/state-coverage-denominator.md"
           ]
+        },
+        {
+          "meetingNotes": "",
+          "achievements": [
+            "tests/eval/v4_expected_shape.json — 17 arms, pushed before the prompt change existed.",
+            "evidence/v0.5/20260825T123023+0000/ — bundle, adjudication_v4.json, seeded audit slice (seed 20260825, 15 of 30 takes), first two-pass labelling."
+          ],
+          "validations": [
+            "KR1.1 reading at v0.5 — factual_fraction: burden 0.400 -> 0.900, mitigation 0.4433 -> 0.850 (DOWN 0.08 from v0.4's 0.9333), ae 0.900 (EXACTLY at the 0.10 control bound), tx 1.0, proc 1.0, sym 0.0 for the fourth run running.",
+            "KR1.3 reading at v0.5 — model_recall 0.6724 (v0.1 0.500, v0.3 0.525, v0.4 0.5862).",
+            "state_coverage 0.4419 -> 0.50 (v2.2 estimator, both runs) WHILE f_recall_exclusive 0.4615 -> 0.5897; single_segment_rate 0.567 -> 0.30.",
+            "Hard bars: citation_validity 1.0, parse 0.0, retry 0.0, overflow 0.0 measured, 0 quarantined.",
+            "state_citation_aptness 0.913 -> 0.714, in the direction registered before the run."
+          ],
+          "decisions": [
+            "state_coverage has several live values and each needs its instrument named: v0.4 bundle 0.5641, cassette replay 0.5135, gold labels 0.5263, v2.2 estimator 0.4419; v0.5 bundle 0.500, gold on the audit slice 0.556. The floor is answered at GOLD semantics only.",
+            "schema_gap_union NOT adjudicable from the slice (4 sym takes, 0 burden takes of 15)."
+          ],
+          "links": [
+            "KR1.1",
+            "KR1.3"
+          ],
+          "deps": [
+            "Q"
+          ],
+          "assignees": [],
+          "knowledge": [
+            "evidence/v0.5/20260825T123023+0000/adjudication_v4.json",
+            "RELEASE.md"
+          ],
+          "id": "R",
+          "title": "v0.5 — prompt v4, the segmentation lever",
+          "status": "done",
+          "progress": 100,
+          "startWeek": 35,
+          "endWeek": 35,
+          "aufgabe": "One claim per segment. Pre-register 17 arms, canary under the v4 instruction, record, audit a seeded slice blind before reading aggregates, adjudicate.",
+          "ziel": "Break the displacement between state and graph citation without spending a structural guarantee.",
+          "stand": "Done 2026-08-25, tagged v0.5. The lever worked and the floor was missed: compounds fell, state_coverage and f_recall_exclusive rose together, gold coverage on the audited slice read 0.556 against a floor of 0.6."
         }
       ]
     },
@@ -539,23 +578,49 @@
         {
           "id": "J",
           "title": "ingest/synthea_loader.py — real Synthea CSV joins -> PatientDNA",
-          "status": "backlog",
-          "progress": 0,
-          "startWeek": 36,
-          "endWeek": 39,
+          "status": "in-progress",
+          "progress": 25,
+          "startWeek": 35,
+          "endWeek": 49,
           "aufgabe": "Join real Synthea CSV exports into the PatientDNA schema. Search TODO(claude-code) markers for the exact insertion points.",
           "ziel": "Persona generation draws on real distributions instead of condition-based priors alone.",
-          "stand": "The one open build-order item (items 2–5 are done).",
+          "stand": "Groundwork done, mechanism absent. The loader is still the 27-line stub and nothing can write a SYNTHEA_CALIBRATED entry. Next: joins -> PatientDNA, then marginal derivation for type 2 diabetes ONLY — the one condition the registered -p 1000 run clears at n=50.",
           "meetingNotes": "",
-          "achievements": [],
-          "validations": [],
-          "decisions": [],
+          "achievements": [
+            "ProvenanceKind (EXPERT_GUESS / SYNTHEA_CALIBRATED / CUSTOMER_DATA_FITTED) in cohort/packs.py; quotability re-keyed from confidence to KIND; an unversioned SYNTHEA_CALIBRATED entry is refused.",
+            "tests/fixtures/synthea/ — 5 CSVs authored to break wrong joins (two patients sharing a name, zero-condition patient, medication with empty REASONCODE, duplicate-looking dispenses).",
+            "data/synthea/structural_seed11/ — a real export, 113 patients, jar sha256 018ad7f0…, observations truncated 81,612 -> 5,000 rows with the truncation recorded in its MANIFEST.",
+            "data/synthea/keep_modules/ — 5 keep-modules, authored from the documented format, NEVER executed.",
+            "tests/eval/synthea_targets.json — the target list and eleven registered decisions."
+          ],
+          "validations": [
+            "Suite 991 -> 1028 across the Synthea groundwork (37 tests: targets, fixtures, structure).",
+            "The structural diff fired on first contact, twice: patients.csv lacked MIDDLE, and conditions.SYSTEM held a URL where the real export writes SNOMED-CT. Both fixtures corrected.",
+            "TestTodaysPacksAreHonest passes because nothing has moved: all 51 marginals are still EXPERT_GUESS."
+          ],
+          "decisions": [
+            "2026-08-25 — target list committed before the loader: Synthea may calibrate age, sex, stage, comorbidities, medication_ladder; NOT literacy, adherence, dx delay, SDOH, goals, constraints.",
+            "2026-08-25 — SYNTHEA_CALIBRATED is NOT quotable. Only CUSTOMER_DATA_FITTED crosses that line.",
+            "2026-08-25 — diff before adopt: a Synthea-vs-prior table per entry; a large disagreement is investigated and adoption may be declined per entry.",
+            "2026-08-25 — fixtures must exercise the joins, not just the columns.",
+            "2026-08-25 — sample size: ~100-patient run validates structure and feeds no target; n >= 50 per entry, below it the entry stays EXPERT_GUESS marked 'Synthea n too small'.",
+            "2026-08-27 — deceased patients EXCLUDED from derivation (the packs describe a recruitable population).",
+            "2026-08-27 — the jar is pinned by content hash, never by tag.",
+            "2026-08-27 — medication ladder: Synthea informs membership (prevalence), not order.",
+            "2026-08-27 — condition mapping is an explicit committed table with a per-run unmapped-row report.",
+            "2026-08-27 — calibration run parameters: -p 1000, seed 20260827, n-threshold 50.",
+            "2026-08-27 — SDOH findings in conditions.csv deferred; no amendment to the target list."
+          ],
           "links": [
             "KR3.1"
           ],
           "deps": [],
           "assignees": [],
-          "knowledge": []
+          "knowledge": [
+            "tests/eval/synthea_targets.json",
+            "tests/fixtures/synthea/README.md",
+            "data/synthea/structural_seed11/MANIFEST.json"
+          ]
         },
         {
           "id": "K",
@@ -566,11 +631,13 @@
           "endWeek": 41,
           "aufgabe": "Replace cohort/epidemiology.py literature ballparks with priors derived from ingested data, and lift the do-not-quote caveat once they are sourced.",
           "ziel": "A number from cohort/epidemiology.py can be quoted as a finding.",
-          "stand": "Blocked on synthea_loader. Until then: never quote a number from that module as a finding.",
+          "stand": "Blocked on J. And its KR needs restating: KR3.2 says a number becomes 'quotable', while the 2026-08-25 decision says SYNTHEA_CALIBRATED is never quotable. What this task can deliver is proof the refitting mechanism works, not a quotable number.",
           "meetingNotes": "",
           "achievements": [],
           "validations": [],
-          "decisions": [],
+          "decisions": [
+            "2026-11-19 — KR3.2's text is NOT edited here. Restating a KR is the owner's call (§1); the contradiction is recorded so the 0.0 grade is not read as 'not started'."
+          ],
           "links": [
             "KR3.2"
           ],
@@ -579,6 +646,36 @@
           ],
           "assignees": [],
           "knowledge": []
+        },
+        {
+          "meetingNotes": "",
+          "achievements": [],
+          "validations": [
+            "Living patients per 1000 in the structural export: type 2 diabetes 60, breast cancer 30, COPD 20, heart failure 0, rheumatoid arthritis 0. -p 1000 clears n=50 for T2D only.",
+            "RA is modelled by Synthea (~1% incidence, ~75% remission) — rare, not absent. The keep-module's SNOMED 69896004 is UNVERIFIED, with 0 observed rows."
+          ],
+          "decisions": [
+            "2026-08-27 — keep_run_supplement registered as an amendment (5 keep-runs, 60 kept each); the flat run executes as written. Registered, never run.",
+            "2026-11-19 — recommended first pass: type 2 diabetes ONLY from the flat run; the other four conditions stay EXPERT_GUESS until keep-runs are executed. Not yet confirmed by the owner.",
+            "Not an option: lowering the n=50 threshold to fit what the data offers."
+          ],
+          "links": [
+            "KR3.1"
+          ],
+          "deps": [],
+          "assignees": [],
+          "knowledge": [
+            "tests/eval/synthea_targets.json"
+          ],
+          "id": "S",
+          "title": "Calibration runs — prevalence is the binding constraint",
+          "status": "backlog",
+          "progress": 0,
+          "startWeek": 47,
+          "endWeek": 49,
+          "aufgabe": "Execute the registered flat run (-p 1000, seed 20260827, jar 018ad7f0…). Decide whether the four rarer conditions get keep-runs now or stay out of scope.",
+          "ziel": "A calibration export with its own MANIFEST that the derivation can read.",
+          "stand": "WAITING ON THE OWNER. PRE_RUN_FINDING is still 'REPORTED, NOT ACTED ON'. No calibration run has ever been executed; only the 113-patient structural run exists and it is barred from feeding targets."
         }
       ]
     },
@@ -613,11 +710,11 @@
           "title": "Scenario comparison views + exportable reports",
           "status": "done",
           "progress": 100,
-          "startWeek": 41,
-          "endWeek": 44,
+          "startWeek": 35,
+          "endWeek": 35,
           "aufgabe": "Add scenario comparison output and exportable reports on top of Scenario Lab, Interview Room and Cohort Studio.",
           "ziel": "A stakeholder can run a comparison and take an artifact away without the author present.",
-          "stand": "Done 2026-08-25. Four exportable artifact types — counterfactual, cohort comparison, protocol-CI verdict, evidence bundle — each a self-contained file written by scripts/export_report.py with no server, no JavaScript and no network.",
+          "stand": "Done 2026-08-25. Four exportable artifact types — counterfactual, cohort comparison, protocol-CI verdict, evidence bundle — each a self-contained file written by scripts/export_report.py with no server, no JavaScript and no network. Both commits post-date the v0.5 tag, so the published RELEASE.md does not mention them and — being frozen — will not. They belong in the next release's notes.",
           "meetingNotes": "",
           "achievements": [
             "report/html.py gains render_comparison — the cohort comparison had an artifact (compare.py) and no renderer, so it could not leave the room.",
@@ -681,14 +778,14 @@
         },
         {
           "id": "Q",
-          "title": "is_circumstantial v2 — instrument correction, blind validation pending",
-          "status": "in-progress",
-          "progress": 90,
+          "title": "is_circumstantial v2 → v2.2 — adopted on held-out labels, then expired by v4",
+          "status": "done",
+          "progress": 100,
           "startWeek": 34,
           "endWeek": 35,
           "aufgabe": "Define the state_coverage denominator from namespace semantics instead of first-person grammar, validate it blind, then rescore v3 under both instruments and publish the pair.",
           "ziel": "An instrument correction that is visibly an instrument correction, never folded into a model comparison.",
-          "stand": "Blind labels in, both instruments scored. v2 beats v1 on agreement (0.6923 vs 0.6154) and kappa (0.3113 vs -0.0484), so the pre-registered comparative criterion adopts it. Blocked on one decision: the floor value under v2 semantics.",
+          "stand": "Closed and FROZEN. v2.2 was adopted 2026-08-25 on a sheet held out from every instrument, then beaten by v2.1 on the v4 run's own text — its validation carried a distribution stamp the segmentation lever moved. No further revision until a calibrated pack exists (2026-11 review).",
           "meetingNotes": "",
           "achievements": [
             "src/spp/narration/circumstantial.py — first person AND at least one term the persona's P/B/J facts carry that no offered graph fact does. Derived from PROFILE_FIELDS and the offered-fact contract, not from the segments.",
@@ -696,13 +793,18 @@
             "tests/test_circumstantial_v2.py — 5 tests, including TestNotWiredIn asserting evaluation.py does not import v2.",
             "Blind labels from an independent rater, text only: 38 y!, 6 y?, 8 n, 1 abstention. Committed as tests/eval/instrument_v2_labels.json.",
             "v1 kappa is BELOW CHANCE (-0.0484) on this labelled set. On coverable segments the two instruments tie on raw agreement (0.6957 each) and split on kappa 0.0359 vs 0.3347 — raw agreement alone would have decided it wrong.",
-            "All 15 of v2's misses cluster into three named classes with none left over: own regimen (8), shared circumstance term (5), uncoverable y? (2)."
+            "All 15 of v2's misses cluster into three named classes with none left over: own regimen (8), shared circumstance term (5), uncoverable y? (2).",
+            "v2.1 (possession frame) and v2.2 (five frames: possession, experience, ability, situation, negated resource) in narration/circumstantial.py and narration/frames.py, each frame with a unit fixture authored from its rule.",
+            "Three blind sheets: 53 segments (v3 cassette), 63 (archived prompt-v2 cassette), 50 (v1-era cassette at 1c07e78). Labels committed under tests/eval/."
           ],
           "validations": [
             "952 passed, 19 skipped.",
             "NOT validated against labels. The number is an instrument correction under review and is reported beside v1's, never instead of it.",
             "state_coverage against the label-validated denominator: 0.5263 (20/38), schema_gap_rate 0.1364 (6/44). The v0.4 miss SURVIVES the instrument fix — the corrected number is closer to v1's 0.5135 than to v2's 0.6000.",
-            "v2 over-reports coverage by ~7 points: its denominator is 30 where the labels say 38. Known direction, recorded as a named limitation."
+            "v2 over-reports coverage by ~7 points: its denominator is 30 where the labels say 38. Known direction, recorded as a named limitation.",
+            "Adoption sheet, 49 scored, held out from every instrument: v2.2 0.6939 / kappa +0.3336; v2.1 0.5510 / +0.0972; v1 0.5306 / +0.0242.",
+            "v1's kappa on the first sheet was BELOW chance (-0.0484) at 61.5% agreement.",
+            "Per-run audit on v4 text (34 segments): v2.2 0.5882 / +0.1765, beaten by v2.1 0.6765 / +0.2609; denominator error -12 of 29."
           ],
           "decisions": [
             "v2 lands EXACTLY on the pre-registered floor of 0.6. Reported as the suspicious coincidence it is, not as a pass. A metric arriving precisely at its own bar after being rewritten is the shape score inflation takes.",
@@ -711,7 +813,11 @@
             "v2's 8 ADDED segments are the open question — mostly symptom and goal claims, and symptoms are not in PROFILE_FIELDS, so they enlarge the denominator with segments no P- id can cover. Logged, not patched.",
             "v2 ADOPTED on the pre-registered comparative criterion. The two miss classes are named limitations, NOT patched: editing the classifier until it stops missing them would fit it to the labels that validated it, and the next definition needs its own blind rating.",
             "Both real miss classes are one mechanism — the subtraction cannot tell asserting POSSESSION of a thing from asserting a clinical PROPERTY of it, and discards the shared term either way.",
-            "The 0.6000 coincidence resolves as a coincidence. v2 landing exactly on the old floor was its own denominator being too small, not the model clearing a bar."
+            "The 0.6000 coincidence resolves as a coincidence. v2 landing exactly on the old floor was its own denominator being too small, not the model clearing a bar.",
+            "2026-08-25 — v2.1 failed adoption on the CANARY criterion (zeroed the state-lever fixture) despite winning its sheet. Canary compatibility is an adoption criterion.",
+            "2026-08-25 — the floor is a gold-semantics bar; instruments estimate and are audited per run.",
+            "2026-08-25 — estimator validity is distribution-relative: adoption carries a distribution stamp and expires when a lever moves it.",
+            "2026-11-18 — FROZEN by the review: 13 commits moved one denominator 1.3 points, and no customer-visible claim depends on it."
           ],
           "links": [
             "KR1.1"
@@ -723,6 +829,48 @@
           "knowledge": [
             "docs/okf/concepts/instrument-v2.md"
           ]
+        },
+        {
+          "meetingNotes": "",
+          "achievements": [
+            "docs/AUDIT_{METHOD,EVIDENCE,MARKET,PLAN}_2026-11.md — the review, run 2026-11-18.",
+            "A1: narration.model declares prompt 4, the real digest and the measured compliance; record_narration.py refuses to run against a ledger that disagrees.",
+            "A2a: App.tsx reads `unsupported`; ui/tests/app-fetch.test.tsx renders the real App against the committed fixture, so the API-UI seam is finally tested.",
+            "A3: stub edges carry synthetic: true, are schema-valid, and the grounding block the model reads announces them as placeholders.",
+            "A4: population.generic on every endpoint that builds a cohort, amber banner in the UI.",
+            "A6: /health reports the graph that actually grounds (141 nodes / 205 facts).",
+            "C4: README carries the four-bundle table instead of v0.1's 0.8333.",
+            "Also: quickstart.py self-path, .env.example documents Ollama, SPP_LIVE= no longer breaks collection, build_tracker.py's link checker covers non-.md targets, docs/okf/ un-ignored."
+          ],
+          "validations": [
+            "Independently re-run 2026-11-19: 1113 passed, 19 skipped (was 1028); tsc clean; 33 vitest; goldens and prior packs untouched.",
+            "Mutation canaries re-run by a second reader: ledger prompt_version drift CAUGHT; generic population reported as a real pack CAUGHT.",
+            "Found on the way: fixtures stale for four releases behind a top-level-only drift guard; load_all_packs(directory) ignored its argument on a warm cache."
+          ],
+          "decisions": [
+            "Two holes left open by name: PriorPack.unquotable() ignores derivations.provenance; Population in preview.ts is a third hand-written contract (A2b).",
+            "The tracker frame 31-44 expired; endWeek extended to 52 so today is on the chart. A re-plan of the weeks is the owner's, not this sync's.",
+            "Linked to KR2.2 as the nearest outcome (stamps agree, mismatch refuses). No KR measures 'verification at the point of consumption' — raised with the owner rather than invented."
+          ],
+          "links": [
+            "KR2.2"
+          ],
+          "deps": [],
+          "assignees": [],
+          "knowledge": [
+            "docs/AUDIT_PLAN_2026-11.md",
+            "docs/AUDIT_EVIDENCE_2026-11.md",
+            "docs/okf/concepts/verification-locus.md"
+          ],
+          "id": "T",
+          "title": "2026-11 review, and the provenance defects it found (Phase A)",
+          "status": "in-progress",
+          "progress": 80,
+          "startWeek": 47,
+          "endWeek": 47,
+          "aufgabe": "Fix the places where the product's own provenance was wrong at the point of consumption: the ledger, the never-quote badge, the offline stub, the generic fallback, /health, the README.",
+          "ziel": "A technical evaluator finds no surface that contradicts the evidence bundles.",
+          "stand": "Code done and verified 2026-11-19, UNCOMMITTED in the working tree (28 files, +1394/-143). Remaining: commit, and A2b — deriving ui/src/types from route response models, deferred."
         }
       ]
     }
@@ -761,7 +909,7 @@
           "target": 0.55,
           "unit": "recall",
           "type": "Commit",
-          "grade": 0.8
+          "grade": 1.0
         }
       ]
     },
