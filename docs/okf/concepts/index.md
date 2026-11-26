@@ -19,5 +19,6 @@ Domain concepts, metrics and findings.
 | [state-coverage-denominator.md](state-coverage-denominator.md) | Reading all 18 uncovered segments: 1 is relabelling, ~9 are denominator false positives, ~8 are compound. |
 | [instrument-v2.md](instrument-v2.md) | The `is_circumstantial` lineage v1 → v2.2: which version won which blind sheet, why v2.1 failed on the canary, and the current status table. |
 | [verification-locus.md](verification-locus.md) | A fact verified only at its source rots at every consumer: five live instances, and the allocation consequence that produced them. |
+| [synthea-calibration.md](synthea-calibration.md) | Synthea's role (calibration source, never quotable), what is registered, what the loader does, and what the first real export showed. |
 
 Conventions: [../SCHEMA.md](../SCHEMA.md) · Template: [../_TEMPLATE_concept.md](../_TEMPLATE_concept.md) · Entry point: [../index.md](../index.md)

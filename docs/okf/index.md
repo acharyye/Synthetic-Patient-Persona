@@ -31,9 +31,9 @@ comments and UI copy.
 - **Purpose / scope:** scenario testing, stakeholder simulation, design exploration.
 - **Current release:** v0.5 — the lever worked and the floor was missed (2026-08-25). See the
   [v4 reading](concepts/v4-reading.md).
-- **In flight:** Synthea calibration of the prior packs. The target list, fixtures, a structural
-  export and eleven registered decisions exist; the loader and the derivation do not. Narration and
-  instrument work is frozen until a calibrated pack exists.
+- **In flight:** [Synthea calibration](concepts/synthea-calibration.md) of the prior packs. The
+  loader joins a real export into patient records; the marginal derivation and the calibration runs
+  do not exist yet. Narration and instrument work is frozen until a calibrated pack exists.
 - **Last reviewed:** 2026-11-18 — `../AUDIT_PLAN_2026-11.md`, and the rule it distilled:
   [verification belongs where it is consumed](concepts/verification-locus.md).
 - **Stack:** Python 3.11+, Pydantic v2, FastAPI, pytest, Neo4j (optional), optional LLM backend.

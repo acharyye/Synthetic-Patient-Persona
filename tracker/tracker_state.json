@@ -579,24 +579,29 @@
           "id": "J",
           "title": "ingest/synthea_loader.py — real Synthea CSV joins -> PatientDNA",
           "status": "in-progress",
-          "progress": 25,
+          "progress": 60,
           "startWeek": 35,
           "endWeek": 49,
           "aufgabe": "Join real Synthea CSV exports into the PatientDNA schema. Search TODO(claude-code) markers for the exact insertion points.",
           "ziel": "Persona generation draws on real distributions instead of condition-based priors alone.",
-          "stand": "Groundwork done, mechanism absent. The loader is still the 27-line stub and nothing can write a SYNTHEA_CALIBRATED entry. Next: joins -> PatientDNA, then marginal derivation for type 2 diabetes ONLY — the one condition the registered -p 1000 run clears at n=50.",
+          "stand": "The loader exists: Synthea CSV joins -> SyntheaPatient -> PatientDNA, verified on the join-breaking fixtures and on the real 113-patient export. Not sourced: stage and biomarkers. Remaining: the marginal derivation, which waits on a calibration run (task S). Nothing can write a SYNTHEA_CALIBRATED entry yet.",
           "meetingNotes": "",
           "achievements": [
             "ProvenanceKind (EXPERT_GUESS / SYNTHEA_CALIBRATED / CUSTOMER_DATA_FITTED) in cohort/packs.py; quotability re-keyed from confidence to KIND; an unversioned SYNTHEA_CALIBRATED entry is refused.",
             "tests/fixtures/synthea/ — 5 CSVs authored to break wrong joins (two patients sharing a name, zero-condition patient, medication with empty REASONCODE, duplicate-looking dispenses).",
             "data/synthea/structural_seed11/ — a real export, 113 patients, jar sha256 018ad7f0…, observations truncated 81,612 -> 5,000 rows with the truncation recorded in its MANIFEST.",
             "data/synthea/keep_modules/ — 5 keep-modules, authored from the documented format, NEVER executed.",
-            "tests/eval/synthea_targets.json — the target list and eleven registered decisions."
+            "tests/eval/synthea_targets.json — the target list and eleven registered decisions.",
+            "2026-11-19 — src/spp/ingest/synthea_loader.py: joins on PATIENT id only, deceased excluded and counted, active = unstopped, medication attributed to a condition only via REASONCODE, as_of taken from the export rather than the clock, LoadReport with unmapped-row report.",
+            "2026-11-19 — data/synthea/code_map.json: the explicit code -> pack vocabulary table, built from the real export; one entry (RA 69896004) declared unverified."
           ],
           "validations": [
             "Suite 991 -> 1028 across the Synthea groundwork (37 tests: targets, fixtures, structure).",
             "The structural diff fired on first contact, twice: patients.csv lacked MIDDLE, and conditions.SYSTEM held a URL where the real export writes SNOMED-CT. Both fixtures corrected.",
-            "TestTodaysPacksAreHonest passes because nothing has moved: all 51 marginals are still EXPERT_GUESS."
+            "TestTodaysPacksAreHonest passes because nothing has moved: all 51 marginals are still EXPERT_GUESS.",
+            "2026-11-19 — suite 1113 -> 1137 (24 loader tests). Mutation canary 6 of 6 caught after one rewrite: the first 'medication not borrowed' test was vacuous and passed against a loader that attributed every drug to every condition.",
+            "2026-11-19 — real export: 113 patients, 13 deceased excluded, 11 records (T2D 6, breast cancer 3, COPD 2) — matching the prevalence finding registered 2026-08-27.",
+            "2026-11-19 — 940 active condition rows, 182 mapped; among record patients 184, 47 mapped. 249 active medication rows, 8 mapped."
           ],
           "decisions": [
             "2026-08-25 — target list committed before the loader: Synthea may calibrate age, sex, stage, comorbidities, medication_ladder; NOT literacy, adherence, dx delay, SDOH, goals, constraints.",
@@ -609,7 +614,10 @@
             "2026-08-27 — medication ladder: Synthea informs membership (prevalence), not order.",
             "2026-08-27 — condition mapping is an explicit committed table with a per-run unmapped-row report.",
             "2026-08-27 — calibration run parameters: -p 1000, seed 20260827, n-threshold 50.",
-            "2026-08-27 — SDOH findings in conditions.csv deferred; no amendment to the target list."
+            "2026-08-27 — SDOH findings in conditions.csv deferred; no amendment to the target list.",
+            "2026-11-19 — stage is NOT sourced. The packs' early/moderate/advanced ladder has no Synthea counterpart; calibrating it needs its own registered rule first.",
+            "2026-11-19 — Synthea's insulin mix is not mapped to the pack's 'insulin glargine'. 14 of 20 ladder drugs have no row; for T2D that is the care map, not prevalence. Medication membership will mostly be a 'Synthea disagrees' case under the adoption rule.",
+            "2026-11-19 — derivation must read SyntheaPatient (sourced fields only), never the PatientDNA form, whose unsourced fields sit at schema defaults."
           ],
           "links": [
             "KR3.1"
@@ -619,7 +627,9 @@
           "knowledge": [
             "tests/eval/synthea_targets.json",
             "tests/fixtures/synthea/README.md",
-            "data/synthea/structural_seed11/MANIFEST.json"
+            "data/synthea/structural_seed11/MANIFEST.json",
+            "docs/okf/concepts/synthea-calibration.md",
+            "data/synthea/code_map.json"
           ]
         },
         {
@@ -966,7 +976,7 @@
           "target": 100,
           "unit": "%",
           "type": "Commit",
-          "grade": 0.0
+          "grade": 0.7
         },
         {
           "id": "KR3.2",
