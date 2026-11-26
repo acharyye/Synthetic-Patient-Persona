@@ -192,5 +192,39 @@
     "reason_2": "these are MODULE OUTPUTS \u2014 the medication-ladder argument verbatim. A US social-assumption wearing a data label.",
     "reason_3_the_decisive_one": "the semantic mapping is poor exactly where the product needs it. Employment maps loosely; TRANSPORT, CAREGIVER SUPPORT and HEALTH LITERACY \u2014 the barrier-generating fields \u2014 are absent from all 187 codes. So even a future adoption would calibrate the fields that matter least.",
     "when_revisited": "as its own registered decision, written before any derivation touches these fields."
+  },
+  "stage_is_not_sourced": {
+    "registered_on": "2026-11-26",
+    "registered_before": "any calibration run",
+    "amends": "synthea_can_calibrate.stage",
+    "DECISION": "stage stays EXPERT_GUESS. Synthea does not calibrate it in this pass.",
+    "reason": "the packs' early/moderate/advanced ladder is a pack abstraction with no Synthea counterpart. Mapping complications or years-since-diagnosis onto it would be an invented rule, and its output would be stamped SYNTHEA_CALIBRATED \u2014 a judgement wearing a data label, the same objection that kept ladder ORDER out.",
+    "if_revisited": "a stage derivation rule is registered first, per condition, before any export is read for it.",
+    "found_by": "building the loader (2026-11-19), not by argument."
+  },
+  "disagreement_threshold": {
+    "registered_on": "2026-11-26",
+    "registered_before": "any derivation at n >= 50 has been seen. The only export read so far is the 113-patient structural run, where the largest condition has 6 records and every entry is below the sample-size threshold.",
+    "rule": "a Synthea value DISAGREES with its prior when it differs by more than the pack entry's OWN declared tolerance \u2014 age mean 4.0 years, a proportion 0.06, a comorbidity rate 0.2 in today's type 2 diabetes pack.",
+    "why_this_number": "the tolerance already lives with the number it constrains and already says how far a realized value may sit from the declared one. Reading the threshold from the entry means nothing is transcribed and nothing is chosen after the table exists.",
+    "what_a_disagreement_triggers": "investigation before adoption, per diff_before_adopt.reading_rule. Adoption may be declined per entry."
+  },
+  "medication_vocabulary_finding": {
+    "found_on": "2026-11-19",
+    "found_before": "any calibration run",
+    "finding": "Synthea's drug vocabulary is not the packs'. Its type 2 diabetes care map dispenses metformin and a human insulin 70/30 mix; empagliflozin, semaglutide and insulin glargine never occur. 14 of 20 ladder drugs across the five packs have no row in the structural export.",
+    "consequence": "medication membership is reported as an observed rate with NO verdict. The ladder holds an order, not a rate, so there is no prior to disagree with; and a rung Synthea's care map does not contain cannot be calibrated at any sample size.",
+    "not_done": "the insulin mix is not mapped onto 'insulin glargine'. A different drug is not evidence for the rung."
+  },
+  "jar_drift": {
+    "found_on": "2026-11-26",
+    "status": "REPORTED, AWAITING THE OWNER. No jar was downloaded and no run was executed.",
+    "finding": "the mutable tag moved. `master-branch-latest/synthea-with-dependencies.jar` was re-published 2026-11-25 with sha256 1f3db1eba5fc4bb0808e1eab7a863801ddf77887ab71705f142ea9092390c15f. The registered jar is 018ad7f0\u2026, and its bytes are not on this machine.",
+    "this_is_the_case_jar_pinning_was_written_for": "a jar that changes underneath the same URL. The pin did its job: the registered run cannot silently execute against different generator code.",
+    "options": {
+      "A": "recover the pinned jar from wherever the structural run was executed, and run the registered parameters unchanged.",
+      "B": "amend calibration_run_parameters to the new hash, on the record. Then the structural run must be repeated with the new jar FIRST, because the fixtures and the code map were verified against the old one."
+    },
+    "not_an_option": "running whatever the tag serves today and recording the old hash."
   }
 }
