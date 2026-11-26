@@ -82,7 +82,9 @@
     "rule": "the Synthea jar is pinned by CONTENT, never by tag.",
     "why": "`master-branch-latest` is a mutable pointer \u2014 the same lesson as pinning a model by digest rather than by tag. A jar that changes underneath the same URL changes every target derived from it.",
     "structural_run_jar_sha256": "018ad7f04f7aacb995804d7d4781c76d5fc714f7f23257ba50daa9eefae224ac",
-    "calibration_run_must": "cite the same hash, or record that it used a different one and why. Download once, hash, record BEFORE generating."
+    "calibration_run_must": "cite the same hash, or record that it used a different one and why. Download once, hash, record BEFORE generating.",
+    "calibration_run_jar_sha256": "1f3db1eba5fc4bb0808e1eab7a863801ddf77887ab71705f142ea9092390c15f",
+    "note_2026_11_26": "the structural_seed11 export stays as the record of the old jar. A second structural export is taken with the new jar; neither feeds a target."
   },
   "medication_ladder_is_membership_not_order": {
     "registered_on": "2026-08-27",
@@ -109,11 +111,19 @@
     "population_flag": "-p 1000",
     "seed": 20260827,
     "clinician_seed": 20260827,
-    "jar_sha256": "018ad7f04f7aacb995804d7d4781c76d5fc714f7f23257ba50daa9eefae224ac",
+    "jar_sha256": "1f3db1eba5fc4bb0808e1eab7a863801ddf77887ab71705f142ea9092390c15f",
     "n_threshold": 50,
     "why_committed_now": "pass-bars discipline applied to data generation. Nobody gets to size the population after seeing which entries almost clear the threshold, and nobody gets to reroll the seed after an inconvenient draw.",
     "deceased": "excluded from derivation, counted and reported \u2014 see deceased_patients",
-    "manifest_required": "the calibration export ships its own MANIFEST citing these parameters and the jar hash it actually used."
+    "manifest_required": "the calibration export ships its own MANIFEST citing these parameters and the jar hash it actually used.",
+    "amended_2026_11_26": {
+      "what": "jar_sha256 018ad7f0\u2026 -> 1f3db1eb\u2026. Population, seed and n-threshold are UNCHANGED.",
+      "why": "the pinned jar's bytes no longer exist anywhere reachable: Synthea's mutable tag was re-published 2026-11-25. Option B of jar_drift, chosen by the owner.",
+      "legal_because": "no calibration run has ever been executed and no target exists. The window closes at first record.",
+      "verified": "the downloaded file's sha256 equals the digest GitHub publishes for the release asset.",
+      "obligation_before_the_calibration_run": "repeat the ~100-patient structural run with THIS jar and re-check the fixtures and the code map against it. Both were verified against the old jar, and a different jar is different generator code.",
+      "scope_of_this_pass": "the flat run only, feeding type 2 diabetes. The five keep-runs stay registered and unexecuted."
+    }
   },
   "PRE_RUN_FINDING_prevalence_is_the_binding_constraint": {
     "found_on": "2026-08-27",
@@ -218,7 +228,7 @@
   },
   "jar_drift": {
     "found_on": "2026-11-26",
-    "status": "REPORTED, AWAITING THE OWNER. No jar was downloaded and no run was executed.",
+    "status": "RESOLVED 2026-11-26 \u2014 option B chosen by the owner. See calibration_run_parameters.amended_2026_11_26.",
     "finding": "the mutable tag moved. `master-branch-latest/synthea-with-dependencies.jar` was re-published 2026-11-25 with sha256 1f3db1eba5fc4bb0808e1eab7a863801ddf77887ab71705f142ea9092390c15f. The registered jar is 018ad7f0\u2026, and its bytes are not on this machine.",
     "this_is_the_case_jar_pinning_was_written_for": "a jar that changes underneath the same URL. The pin did its job: the registered run cannot silently execute against different generator code.",
     "options": {
