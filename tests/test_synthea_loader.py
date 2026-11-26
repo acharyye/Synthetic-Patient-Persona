@@ -219,27 +219,34 @@ class TestPatientDNA:
 
 
 class TestTheCodeMap:
-    def test_every_verified_code_carries_the_real_export_description(self):
-        """The map was built from an export, so it can be held to one. An entry
-        whose description drifts from reality is a code somebody typed."""
-        if not (REAL / "conditions.csv").exists():
+    def test_every_code_carries_a_description_some_committed_export_states(self):
+        """The map was built from exports, so it is held to them. An entry whose
+        description matches no committed export is a code somebody typed."""
+        exports = [d for d in sorted((ROOT / "data" / "synthea").iterdir())
+                   if (d / "conditions.csv").exists()]
+        if not exports:
             pytest.skip("no real Synthea export committed")
-        with (REAL / "conditions.csv").open(encoding="utf-8") as handle:
-            real = {r["CODE"]: r["DESCRIPTION"] for r in csv.DictReader(handle)}
+        real: dict[str, set[str]] = {}
+        for export in exports:
+            with (export / "conditions.csv").open(encoding="utf-8") as handle:
+                for r in csv.DictReader(handle):
+                    real.setdefault(r["CODE"], set()).add(r["DESCRIPTION"])
         raw = json.loads(CODE_MAP_PATH.read_text(encoding="utf-8"))
 
         for group in ("conditions", "comorbidities"):
             for name, entries in raw[group].items():
                 for entry in entries:
-                    if entry.get("verified", True):
-                        assert real.get(entry["code"]) == entry["description"], (name, entry)
+                    assert entry["description"] in real.get(entry["code"], set()), (name, entry)
 
-    def test_the_unverified_entry_is_exactly_the_one_declared(self):
+    def test_no_entry_is_left_unverified(self):
+        """Rheumatoid arthritis was the one declared-unverified code until the
+        calibration export contained it. Nothing may be marked unverified now
+        without a test changing to say so."""
         raw = json.loads(CODE_MAP_PATH.read_text(encoding="utf-8"))
         unverified = [e["code"] for entries in raw["conditions"].values()
                       for e in entries if e.get("verified") is False]
 
-        assert unverified == ["69896004"]
+        assert unverified == []
 
 
 @pytest.mark.skipif(not (REAL / "patients.csv").exists(),

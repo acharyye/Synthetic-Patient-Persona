@@ -1,0 +1,105 @@
+{
+  "tool": "synthea-with-dependencies.jar",
+  "jar_sha256": "1f3db1eba5fc4bb0808e1eab7a863801ddf77887ab71705f142ea9092390c15f",
+  "population_flag": "-p 1000",
+  "seed": 20260827,
+  "clinician_seed": 20260827,
+  "keep_module": null,
+  "patients_generated": 1178,
+  "generated_on": "2026-11-26",
+  "java": "openjdk version \"17.0.1\" 2021-10-19",
+  "purpose": "calibration run \u2014 feeds the Synthea-vs-prior table",
+  "tables": {
+    "allergies": {
+      "rows": 1022,
+      "sha256": "8544af771bdcee7c9bbdc39ede2789e358ff3bd497670570657cfbf017e452e2",
+      "kept": false
+    },
+    "careplans": {
+      "rows": 3887,
+      "sha256": "131eac631ec5a7ffb31e7dda5debf45661e4700797a309ab13b9db16d48f9595",
+      "kept": false
+    },
+    "claims": {
+      "rows": 133235,
+      "sha256": "f05a353acca0fa97e12d4729a6d9999d699fe9974bbb6e9bf3820cf1636da28e",
+      "kept": false
+    },
+    "claims_transactions": {
+      "rows": 1416910,
+      "sha256": "c78e43ef540ce25d57cfbd3d290388fa99c1a936069b470056c2c18a0db347c6",
+      "kept": false
+    },
+    "conditions": {
+      "rows": 44450,
+      "sha256": "8ec1561d9530e4c1e42dbf2c5b8dfb22731bcbb7e7ca9841548afaf4aacba671",
+      "kept": true
+    },
+    "devices": {
+      "rows": 7039,
+      "sha256": "eaa77b342e2f6d4e212bc65526baa56ea20ad6391135cece2d76369320896ffb",
+      "kept": false
+    },
+    "encounters": {
+      "rows": 70932,
+      "sha256": "aa1d917f7d725a63d5da20ec40d671d555414410e2268697c225e36733be0512",
+      "kept": false
+    },
+    "imaging_studies": {
+      "rows": 163354,
+      "sha256": "6ca76d4545159c3cec317ac988dc3022282edab44c3d8fdf3987962f77d332b5",
+      "kept": false
+    },
+    "immunizations": {
+      "rows": 17057,
+      "sha256": "9b424ede19bef3d10981bfc6f05c74ac8d42be63bb64e8cdf82fb0966735dfb4",
+      "kept": false
+    },
+    "medications": {
+      "rows": 62303,
+      "sha256": "db1a6e6a0f28ad9680838311e89269d0503abc920194f8c5b049455af1feb664",
+      "kept": true
+    },
+    "observations": {
+      "rows": 942641,
+      "sha256": "683a1eb5753170a42c5ed533bbc2dd8338c39fd0a95ad284d68776dfcde82416",
+      "kept": false
+    },
+    "organizations": {
+      "rows": 834,
+      "sha256": "74017497d8cf09ad181febe6c9e142e66fa59bac972073d8516b63375735308e",
+      "kept": false
+    },
+    "patients": {
+      "rows": 1178,
+      "sha256": "dad09b410af875465af4ae879ea272e481f7a200a62a326b2f059a10360a762e",
+      "kept": true
+    },
+    "payer_transitions": {
+      "rows": 51096,
+      "sha256": "df1f4c68bc5655877685ce0fcb7ddcefb6af3f19ebc3bbf42683bdbd485f7c9c",
+      "kept": false
+    },
+    "payers": {
+      "rows": 10,
+      "sha256": "c974e93a8a38b8e99f066d3e86c32df80e64f82ec47178848489e21d34f24e83",
+      "kept": false
+    },
+    "procedures": {
+      "rows": 201703,
+      "sha256": "b97589521d7caefe86ffa61a212f3eb48e806408d4896a3ecd80dcf5fd7d85ba",
+      "kept": false
+    },
+    "providers": {
+      "rows": 834,
+      "sha256": "ac24249101d396e84c87d5f5d66d4e05a3e94ac02114cdac8390663e61d6ac63",
+      "kept": false
+    },
+    "supplies": {
+      "rows": 31631,
+      "sha256": "ef77f5156bc27a21d4bf68289aca97044aafe42a8d0ce4e14b6977a96ab21ce2",
+      "kept": false
+    }
+  },
+  "note": "only the tables the loader reads are kept; the rest are recorded by row count and sha256 so their absence is stated rather than silent"
+}

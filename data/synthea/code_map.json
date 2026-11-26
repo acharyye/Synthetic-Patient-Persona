@@ -2,76 +2,213 @@
   "$comment": "The EXPLICIT Synthea code -> pack vocabulary table that tests/eval/synthea_targets.json (condition_mapping) requires. Matching is by CODE only, never by description substring. Every code here was read out of a real export (data/synthea/structural_seed11) together with its description, except entries marked verified:false. Anything not listed is reported as unmapped by the loader, per run — the table is allowed to be incomplete, it is not allowed to be silent about it.",
   "built_from": "data/synthea/structural_seed11 (jar sha256 018ad7f0…, seed 11)",
   "built_on": "2026-11-19",
-
   "conditions": {
     "type 2 diabetes": [
-      {"code": "44054006", "description": "Diabetes mellitus type 2 (disorder)"}
+      {
+        "code": "44054006",
+        "description": "Diabetes mellitus type 2 (disorder)"
+      }
     ],
     "COPD": [
-      {"code": "87433001", "description": "Pulmonary emphysema (disorder)"},
-      {"code": "185086009", "description": "Chronic obstructive bronchitis (disorder)"}
+      {
+        "code": "87433001",
+        "description": "Pulmonary emphysema (disorder)"
+      },
+      {
+        "code": "185086009",
+        "description": "Chronic obstructive bronchitis (disorder)"
+      }
     ],
     "heart failure": [
-      {"code": "88805009", "description": "Chronic congestive heart failure (disorder)"}
+      {
+        "code": "88805009",
+        "description": "Chronic congestive heart failure (disorder)"
+      }
     ],
     "breast cancer": [
-      {"code": "254837009", "description": "Malignant neoplasm of breast (disorder)"}
+      {
+        "code": "254837009",
+        "description": "Malignant neoplasm of breast (disorder)"
+      }
     ],
     "rheumatoid arthritis": [
-      {"code": "69896004", "description": "Rheumatoid arthritis (disorder)", "verified": false,
-       "note": "0 rows in the structural export (expected at ~0.25% living prevalence). Written from the standard SNOMED value; if a keep-run yields nothing, this code is the first suspect."}
+      {
+        "code": "69896004",
+        "description": "Rheumatoid arthritis (disorder)",
+        "note": "Unverified until 2026-11-26: 0 rows in the 113-patient structural export. Observed with this exact description in the calibration export (3 living patients of 1000)."
+      }
     ]
   },
-
   "comorbidities": {
-    "hypertension": [{"code": "59621000", "description": "Essential hypertension (disorder)"}],
-    "obesity": [{"code": "162864005", "description": "Body mass index 30+ - obesity (finding)"}],
-    "dyslipidemia": [{"code": "55822004", "description": "Hyperlipidemia (disorder)"}],
+    "hypertension": [
+      {
+        "code": "59621000",
+        "description": "Essential hypertension (disorder)"
+      }
+    ],
+    "obesity": [
+      {
+        "code": "162864005",
+        "description": "Body mass index 30+ - obesity (finding)"
+      }
+    ],
+    "dyslipidemia": [
+      {
+        "code": "55822004",
+        "description": "Hyperlipidemia (disorder)"
+      }
+    ],
     "CKD": [
-      {"code": "431855005", "description": "Chronic kidney disease stage 1 (disorder)"},
-      {"code": "431856006", "description": "Chronic kidney disease stage 2 (disorder)"},
-      {"code": "433144002", "description": "Chronic kidney disease stage 3 (disorder)"},
-      {"code": "431857002", "description": "Chronic kidney disease stage 4 (disorder)"}
+      {
+        "code": "431855005",
+        "description": "Chronic kidney disease stage 1 (disorder)"
+      },
+      {
+        "code": "431856006",
+        "description": "Chronic kidney disease stage 2 (disorder)"
+      },
+      {
+        "code": "433144002",
+        "description": "Chronic kidney disease stage 3 (disorder)"
+      },
+      {
+        "code": "431857002",
+        "description": "Chronic kidney disease stage 4 (disorder)"
+      }
     ],
     "diabetic neuropathy": [
-      {"code": "368581000119106", "description": "Neuropathy due to type 2 diabetes mellitus (disorder)"}
+      {
+        "code": "368581000119106",
+        "description": "Neuropathy due to type 2 diabetes mellitus (disorder)"
+      }
     ],
     "diabetic retinopathy": [
-      {"code": "1551000119108", "description": "Nonproliferative diabetic retinopathy due to type II diabetes mellitus"},
-      {"code": "97331000119101", "description": "Macular edema and retinopathy due to type 2 diabetes mellitus (disorder)"}
+      {
+        "code": "1551000119108",
+        "description": "Nonproliferative diabetic retinopathy due to type II diabetes mellitus"
+      },
+      {
+        "code": "97331000119101",
+        "description": "Macular edema and retinopathy due to type 2 diabetes mellitus (disorder)"
+      }
     ],
     "cardiovascular disease": [
-      {"code": "414545008", "description": "Ischemic heart disease (disorder)"},
-      {"code": "22298006", "description": "Myocardial infarction (disorder)"},
-      {"code": "399211009", "description": "History of myocardial infarction (situation)"},
-      {"code": "399261000", "description": "History of coronary artery bypass grafting (situation)"}
+      {
+        "code": "414545008",
+        "description": "Ischemic heart disease (disorder)"
+      },
+      {
+        "code": "22298006",
+        "description": "Myocardial infarction (disorder)"
+      },
+      {
+        "code": "399211009",
+        "description": "History of myocardial infarction (situation)"
+      },
+      {
+        "code": "399261000",
+        "description": "History of coronary artery bypass grafting (situation)"
+      }
     ],
-    "anemia": [{"code": "271737000", "description": "Anemia (disorder)"}],
-    "osteoporosis": [{"code": "64859006", "description": "Osteoporosis (disorder)"}],
-    "anxiety": [{"code": "80583007", "description": "Severe anxiety (panic) (finding)"}]
+    "anemia": [
+      {
+        "code": "271737000",
+        "description": "Anemia (disorder)"
+      }
+    ],
+    "osteoporosis": [
+      {
+        "code": "64859006",
+        "description": "Osteoporosis (disorder)"
+      }
+    ],
+    "anxiety": [
+      {
+        "code": "80583007",
+        "description": "Severe anxiety (panic) (finding)"
+      }
+    ]
   },
-  "comorbidities_with_no_observed_code": ["depression", "atrial fibrillation", "interstitial lung disease", "lung cancer"],
+  "comorbidities_with_no_observed_code": [
+    "depression",
+    "atrial fibrillation",
+    "interstitial lung disease",
+    "lung cancer"
+  ],
   "judgement_calls": [
     "CKD is the four STAGED codes only. 'Disorder of kidney due to diabetes mellitus', microalbuminuria and proteinuria are left unmapped so the per-run report shows how many rows that costs.",
     "cardiovascular disease includes the two history-of 'situation' codes: a past MI or CABG is the standing fact a trial screens on.",
     "anxiety maps from 'Severe anxiety (panic)', the only anxiety code observed. It is narrower than the pack's term."
   ],
-
   "medications": {
-    "860975": {"drug": "metformin", "description": "24 HR Metformin hydrochloride 500 MG Extended Release Oral Tablet"},
-    "896209": {"drug": "fluticasone/salmeterol", "description": "60 ACTUAT Fluticasone propionate 0.25 MG/ACTUAT / salmeterol 0.05 MG/ACTUAT Dry Powder Inhaler"},
-    "1719286": {"drug": "furosemide", "description": "10 ML Furosemide 10 MG/ML Injection"},
-    "313988": {"drug": "furosemide", "description": "Furosemide 40 MG Oral Tablet"},
-    "261962": {"drug": "ramipril", "description": "ramipril 10 MG Oral Capsule"}
+    "860975": {
+      "drug": "metformin",
+      "description": "24 HR Metformin hydrochloride 500 MG Extended Release Oral Tablet"
+    },
+    "896209": {
+      "drug": "fluticasone/salmeterol",
+      "description": "60 ACTUAT Fluticasone propionate 0.25 MG/ACTUAT / salmeterol 0.05 MG/ACTUAT Dry Powder Inhaler"
+    },
+    "1719286": {
+      "drug": "furosemide",
+      "description": "10 ML Furosemide 10 MG/ML Injection"
+    },
+    "313988": {
+      "drug": "furosemide",
+      "description": "Furosemide 40 MG Oral Tablet"
+    },
+    "261962": {
+      "drug": "ramipril",
+      "description": "ramipril 10 MG Oral Capsule"
+    }
   },
   "ladder_drugs_with_no_observed_code": [
-    "empagliflozin", "semaglutide", "insulin glargine", "salbutamol PRN", "tiotropium", "home oxygen",
-    "anastrozole", "tamoxifen", "paclitaxel", "trastuzumab", "bisoprolol", "spironolactone",
-    "methotrexate", "hydroxychloroquine", "adalimumab", "prednisolone"
+    "empagliflozin",
+    "semaglutide",
+    "insulin glargine",
+    "salbutamol PRN",
+    "tiotropium",
+    "home oxygen",
+    "anastrozole",
+    "tamoxifen",
+    "paclitaxel",
+    "trastuzumab",
+    "bisoprolol",
+    "spironolactone",
+    "methotrexate",
+    "hydroxychloroquine",
+    "adalimumab",
+    "prednisolone"
   ],
   "medication_notes": [
     "Synthea's type 2 diabetes care map dispenses metformin and a human insulin 70/30 mix. The pack ladder's empagliflozin, semaglutide and insulin glargine do not occur. The insulin mix is NOT mapped to 'insulin glargine': a different drug is not evidence for the rung.",
     "bisoprolol occurs once, only as a bisoprolol/hydrochlorothiazide combination, and is left unmapped.",
     "14 of 20 ladder drugs across the five packs have no row in a 113-patient export. Some of that is prevalence; for type 2 diabetes it is the care map."
-  ]
+  ],
+  "observed_since_and_not_yet_mapped": {
+    "note": "codes the calibration export (seed 20260827) contains that the map, built from the 113-patient structural export, could not have. Listed, not mapped: adding a code after a Synthea-vs-prior table exists is a mapping decision made in sight of its effect, and belongs to the owner.",
+    "candidates": [
+      {
+        "code": "302870006",
+        "description": "Hypertriglyceridemia (disorder)",
+        "would_map_to": "dyslipidemia",
+        "seen_in": "98% of type 2 diabetes records — a care-map state, see the dyslipidemia reading"
+      },
+      {
+        "code": "237602007",
+        "description": "Metabolic syndrome X (disorder)",
+        "would_map_to": null,
+        "seen_in": "98% of type 2 diabetes records"
+      },
+      {
+        "description": "Major depressive disorder (disorder)",
+        "would_map_to": "depression"
+      },
+      {
+        "code": "49436004",
+        "description": "Atrial fibrillation (disorder)",
+        "would_map_to": "atrial fibrillation"
+      }
+    ]
+  }
 }

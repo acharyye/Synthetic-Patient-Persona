@@ -45,21 +45,49 @@ not a higher confidence, and only `CUSTOMER_DATA_FITTED` crosses the quotable li
   registered. An export whose MANIFEST declares a structural run, or that has no MANIFEST, yields a
   table marked FEEDS NO TARGET in which no row can agree or disagree.
 
+- **The runner** — `scripts/run_synthea.py` takes a jar and an expected sha256, refuses a mismatch,
+  and writes the MANIFEST whose `purpose` decides whether an export may feed a target.
+
 ## What does not exist
 
-A calibration export, and anything that writes a `SYNTHEA_CALIBRATED` entry into a pack. All 51 pack
-marginals are still `EXPERT_GUESS`.
+Anything that writes a `SYNTHEA_CALIBRATED` entry into a pack. All 51 pack marginals are still
+`EXPERT_GUESS`: the calibration run has been read, and nothing has been adopted.
 
-## Why there is no calibration run yet
+## The calibration run — 2026-11-26
 
-The registered run names jar sha256 `018ad7f0…`. Synthea publishes its jar at a mutable tag, and on
-2026-11-25 that tag was re-published with sha256 `1f3db1eb…`. The registered bytes are not on the
-development machine, so the run cannot execute as written. Two options are recorded in
-`synthea_targets.json` (`jar_drift`): recover the pinned jar, or amend the registration to the new
-hash and repeat the structural run first, since the fixtures and code map were verified against the
-old jar.
+Registered parameters: `-p 1000`, seed 20260827, floor n = 50. The jar was amended on the record to
+sha256 `1f3db1eb…` after Synthea's mutable tag was re-published, and the structural check was
+repeated on the new jar first (same columns, same enum values, no code description changed).
 
-## What the real export showed
+1178 patients generated, 178 deceased excluded, 1000 living. Records: type 2 diabetes **62**, COPD 17,
+breast cancer 9, rheumatoid arthritis 3, heart failure 1. **Only type 2 diabetes clears the floor.**
+
+| type 2 diabetes entry | Synthea | prior | tolerance | verdict |
+|---|---|---|---|---|
+| age (mean) | 62.3 | 62.0 | 4.0 | within |
+| sex = female | 0.532 | 0.48 | 0.06 | within |
+| hypertension | 0.645 | 0.70 | 0.2 | within |
+| obesity | 0.742 | 0.60 | 0.2 | within |
+| CKD | 0.258 | 0.35 | 0.2 | within |
+| diabetic neuropathy | 0.323 | 0.30 | 0.2 | within |
+| diabetic retinopathy | 0.145 | 0.25 | 0.2 | within |
+| **dyslipidemia** | 0.177 | 0.65 | 0.2 | **disagrees** |
+| **cardiovascular disease** | 0.516 | 0.30 | 0.2 | **disagrees** |
+| depression, stage, adherence, dx delay, literacy | — | | | not sourced |
+| on metformin / empagliflozin / semaglutide / insulin glargine | 0.435 / 0 / 0 / 0 | | | rate only |
+
+**The two disagreements, investigated.** Dyslipidemia is a care-map artifact in both directions: the
+map counts only "Hyperlipidemia" (17.7%), while 98% of the diabetic records carry
+"Hypertriglyceridemia" because Synthea's metabolic-syndrome module routes every diabetic through that
+state. Neither 0.18 nor 0.98 is a population rate. Cardiovascular disease reads 0.516 against a prior
+near published estimates; ischemic heart disease alone is 48% of the records. Recommended reading:
+decline both. Not yet confirmed by the owner.
+
+**A format question the table raises.** A pack's comorbidities are one marginal with one provenance
+covering every name, so adopting hypertension while declining dyslipidemia needs per-name provenance
+the pack format cannot express today.
+
+## What the first, 113-patient export showed
 
 Read by the loader on 2026-11-19 from the 113-patient structural export:
 
@@ -87,8 +115,9 @@ Three readings follow.
 
 ## Next
 
-Type 2 diabetes only, from the registered flat run (`-p 1000`, seed 20260827): the one condition
-that clears n = 50 without keep-runs. Then the Synthea-vs-prior table, read under the adoption rule.
+The owner reads the table and decides, per entry, what is adopted. Then a producer that writes those
+entries with `kind: synthea_calibrated`, the jar hash and the seed — which first needs the per-name
+provenance question answered.
 
 ---
 Related: [verification belongs where it is consumed](verification-locus.md), [pre-registration](pre-registration.md)

@@ -128,7 +128,7 @@
   "PRE_RUN_FINDING_prevalence_is_the_binding_constraint": {
     "found_on": "2026-08-27",
     "found_before": "the calibration run, and before the loader emitted any number",
-    "status": "REPORTED, NOT ACTED ON. calibration_run_parameters is unchanged pending an explicit amendment \u2014 the parameters were registered hours ago and editing them on the strength of a convenient discovery is the thing pre-registration exists to prevent.",
+    "status": "CONFIRMED BY THE CALIBRATION RUN 2026-11-26: type 2 diabetes 62 records, every other condition under 50. The flat run was executed as registered; the keep-runs remain registered and unexecuted.",
     "measured_on": "the structural export: 113 patients, 100 living, 4,207 condition rows, 187 distinct codes",
     "table": {
       "type 2 diabetes": {
@@ -236,5 +236,91 @@
       "B": "amend calibration_run_parameters to the new hash, on the record. Then the structural run must be repeated with the new jar FIRST, because the fixtures and the code map were verified against the old one."
     },
     "not_an_option": "running whatever the tag serves today and recording the old hash."
+  },
+  "calibration_run_executed": {
+    "on": "2026-11-26",
+    "export": "data/synthea/calibration_seed20260827 \u2014 patients, conditions, medications kept in full; other tables recorded by row count and sha256 in its MANIFEST",
+    "parameters_as_registered": "-p 1000, seed 20260827, jar 1f3db1eb\u2026 (amended 2026-11-26), n-threshold 50",
+    "structural_recheck_first": "data/synthea/structural_seed11_jar1f3db1eb \u2014 same columns and order as the fixtures, same enum values, no code description changed. The obligation attached to the jar amendment was met before this run.",
+    "population": {
+      "generated": 1178,
+      "deceased_excluded": 178,
+      "living": 1000
+    },
+    "records": {
+      "type 2 diabetes": 62,
+      "COPD": 17,
+      "breast cancer": 9,
+      "rheumatoid arthritis": 3,
+      "heart failure": 1
+    },
+    "what_cleared_the_floor": "type 2 diabetes only, as the prevalence finding predicted. Breast cancer came in at 9 against an extrapolated 30 \u2014 the structural run's 3-in-100 was a small-sample overestimate.",
+    "type_2_diabetes_table": {
+      "within_tolerance": {
+        "age (mean)": [
+          62.323,
+          62.0
+        ],
+        "sex = female": [
+          0.532,
+          0.48
+        ],
+        "sex = male": [
+          0.468,
+          0.52
+        ],
+        "hypertension": [
+          0.645,
+          0.7
+        ],
+        "obesity": [
+          0.742,
+          0.6
+        ],
+        "CKD": [
+          0.258,
+          0.35
+        ],
+        "diabetic neuropathy": [
+          0.323,
+          0.3
+        ],
+        "diabetic retinopathy": [
+          0.145,
+          0.25
+        ]
+      },
+      "disagrees": {
+        "dyslipidemia": [
+          0.177,
+          0.65
+        ],
+        "cardiovascular disease": [
+          0.516,
+          0.3
+        ]
+      },
+      "not_sourced": [
+        "depression",
+        "stage",
+        "base_adherence",
+        "dx_delay_months",
+        "health_literacy"
+      ],
+      "membership_no_verdict": {
+        "metformin": 0.435,
+        "empagliflozin": 0.0,
+        "semaglutide": 0.0,
+        "insulin glargine": 0.0
+      },
+      "format": "[synthea, prior]"
+    },
+    "investigation_of_the_two_disagreements": {
+      "dyslipidemia": "a CARE-MAP ARTIFACT in both directions. The map counts only 'Hyperlipidemia' (17.7%). But 98% of the diabetic records carry 'Hypertriglyceridemia' and 98% carry 'Metabolic syndrome X': Synthea's metabolic-syndrome module routes every diabetic through those states by construction. Counting hypertriglyceridemia as dyslipidemia would read ~0.98, which disagrees with 0.65 in the other direction. Neither figure is a population rate.",
+      "cardiovascular disease": "0.516 against 0.30, over the tolerance by 0.016. Ischemic heart disease alone is 48% of the diabetic records. The prior sits near published estimates of CVD prevalence in type 2 diabetes; Synthea's figure is its US cardiovascular module on a cohort with mean age 62.",
+      "recommended_reading": "DECLINE both, per diff_before_adopt.reading_rule. Each stays EXPERT_GUESS annotated 'Synthea disagrees, see note'. Not yet confirmed by the owner."
+    },
+    "nothing_was_adopted": "no pack was written. No producer for SYNTHEA_CALIBRATED entries exists, and adoption is decided per entry by the owner after reading this table.",
+    "a_schema_question_this_raises": "a pack's comorbidities are ONE marginal with ONE provenance covering every name. Adopting hypertension while declining dyslipidemia needs per-name provenance, which the pack format cannot express today."
   }
 }

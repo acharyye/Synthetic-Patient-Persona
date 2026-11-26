@@ -579,12 +579,12 @@
           "id": "J",
           "title": "ingest/synthea_loader.py — real Synthea CSV joins -> PatientDNA",
           "status": "in-progress",
-          "progress": 75,
+          "progress": 85,
           "startWeek": 35,
           "endWeek": 49,
           "aufgabe": "Join real Synthea CSV exports into the PatientDNA schema. Search TODO(claude-code) markers for the exact insertion points.",
           "ziel": "Persona generation draws on real distributions instead of condition-based priors alone.",
-          "stand": "Loader and derivation both exist. scripts/derive_synthea_marginals.py prints the Synthea-vs-prior table and writes nothing; a structural export yields a table marked FEEDS NO TARGET. Remaining: a calibration export to read (task S, blocked), then a producer for SYNTHEA_CALIBRATED entries.",
+          "stand": "The Synthea-vs-prior table for type 2 diabetes exists at n=62: 8 entries within tolerance, 2 disagree (dyslipidemia, cardiovascular disease), 5 not sourced. NOTHING IS ADOPTED. Waiting on the owner: which entries to adopt, and how a pack expresses per-name provenance inside one comorbidities marginal.",
           "meetingNotes": "",
           "achievements": [
             "ProvenanceKind (EXPERT_GUESS / SYNTHEA_CALIBRATED / CUSTOMER_DATA_FITTED) in cohort/packs.py; quotability re-keyed from confidence to KIND; an unversioned SYNTHEA_CALIBRATED entry is refused.",
@@ -604,7 +604,9 @@
             "2026-11-19 — real export: 113 patients, 13 deceased excluded, 11 records (T2D 6, breast cancer 3, COPD 2) — matching the prevalence finding registered 2026-08-27.",
             "2026-11-19 — 940 active condition rows, 182 mapped; among record patients 184, 47 mapped. 249 active medication rows, 8 mapped.",
             "2026-11-26 — suite 1137 -> 1150. Mutation canary on the derivation, 5 of 5 caught: floor ignored, structural run producing verdicts, floor hard-coded, tolerance hard-coded, missing MANIFEST treated as a calibration run.",
-            "2026-11-26 — on the structural export the T2D table has n=6 and every comparison reads n_too_small; the script exits 3."
+            "2026-11-26 — on the structural export the T2D table has n=6 and every comparison reads n_too_small; the script exits 3.",
+            "2026-11-26 — T2D table, [synthea, prior]: age 62.3/62.0, female 0.532/0.48, hypertension 0.645/0.70, obesity 0.742/0.60, CKD 0.258/0.35, neuropathy 0.323/0.30, retinopathy 0.145/0.25 — all within tolerance. Dyslipidemia 0.177/0.65 and cardiovascular disease 0.516/0.30 disagree.",
+            "2026-11-26 — suite 1150 -> 1171; the table is pinned in tests/test_synthea_exports.py."
           ],
           "decisions": [
             "2026-08-25 — target list committed before the loader: Synthea may calibrate age, sex, stage, comorbidities, medication_ladder; NOT literacy, adherence, dx delay, SDOH, goals, constraints.",
@@ -623,7 +625,9 @@
             "2026-11-19 — derivation must read SyntheaPatient (sourced fields only), never the PatientDNA form, whose unsourced fields sit at schema defaults.",
             "2026-11-26 — stage stays EXPERT_GUESS (registered, amends the target list).",
             "2026-11-26 — a disagreement is a difference larger than the pack entry's own tolerance.",
-            "2026-11-26 — medication membership is reported as a rate with no verdict."
+            "2026-11-26 — medication membership is reported as a rate with no verdict.",
+            "2026-11-26 — investigated, recommended DECLINE for both disagreements: dyslipidemia is a care-map artifact (98% of diabetics carry hypertriglyceridemia by construction); CVD is Synthea's US cardiovascular module against a prior that matches published estimates. Not yet confirmed by the owner.",
+            "2026-11-26 — no code was added to the map after the table existed. Four candidates are listed in code_map.json as observed-not-mapped."
           ],
           "links": [
             "KR3.1"
@@ -665,17 +669,24 @@
         },
         {
           "meetingNotes": "",
-          "achievements": [],
+          "achievements": [
+            "scripts/run_synthea.py — runs a jar pinned by sha256 (refuses a mismatch, never fetches) and writes the MANIFEST.",
+            "data/synthea/structural_seed11_jar1f3db1eb — structural re-check on the new jar: schema, enums and code descriptions unchanged.",
+            "data/synthea/calibration_seed20260827 — 1178 generated, 178 deceased excluded, 1000 living."
+          ],
           "validations": [
             "Living patients per 1000 in the structural export: type 2 diabetes 60, breast cancer 30, COPD 20, heart failure 0, rheumatoid arthritis 0. -p 1000 clears n=50 for T2D only.",
             "RA is modelled by Synthea (~1% incidence, ~75% remission) — rare, not absent. The keep-module's SNOMED 69896004 is UNVERIFIED, with 0 observed rows.",
-            "2026-11-26 — GitHub release metadata: synthea-with-dependencies.jar, 187 MB, updated 2026-11-25, digest 1f3db1eba5fc… — not the registered 018ad7f0…."
+            "2026-11-26 — GitHub release metadata: synthea-with-dependencies.jar, 187 MB, updated 2026-11-25, digest 1f3db1eba5fc… — not the registered 018ad7f0….",
+            "Records: type 2 diabetes 62, COPD 17, breast cancer 9, rheumatoid arthritis 3, heart failure 1.",
+            "RA's SNOMED 69896004 is now verified — observed with its description in the calibration export."
           ],
           "decisions": [
             "2026-08-27 — keep_run_supplement registered as an amendment (5 keep-runs, 60 kept each); the flat run executes as written. Registered, never run.",
             "2026-11-19 — recommended first pass: type 2 diabetes ONLY from the flat run; the other four conditions stay EXPERT_GUESS until keep-runs are executed. Not yet confirmed by the owner.",
             "Not an option: lowering the n=50 threshold to fit what the data offers.",
-            "2026-11-26 — options recorded in synthea_targets.json (jar_drift): A recover the pinned jar and run as registered; B amend to the new hash and repeat the structural run first. Not an option: run today's jar under the old hash."
+            "2026-11-26 — options recorded in synthea_targets.json (jar_drift): A recover the pinned jar and run as registered; B amend to the new hash and repeat the structural run first. Not an option: run today's jar under the old hash.",
+            "2026-11-26 — owner chose option B: amend to jar 1f3db1eb…, pushed before the run."
           ],
           "links": [
             "KR3.1"
@@ -687,13 +698,13 @@
           ],
           "id": "S",
           "title": "Calibration runs — prevalence is the binding constraint",
-          "status": "backlog",
-          "progress": 0,
+          "status": "done",
+          "progress": 100,
           "startWeek": 47,
-          "endWeek": 49,
+          "endWeek": 48,
           "aufgabe": "Execute the registered flat run (-p 1000, seed 20260827, jar 018ad7f0…). Decide whether the four rarer conditions get keep-runs now or stay out of scope.",
           "ziel": "A calibration export with its own MANIFEST that the derivation can read.",
-          "stand": "BLOCKED, WAITING ON THE OWNER. Java 17 is on this machine, but the Synthea jar at the mutable tag was re-published 2026-11-25 (sha256 1f3db1eb…) and the registered jar (018ad7f0…) is not on this machine. Nothing was downloaded or run."
+          "stand": "Flat run executed 2026-11-26 as registered, on the amended jar, after the structural re-check. Type 2 diabetes cleared the floor at n=62; no other condition did. The five keep-runs remain registered and unexecuted."
         }
       ]
     },
@@ -984,7 +995,7 @@
           "target": 100,
           "unit": "%",
           "type": "Commit",
-          "grade": 0.7
+          "grade": 0.9
         },
         {
           "id": "KR3.2",
