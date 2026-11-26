@@ -4,7 +4,7 @@ title: Synthea calibration — what it is for, what exists, what the first real 
 description: Synthea is a calibration source for the prior packs with known synthetic provenance, never quotable. The loader joins a real export into patient records; the derivation and the calibration runs do not exist yet.
 resource: ../../../tests/eval/synthea_targets.json
 tags: [synthea, priors, provenance, calibration]
-timestamp: 2026-11-19T00:00:00Z
+timestamp: 2026-11-26T00:00:00Z
 ---
 
 # Synthea calibration
@@ -20,11 +20,11 @@ not a higher confidence, and only `CUSTOMER_DATA_FITTED` crosses the quotable li
 
 | | |
 |---|---|
-| May calibrate | age, sex, stage, comorbidities, medication membership |
+| May calibrate | age, sex, comorbidities, medication membership (stage was withdrawn 2026-11-26) |
 | May not | health literacy, adherence, diagnostic delay, social determinants, goals, constraints |
 | Sample size | n ≥ 50 per entry; below it the entry stays `EXPERT_GUESS`, marked "Synthea n too small" |
 | Deceased | excluded from derivation and counted |
-| Adoption | diff before adopt — a large disagreement is investigated, and may be declined per entry |
+| Adoption | diff before adopt — a difference beyond the entry's own tolerance is investigated, and may be declined per entry |
 | Medication ladder | membership only; order is Synthea's protocol assumption, not a population fact |
 | Jar | pinned by sha256, never by tag |
 
@@ -39,10 +39,25 @@ not a higher confidence, and only `CUSTOMER_DATA_FITTED` crosses the quotable li
   structure only.
 - **Five keep-modules**, never executed.
 
+- **The derivation** — `src/spp/ingest/synthea_derive.py`, run by
+  `scripts/derive_synthea_marginals.py`. It prints the Synthea-vs-prior table and writes nothing. The
+  sample-size floor, each entry's tolerance and the target list are read from where they were
+  registered. An export whose MANIFEST declares a structural run, or that has no MANIFEST, yields a
+  table marked FEEDS NO TARGET in which no row can agree or disagree.
+
 ## What does not exist
 
-The marginal derivation, the calibration runs, and anything that writes a `SYNTHEA_CALIBRATED` entry
-into a pack. All 51 pack marginals are still `EXPERT_GUESS`.
+A calibration export, and anything that writes a `SYNTHEA_CALIBRATED` entry into a pack. All 51 pack
+marginals are still `EXPERT_GUESS`.
+
+## Why there is no calibration run yet
+
+The registered run names jar sha256 `018ad7f0…`. Synthea publishes its jar at a mutable tag, and on
+2026-11-25 that tag was re-published with sha256 `1f3db1eb…`. The registered bytes are not on the
+development machine, so the run cannot execute as written. Two options are recorded in
+`synthea_targets.json` (`jar_drift`): recover the pinned jar, or amend the registration to the new
+hash and repeat the structural run first, since the fixtures and code map were verified against the
+old jar.
 
 ## What the real export showed
 
@@ -62,8 +77,8 @@ Three readings follow.
    employment, "medication review due", stress and education level — social findings and encounter
    bookkeeping that Synthea writes into `conditions.csv`.
 2. **Stage is not sourced.** The packs' early / moderate / advanced ladder has no Synthea
-   counterpart. The target list permits calibrating it, but that needs a registered derivation rule
-   first; the loader leaves it empty and says so in `fields_not_sourced`.
+   counterpart. Registered 2026-11-26: stage stays `EXPERT_GUESS` until a derivation rule is
+   registered for it.
 3. **Synthea's drug vocabulary is not the packs'.** Its type 2 diabetes care map dispenses metformin
    and a human insulin mix; the pack ladder's empagliflozin, semaglutide and insulin glargine do not
    occur at all. 14 of 20 ladder drugs across the five packs have no row. For medication membership

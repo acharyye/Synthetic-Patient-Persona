@@ -4,8 +4,8 @@
   "startWeek": 31,
   "endWeek": 52,
   "year": 2026,
-  "todayWeek": 47,
-  "lastModified": "2026-11-19",
+  "todayWeek": 48,
+  "lastModified": "2026-11-26",
   "stages": [
     {
       "id": "S1",
@@ -579,12 +579,12 @@
           "id": "J",
           "title": "ingest/synthea_loader.py — real Synthea CSV joins -> PatientDNA",
           "status": "in-progress",
-          "progress": 60,
+          "progress": 75,
           "startWeek": 35,
           "endWeek": 49,
           "aufgabe": "Join real Synthea CSV exports into the PatientDNA schema. Search TODO(claude-code) markers for the exact insertion points.",
           "ziel": "Persona generation draws on real distributions instead of condition-based priors alone.",
-          "stand": "The loader exists: Synthea CSV joins -> SyntheaPatient -> PatientDNA, verified on the join-breaking fixtures and on the real 113-patient export. Not sourced: stage and biomarkers. Remaining: the marginal derivation, which waits on a calibration run (task S). Nothing can write a SYNTHEA_CALIBRATED entry yet.",
+          "stand": "Loader and derivation both exist. scripts/derive_synthea_marginals.py prints the Synthea-vs-prior table and writes nothing; a structural export yields a table marked FEEDS NO TARGET. Remaining: a calibration export to read (task S, blocked), then a producer for SYNTHEA_CALIBRATED entries.",
           "meetingNotes": "",
           "achievements": [
             "ProvenanceKind (EXPERT_GUESS / SYNTHEA_CALIBRATED / CUSTOMER_DATA_FITTED) in cohort/packs.py; quotability re-keyed from confidence to KIND; an unversioned SYNTHEA_CALIBRATED entry is refused.",
@@ -593,7 +593,8 @@
             "data/synthea/keep_modules/ — 5 keep-modules, authored from the documented format, NEVER executed.",
             "tests/eval/synthea_targets.json — the target list and eleven registered decisions.",
             "2026-11-19 — src/spp/ingest/synthea_loader.py: joins on PATIENT id only, deceased excluded and counted, active = unstopped, medication attributed to a condition only via REASONCODE, as_of taken from the export rather than the clock, LoadReport with unmapped-row report.",
-            "2026-11-19 — data/synthea/code_map.json: the explicit code -> pack vocabulary table, built from the real export; one entry (RA 69896004) declared unverified."
+            "2026-11-19 — data/synthea/code_map.json: the explicit code -> pack vocabulary table, built from the real export; one entry (RA 69896004) declared unverified.",
+            "2026-11-26 — src/spp/ingest/synthea_derive.py + scripts/derive_synthea_marginals.py: the diff-before-adopt table. Floor, tolerance and target list are read from where they were registered; a structural or MANIFEST-less export cannot produce an adoptable verdict."
           ],
           "validations": [
             "Suite 991 -> 1028 across the Synthea groundwork (37 tests: targets, fixtures, structure).",
@@ -601,7 +602,9 @@
             "TestTodaysPacksAreHonest passes because nothing has moved: all 51 marginals are still EXPERT_GUESS.",
             "2026-11-19 — suite 1113 -> 1137 (24 loader tests). Mutation canary 6 of 6 caught after one rewrite: the first 'medication not borrowed' test was vacuous and passed against a loader that attributed every drug to every condition.",
             "2026-11-19 — real export: 113 patients, 13 deceased excluded, 11 records (T2D 6, breast cancer 3, COPD 2) — matching the prevalence finding registered 2026-08-27.",
-            "2026-11-19 — 940 active condition rows, 182 mapped; among record patients 184, 47 mapped. 249 active medication rows, 8 mapped."
+            "2026-11-19 — 940 active condition rows, 182 mapped; among record patients 184, 47 mapped. 249 active medication rows, 8 mapped.",
+            "2026-11-26 — suite 1137 -> 1150. Mutation canary on the derivation, 5 of 5 caught: floor ignored, structural run producing verdicts, floor hard-coded, tolerance hard-coded, missing MANIFEST treated as a calibration run.",
+            "2026-11-26 — on the structural export the T2D table has n=6 and every comparison reads n_too_small; the script exits 3."
           ],
           "decisions": [
             "2026-08-25 — target list committed before the loader: Synthea may calibrate age, sex, stage, comorbidities, medication_ladder; NOT literacy, adherence, dx delay, SDOH, goals, constraints.",
@@ -617,7 +620,10 @@
             "2026-08-27 — SDOH findings in conditions.csv deferred; no amendment to the target list.",
             "2026-11-19 — stage is NOT sourced. The packs' early/moderate/advanced ladder has no Synthea counterpart; calibrating it needs its own registered rule first.",
             "2026-11-19 — Synthea's insulin mix is not mapped to the pack's 'insulin glargine'. 14 of 20 ladder drugs have no row; for T2D that is the care map, not prevalence. Medication membership will mostly be a 'Synthea disagrees' case under the adoption rule.",
-            "2026-11-19 — derivation must read SyntheaPatient (sourced fields only), never the PatientDNA form, whose unsourced fields sit at schema defaults."
+            "2026-11-19 — derivation must read SyntheaPatient (sourced fields only), never the PatientDNA form, whose unsourced fields sit at schema defaults.",
+            "2026-11-26 — stage stays EXPERT_GUESS (registered, amends the target list).",
+            "2026-11-26 — a disagreement is a difference larger than the pack entry's own tolerance.",
+            "2026-11-26 — medication membership is reported as a rate with no verdict."
           ],
           "links": [
             "KR3.1"
@@ -662,12 +668,14 @@
           "achievements": [],
           "validations": [
             "Living patients per 1000 in the structural export: type 2 diabetes 60, breast cancer 30, COPD 20, heart failure 0, rheumatoid arthritis 0. -p 1000 clears n=50 for T2D only.",
-            "RA is modelled by Synthea (~1% incidence, ~75% remission) — rare, not absent. The keep-module's SNOMED 69896004 is UNVERIFIED, with 0 observed rows."
+            "RA is modelled by Synthea (~1% incidence, ~75% remission) — rare, not absent. The keep-module's SNOMED 69896004 is UNVERIFIED, with 0 observed rows.",
+            "2026-11-26 — GitHub release metadata: synthea-with-dependencies.jar, 187 MB, updated 2026-11-25, digest 1f3db1eba5fc… — not the registered 018ad7f0…."
           ],
           "decisions": [
             "2026-08-27 — keep_run_supplement registered as an amendment (5 keep-runs, 60 kept each); the flat run executes as written. Registered, never run.",
             "2026-11-19 — recommended first pass: type 2 diabetes ONLY from the flat run; the other four conditions stay EXPERT_GUESS until keep-runs are executed. Not yet confirmed by the owner.",
-            "Not an option: lowering the n=50 threshold to fit what the data offers."
+            "Not an option: lowering the n=50 threshold to fit what the data offers.",
+            "2026-11-26 — options recorded in synthea_targets.json (jar_drift): A recover the pinned jar and run as registered; B amend to the new hash and repeat the structural run first. Not an option: run today's jar under the old hash."
           ],
           "links": [
             "KR3.1"
@@ -685,7 +693,7 @@
           "endWeek": 49,
           "aufgabe": "Execute the registered flat run (-p 1000, seed 20260827, jar 018ad7f0…). Decide whether the four rarer conditions get keep-runs now or stay out of scope.",
           "ziel": "A calibration export with its own MANIFEST that the derivation can read.",
-          "stand": "WAITING ON THE OWNER. PRE_RUN_FINDING is still 'REPORTED, NOT ACTED ON'. No calibration run has ever been executed; only the 113-patient structural run exists and it is barred from feeding targets."
+          "stand": "BLOCKED, WAITING ON THE OWNER. Java 17 is on this machine, but the Synthea jar at the mutable tag was re-published 2026-11-25 (sha256 1f3db1eb…) and the registered jar (018ad7f0…) is not on this machine. Nothing was downloaded or run."
         }
       ]
     },
